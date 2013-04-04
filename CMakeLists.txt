@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
-project(Massacre)
+cmake_minimum_required(VERSION 2.6)
+project(MASSACRE)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-scripts/")
 
@@ -11,3 +11,7 @@ find_package(JPEG REQUIRED)
 find_package(YamlCpp REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Freetype REQUIRED)
+
+set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11")
+
+add_subdirectory(MassacreProto)
