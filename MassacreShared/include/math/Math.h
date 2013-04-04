@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <limits>
+#include <algorithm>
 
 namespace mcr  {
 namespace math {

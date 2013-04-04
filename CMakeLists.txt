@@ -12,6 +12,6 @@ find_package(YamlCpp REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Freetype REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11")
+set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11 -fpermissive")
 
 add_subdirectory(MassacreProto)

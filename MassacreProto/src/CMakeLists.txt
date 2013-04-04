@@ -4,9 +4,6 @@ include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/include)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/extras/SimpleMesh)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreShared/include)
 
-add_subdirectory(gfx)
-add_subdirectory(components)
-
 set(MASSACRE_SRC Camera.cpp ComRegistry.cpp Debug.cpp FileSystem.cpp Object.cpp
 	SmallObject.cpp SuperGlobal.cpp Timeline.cpp Universe.cpp)
 
