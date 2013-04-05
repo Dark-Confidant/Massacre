@@ -2,8 +2,6 @@ language:
   - cpp
 compiler:
   - g++
-before_install:
-  - sudo apt-get install boost sdl yaml-cpp glew
 script:
   - mkdir build 
   - cd build 
