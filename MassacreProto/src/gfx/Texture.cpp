@@ -6,7 +6,7 @@
 using namespace mcr;
 using namespace gfx;
 
-rcptr<Texture> Texture::createFromFile(IFile* file, rcptr<Image>& img)
+rcptr<Texture> Texture::createFromFile(IFile* file, rcptr<Image>* imgOut)
 {
     auto result = new Texture;
 
@@ -16,7 +16,9 @@ rcptr<Texture> Texture::createFromFile(IFile* file, rcptr<Image>& img)
     if (slash != std::string::npos)
         result->m_filename = result->m_filename.substr(slash + 1);
 
-    img = Image::createFromFile(file);
+    auto img = Image::createFromFile(file);
+    if (imgOut)
+        *imgOut = img;
 
     result->upload(img);
 
