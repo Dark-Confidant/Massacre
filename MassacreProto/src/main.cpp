@@ -307,7 +307,8 @@ Game::~Game()
 void Game::initGL()
 {
     auto sdlErr = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
-    assert(sdlErr == 0);
+    if (sdlErr == -1)
+        debug("SDL_Init failed: %s", SDL_GetError());
 
     SDL_WM_SetCaption("MassacreProto", nullptr);
 
@@ -331,7 +332,8 @@ void Game::initGL()
     SDL_SetVideoMode(1024, 768, 32, SDL_OPENGL | SDL_RESIZABLE);
     
     auto glewErr = glewInit();
-    assert(glewErr == GLEW_OK);
+    if (glewErr != GLEW_OK)
+        debug("glewInit failed: %s", glewGetErrorString(glewErr));
 
     new gfx::Context;
     debug("OpenGL %s", glGetString(GL_VERSION));
