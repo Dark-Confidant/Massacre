@@ -35,7 +35,7 @@ VertexFormat::VertexFormat(const char* fmt):
 {
     enum { WantLengthOrSemantic, WantType } mode = WantLengthOrSemantic;
 
-    uint len, type = 0;
+    uint len = 0, type = 0;
     bool isUnsigned = false;
     char semantic = '\0';
 
