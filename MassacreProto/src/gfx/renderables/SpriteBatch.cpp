@@ -132,10 +132,10 @@ SpriteBatch::SpriteBatch(uint maxSprites, const VertexFormat& fmt):
 
 SpriteBatch::~SpriteBatch()
 {
-    for (auto it = m_sprites.begin(); it != m_sprites.end(); ++it)
+    BOOST_FOREACH (auto& sprite, m_sprites)
     {
-        delete [] it->userData;
-        delete it->shortcut;
+        delete [] sprite.userData;
+        delete sprite.shortcut;
     }
 }
 

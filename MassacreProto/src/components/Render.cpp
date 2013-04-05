@@ -27,6 +27,7 @@ void Render::onUpdate(int64)
     if (!m_renderer)
         return;
 
+    // consider using BOOST_FOREACH
     for (auto it = m_dirtyAtoms.begin(); it != m_dirtyAtoms.end(); ++it)
     {
         auto& slot = m_atoms[*it];
@@ -47,8 +48,8 @@ void Render::setRenderer(gfx::Renderer* renderer)
     m_renderer = renderer;
 
     if (m_renderer)
-        for (auto it = m_atoms.begin(); it != m_atoms.end(); ++it)
-            it->second = m_renderer->registerData(m_obj, it->first);
+        BOOST_FOREACH (auto& pair, m_atoms)
+            pair.second = m_renderer->registerData(m_obj, pair.first);
 }
 
 void Render::onEvent(EventId event, const EventParams& params)
@@ -87,12 +88,14 @@ void Render::deregisterAtoms()
     if (!m_renderer)
         return;
 
-    for (auto it = m_atoms.begin(); it != m_atoms.end(); ++it)
-        if (it->second)
+    BOOST_FOREACH (auto& pair, m_atoms)
+    {
+        if (pair.second)
         {
-            m_renderer->deregisterData(it->second);
-            it->second = nullptr;
+            m_renderer->deregisterData(pair.second);
+            pair.second = nullptr;
         }
+    }
 
     m_dirtyAtoms.clear();
 }

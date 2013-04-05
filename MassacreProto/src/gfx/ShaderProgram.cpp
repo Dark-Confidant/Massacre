@@ -85,11 +85,13 @@ byte ShaderProgram::attach(Shader* shader)
 void ShaderProgram::detach(Shader* shader)
 {
     for (auto it = m_shaders.begin(); it != m_shaders.end(); ++it)
+    {
         if (*it == shader)
         {
             glDetachShader(m_handle, shader->handle());
             m_shaders.erase(it);
         }
+    }
 }
 
 void ShaderProgram::detach(byte idx)

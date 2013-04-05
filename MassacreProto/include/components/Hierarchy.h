@@ -7,7 +7,7 @@ namespace mcr {
 class Hierarchy: public Component
 {
 public:
-    typedef std::list<rcptr<Object>> ObjectList;
+    typedef std::list<rcptr<Object>> ObjectList; // consider performance
 
     static ComDesc Desc;
 

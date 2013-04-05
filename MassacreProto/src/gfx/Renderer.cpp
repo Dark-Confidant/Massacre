@@ -68,6 +68,7 @@ void Renderer::render()
 
     uint vao = 0;
 
+    // consider using BOOST_FOREACH, question overall iteration performance
     for (auto it = m_data.begin(); it != m_data.end(); ++it)
     {
         auto& data = *it;

@@ -8,6 +8,7 @@ ComDesc Hierarchy::Desc = MCR_REGISTER_COMPONENT(Hierarchy);
 
 void Hierarchy::onUpdate(int64 dt)
 {
+    // consider using BOOST_FOREACH
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
         (*it)->update(dt);
 }

@@ -139,28 +139,28 @@ namespace
 //////////////////////////////////////////////////////////////////////////
 // file search & access
 
-rcptr<IFile> FileSystem::openFile(const char* filename, std::string* path)
+rcptr<IFile> FileSystem::openFile(const char* filename, std::string* pathOut)
 {
     rcptr<StdStreamFile> file = new StdStreamFile(this, filename);
 
     if (file->size())
     {
-        if (path)
-            *path = filename;
+        if (pathOut)
+            *pathOut = filename;
 
         return file;
     }
 
-    for (auto it = m_paths.begin(); it != m_paths.end(); ++it)
+    BOOST_FOREACH (auto& path, m_paths)
     {
-        auto guess = *it + '/' + filename;
+        auto guess = path + '/' + filename;
 
         file = new StdStreamFile(this, guess.c_str());
 
         if (file->size())
         {
-            if (path)
-                *path = guess;
+            if (pathOut)
+                *pathOut = guess;
 
             break;
         }

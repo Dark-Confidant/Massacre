@@ -100,7 +100,7 @@ public:
         \param path Path of successfully opened file (if any)
         \return File handle to read from. If no file found, \c IFile::size() will return 0
     */
-    rcptr<IFile> openFile(const char* filename, std::string* path = nullptr);
+    rcptr<IFile> openFile(const char* filename, std::string* pathOut = nullptr);
 
 protected:
     std::set<std::string> m_paths;

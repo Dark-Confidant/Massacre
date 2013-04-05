@@ -104,8 +104,8 @@ void Mesh::load(IFile* file)
 
     // read parts
 
-    for (auto it = m_parts.begin(); it != m_parts.end(); ++it)
-        notify(AtomRemoved, &*it);
+    BOOST_FOREACH (auto& part, m_parts)
+        notify(AtomRemoved, &part);
 
     auto dir = Resource::create(file->fs(), Path::dir(file->filename()).c_str());
 
@@ -152,22 +152,22 @@ void Mesh::load(IFile* file)
         }
     }
 
-    for (auto it = m_parts.begin(); it != m_parts.end(); ++it)
-        notify(AtomRemoved, &*it);
+    BOOST_FOREACH (auto& part, m_parts)
+        notify(AtomRemoved, &part);
 }
 
 void Mesh::optimizeAtomsTMP()
 {
     std::map<Material*, std::vector<RenderAtom>> byMtl;
 
-    for (auto partIt = m_parts.begin(); partIt != m_parts.end(); ++partIt)
-        byMtl[partIt->material].push_back(*partIt);
+    BOOST_FOREACH (auto& part, m_parts)
+        byMtl[part.material].push_back(part);
 
     m_parts.clear();
 
-    for (auto mtlIt = byMtl.begin(); mtlIt != byMtl.end(); ++mtlIt)
+    BOOST_FOREACH (auto& pair, byMtl)
     {
-        auto& mtlAtoms = mtlIt->second;
+        auto& mtlAtoms = pair.second;
 
         std::sort(mtlAtoms.begin(), mtlAtoms.end(),
             [] (const RenderAtom& a, const RenderAtom& b) { return a.start < b.start; });
@@ -190,7 +190,7 @@ void Mesh::optimizeAtomsTMP()
             }
         }
 
-        for (auto atomIt = mtlAtoms.begin(); atomIt != mtlAtoms.end(); ++atomIt)
-            m_parts.push_back(*atomIt);
+        BOOST_FOREACH (auto& atom, mtlAtoms)
+            m_parts.push_back(atom);
     }
 }

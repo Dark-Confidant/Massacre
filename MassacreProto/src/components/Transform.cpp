@@ -17,6 +17,7 @@ void Transform::updateGlobal()
 
     auto& children = m_obj->node()->children();
 
+    // consider using BOOST_FOREACH
     for (auto it = children.begin(); it != children.end(); ++it)
         (*it)->transform()->updateGlobal();
 }

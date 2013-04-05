@@ -164,11 +164,11 @@ ShaderProgram* MaterialManager::_getShaderProgram(const std::set<std::string>& f
 
     shaders.reserve(filenames.size());
 
-    for (auto it = filenames.begin(); it != filenames.end(); ++it)
+    BOOST_FOREACH (auto& filename, filenames)
     {
         std::string path;
 
-        auto shader = _getShader(it->c_str(), path);
+        auto shader = _getShader(filename.c_str(), path);
         if (!shader)
             return nullptr;
 
@@ -185,8 +185,8 @@ ShaderProgram* MaterialManager::_getShaderProgram(const std::set<std::string>& f
     {
         prog = ShaderProgram::create();
 
-        for (auto it = shaders.begin(); it != shaders.end(); ++it)
-            prog->attach(*it);
+        BOOST_FOREACH (auto shader, shaders)
+            prog->attach(shader);
 
         prog->link();
     }

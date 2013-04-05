@@ -361,9 +361,9 @@ void Game::initGL()
         "GL_ARB_explicit_attrib_location"
     };
 
-    for (uint i = 0; i < sizeof(reqexts) / sizeof(reqexts[0]); ++i)
-        if (!glewIsSupported(reqexts[i]))
-            debug("%s: MISSING", reqexts[i]);
+    BOOST_FOREACH (auto ext, reqexts)
+        if (!glewIsSupported(ext))
+            debug("%s: MISSING", ext);
 
     const struct
     {
@@ -382,11 +382,11 @@ void Game::initGL()
         {GL_MAX_FRAGMENT_UNIFORM_BLOCKS,      "Max UBOs, frag"  }
     };
 
-    for (uint i = 0; i < sizeof(valuesOfInterest) / sizeof(valuesOfInterest[0]); ++i)
+    BOOST_FOREACH (auto& voi, valuesOfInterest)
     {
         GLint val;
-        glGetIntegerv(valuesOfInterest[i].name, &val);
-        debug("%s: %d", valuesOfInterest[i].string, val);
+        glGetIntegerv(voi.name, &val);
+        debug("%s: %d", voi.string, val);
     }
 }
 

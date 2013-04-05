@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include "MassacreBuildConfig.h"
 
 #if defined(MCR_PLATFORM_WINDOWS)
@@ -13,3 +12,6 @@
 #include <GL/glew.h>
 
 #include <SDL/SDL.h>
+
+#include <cassert>
+#include <boost/foreach.hpp>
