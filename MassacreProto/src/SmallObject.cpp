@@ -3,6 +3,7 @@
 
 using namespace mcr;
 
+template<>
 SmallObjectAllocator* ExternalSingleton<SmallObjectAllocator>::m_instance;
 
 SmallObjectAllocator::SmallObjectAllocator()
