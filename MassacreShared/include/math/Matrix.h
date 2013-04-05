@@ -256,14 +256,14 @@ inline bool operator==(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
 template <typename T>
 inline Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
 {
-    Matrix4x4<T> r;
+    Matrix4x4<T> result;
 
-    r.template vecAt<4>( 0) = rhs.template vecAt<4>( 0) * lhs;
-    r.template vecAt<4>( 4) = rhs.template vecAt<4>( 4) * lhs;
-    r.template vecAt<4>( 8) = rhs.template vecAt<4>( 8) * lhs;
-    r.template vecAt<4>(12) = rhs.template vecAt<4>(12) * lhs;
+    result.template vecAt<4>( 0) = rhs.template vecAt<4>( 0) * lhs;
+    result.template vecAt<4>( 4) = rhs.template vecAt<4>( 4) * lhs;
+    result.template vecAt<4>( 8) = rhs.template vecAt<4>( 8) * lhs;
+    result.template vecAt<4>(12) = rhs.template vecAt<4>(12) * lhs;
 
-    return r;
+    return result;
 }
 
 template <typename T>

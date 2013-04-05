@@ -91,7 +91,9 @@ Context::Context():
 
     m_renderStateHash = m_renderState.hash();
 
+#ifdef MCR_PLATFORM_WINDOWS
     wglSwapIntervalEXT(0);
+#endif
 }
 
 Context::~Context()
