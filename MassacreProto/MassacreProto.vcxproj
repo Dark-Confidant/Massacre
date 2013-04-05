@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="..\MassacreShared\include\bb\ByteBuffer.h" />
     <ClInclude Include="..\MassacreShared\include\bb\Manips.h" />
+    <ClInclude Include="..\MassacreShared\include\MassacreBuildConfig.h" />
     <ClInclude Include="..\MassacreShared\include\MassacreTypes.h" />
     <ClInclude Include="..\MassacreShared\include\math\Expr.h" />
     <ClInclude Include="..\MassacreShared\include\math\Grid.h" />

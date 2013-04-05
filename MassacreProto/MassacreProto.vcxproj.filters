@@ -243,6 +243,9 @@
     <ClInclude Include="include\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\MassacreShared\include\MassacreBuildConfig.h">
+      <Filter>Header Files\shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\components\Hierarchy.cpp">
