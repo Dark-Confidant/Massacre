@@ -2,21 +2,31 @@
 
 #include <typeinfo>
 #include <string>
+#include <cstdlib>
 
 namespace mcr    {
 namespace detail {
 
 struct ClassInfo
 {
-    static const char* truncName(const char* name)
+    static std::string truncName(const char* name)
     {
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
+
         while (*name && *name != ' ')
             ++name;
 
         return name;
+
+#elif defined(__GNUC__)
+
+        char* end;
+        auto len = strtoul(name, &end, 10);
+
+        return std::string(end, (std::string::size_type) len);
+
 #else
-#   pragma error Compiler not supported
+#   error Compiler not supported
 #endif
     }
 
