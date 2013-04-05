@@ -2,6 +2,9 @@ language:
   - cpp
 compiler:
   - g++
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install libboost-dev libyaml-dev
 script:
   - mkdir build 
   - cd build 
