@@ -4,6 +4,6 @@
 #   define MCR_PLATFORM_WINDOWS
 #elif defined(__GNUC__)
 #   define MCR_PLATFORM_LINUX
-#elif
+#else
 #   error Unsupported platform
 #endif
