@@ -4,7 +4,7 @@ compiler:
   - g++
 before_install:
   - sudo apt-get update
-  - sudo apt-get install libboost-dev libyaml-dev libglew1.6-dev libsdl-image1.2-dev libsdl1.2-dev yaml-cpp-dev
+  - sudo apt-get install libboost-dev libglew1.6-dev libsdl1.2-dev libyaml-cpp-dev
 script:
   - mkdir build 
   - cd build 
