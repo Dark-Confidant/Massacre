@@ -4,7 +4,7 @@
 using namespace mcr;
 
 template<>
-SmallObjectAllocator* ExternalSingleton<SmallObjectAllocator>::m_instance;
+SmallObjectAllocator* ExternalSingleton<SmallObjectAllocator>::m_instance = nullptr;
 
 SmallObjectAllocator::SmallObjectAllocator()
 {

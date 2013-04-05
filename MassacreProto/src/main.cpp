@@ -306,7 +306,7 @@ Game::~Game()
 void Game::initGL()
 {
     auto sdlErr = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
-    assert(sdlErr == NOERROR);
+    assert(sdlErr == NULL);
 
     SDL_WM_SetCaption("MassacreProto", nullptr);
 

@@ -52,9 +52,19 @@ set(MASSACRE_SRC
   Timeline.cpp 
   Universe.cpp)
 	
+link_libraries(
+    ${SDL_LIBRARY}
+    ${SDLIMAGE_LIBRARY}
+    SDLmain
+	yaml-cpp
+	GLEW
+	jpeg
+	png
+	freetype
+)
 add_executable(massacre 
+  ${MASSACRE_SRC} 
   ${GFX_SRC} 
   ${GFX_RENDERABLES_SRC} 
   ${COMPONENTS_SRC} 
-  ${MASSACRE_SRC} 
   main.cpp)
