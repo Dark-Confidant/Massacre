@@ -10,7 +10,7 @@ find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(YamlCpp REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(Freetype REQUIRED)
+find_package(FreeType REQUIRED)
 
 set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11 -fpermissive")
 

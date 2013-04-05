@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/include)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/src)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/extras/SimpleMesh)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreShared/include)
 
