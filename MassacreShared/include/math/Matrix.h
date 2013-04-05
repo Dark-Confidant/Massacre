@@ -50,7 +50,7 @@ public:
         return *this;
     }
 
-    bool equals(const Matrix4x4<T>& rhs, T t = tolerance<T>()) const
+    bool equals(const Matrix4x4<T>& rhs, T t = std::numeric_limits<T>::epsilon()) const
     {
         for (auto i = 0; i < 16; ++i)
             if (!math::equals(m_elements[i], rhs[i], t))
