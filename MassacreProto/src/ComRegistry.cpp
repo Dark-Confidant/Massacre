@@ -2,4 +2,4 @@
 #include "ComRegistry.h"
 
 template<>
-mcr::ComRegistry* mcr::ExternalSingleton<mcr::ComRegistry>::m_instance {};
+mcr::ComRegistry* mcr::ExternalSingleton<mcr::ComRegistry>::m_instance = nullptr;
