@@ -100,7 +100,8 @@ std::map<std::string, rect> MaterialManager::parseAtlasTMP(const char* filename)
     std::map<std::string, rect> result;
 
     FileStream stream(m_fs->openFile(filename));
-    YAML::Parser parser(std::istream(&stream));
+	std::istream	fin(&stream);
+    YAML::Parser parser(fin);
 
     YAML::Node doc;
     parser.GetNextDocument(doc);
@@ -221,7 +222,8 @@ void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
     auto dir = Resource::create(file->fs(), Path::dir(file->filename()).c_str());
 
     FileStream stream(file);
-    YAML::Parser parser(std::istream(&stream));
+	std::istream	fin(&stream);
+    YAML::Parser parser(fin);
 
     YAML::Node doc;
     parser.GetNextDocument(doc);
