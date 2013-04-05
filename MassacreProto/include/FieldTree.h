@@ -21,6 +21,8 @@ public:
         T(Class::* getter)() const,
         void(Class::* setter)(T) = nullptr)
     {
+        typedef typename std::remove_const<typename std::remove_reference<T>::type>::type ValueType;
+
         Field field = {fieldName};
 
         field.save = [getter] (const void* inst, bb::ByteBuffer& buf)
@@ -32,10 +34,9 @@ public:
         {
             field.load = [setter] (void* inst, bb::ByteBuffer& buf)
             {
-                std::remove_const<
-                    std::remove_reference<T>::type>::type val;
-
+                ValueType val;
                 buf >> val;
+
                 (static_cast<Class*>(inst)->*setter)(val);
             };
         }
