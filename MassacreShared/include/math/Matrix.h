@@ -247,10 +247,10 @@ inline Matrix4x4<T> transpose(const Matrix4x4<T>& m)
 template <typename T>
 inline bool operator==(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
 {
-    return lhs.vecAt<4>( 0) == rhs.vecAt<4>( 0)
-        && lhs.vecAt<4>( 4) == rhs.vecAt<4>( 4)
-        && lhs.vecAt<4>( 8) == rhs.vecAt<4>( 8)
-        && lhs.vecAt<4>(12) == rhs.vecAt<4>(12);
+    return lhs.template vecAt<4>( 0) == rhs.template vecAt<4>( 0)
+        && lhs.template vecAt<4>( 4) == rhs.template vecAt<4>( 4)
+        && lhs.template vecAt<4>( 8) == rhs.template vecAt<4>( 8)
+        && lhs.template vecAt<4>(12) == rhs.template vecAt<4>(12);
 }
 
 template <typename T>
@@ -258,10 +258,10 @@ inline Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
 {
     Matrix4x4<T> r;
 
-    r.vecAt<4>( 0) = rhs.vecAt<4>( 0) * lhs;
-    r.vecAt<4>( 4) = rhs.vecAt<4>( 4) * lhs;
-    r.vecAt<4>( 8) = rhs.vecAt<4>( 8) * lhs;
-    r.vecAt<4>(12) = rhs.vecAt<4>(12) * lhs;
+    r.template vecAt<4>( 0) = rhs.template vecAt<4>( 0) * lhs;
+    r.template vecAt<4>( 4) = rhs.template vecAt<4>( 4) * lhs;
+    r.template vecAt<4>( 8) = rhs.template vecAt<4>( 8) * lhs;
+    r.template vecAt<4>(12) = rhs.template vecAt<4>(12) * lhs;
 
     return r;
 }
@@ -269,25 +269,25 @@ inline Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
 template <typename T>
 inline Vector<T, 2> operator*(const Vector<T, 2>& lhs, const Matrix4x4<T>& rhs)
 {
-    return lhs.x() * rhs.vecAt<2>(0)
-         + lhs.y() * rhs.vecAt<2>(4);
+    return lhs.x() * rhs.template vecAt<2>(0)
+         + lhs.y() * rhs.template vecAt<2>(4);
 }
 
 template <typename T>
 inline Vector<T, 3> operator*(const Vector<T, 3>& lhs, const Matrix4x4<T>& rhs)
 {
-    return lhs.x() * rhs.vecAt<3>(0)
-         + lhs.y() * rhs.vecAt<3>(4)
-         + lhs.z() * rhs.vecAt<3>(8);
+    return lhs.x() * rhs.template vecAt<3>(0)
+         + lhs.y() * rhs.template vecAt<3>(4)
+         + lhs.z() * rhs.template vecAt<3>(8);
 }
 
 template <typename T>
 inline Vector<T, 4> operator*(const Vector<T, 4>& lhs, const Matrix4x4<T>& rhs)
 {
-    return lhs.x() * rhs.vecAt<4>(0)
-         + lhs.y() * rhs.vecAt<4>(4)
-         + lhs.z() * rhs.vecAt<4>(8)
-         + lhs.w() * rhs.vecAt<4>(12);
+    return lhs.x() * rhs.template vecAt<4>(0)
+         + lhs.y() * rhs.template vecAt<4>(4)
+         + lhs.z() * rhs.template vecAt<4>(8)
+         + lhs.w() * rhs.template vecAt<4>(12);
 }
 
 template <typename T, int n>
@@ -305,7 +305,7 @@ inline Vector<T, n>& operator*=(Vector<T, n>& lhs, const Matrix4x4<T>& rhs)
 template <typename T>
 inline Matrix4x4<T>& operator+=(Matrix4x4<T>& lhs, const Vector<T, 3>& rhs)
 {
-    lhs.vecAt<3>(12) += rhs;
+    lhs.template vecAt<3>(12) += rhs;
     return lhs;
 }
 
@@ -316,7 +316,7 @@ inline Matrix4x4<T> operator+(const Matrix4x4<T>& lhs, const Vector<T, 3>& rhs)
 template <typename T>
 inline Matrix4x4<T>& operator-=(Matrix4x4<T>& lhs, const Vector<T, 3>& rhs)
 {
-    lhs.vecAt<3>(12) -= rhs;
+    lhs.template vecAt<3>(12) -= rhs;
     return lhs;
 }
 
