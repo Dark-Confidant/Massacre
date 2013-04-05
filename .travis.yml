@@ -6,8 +6,8 @@ before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
   - sudo apt-get update
-  - sudo apt-get install gcc-4.8
-  - sudo apt-get install libboost-dev libglew1.6-dev libsdl1.2-dev
+  - sudo apt-get install gcc-4.7
+  - sudo apt-get install libboost-dev libglew1.6-dev libsdl1.2-dev libyaml-cpp-dev
 script:
   - mkdir build 
   - cd build 
