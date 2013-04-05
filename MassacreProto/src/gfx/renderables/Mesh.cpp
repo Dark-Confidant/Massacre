@@ -173,7 +173,7 @@ void Mesh::optimizeAtomsTMP()
             [] (const RenderAtom& a, const RenderAtom& b) { return a.start < b.start; });
 
         uint prevAtomIdx = 0;
-        for (auto atomIdx = 1; atomIdx != mtlAtoms.size();)
+        for (uint atomIdx = 1; atomIdx != mtlAtoms.size();)
         {
             auto& prevAtom = mtlAtoms[prevAtomIdx];
             auto& atom     = mtlAtoms[atomIdx];

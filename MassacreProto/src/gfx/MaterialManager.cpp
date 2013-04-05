@@ -5,10 +5,14 @@
 #include <istream>
 #include <boost/algorithm/string/case_conv.hpp>
 
-#pragma warning(push)
-#pragma warning(disable: 4146)
-#include <yaml-cpp/yaml.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable: 4146)
+#   include <yaml-cpp/yaml.h>
+#   pragma warning(pop)
+#else
+#   include <yaml-cpp/yaml.h>
+#endif
 
 using namespace mcr;
 using namespace gfx;

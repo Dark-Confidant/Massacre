@@ -7,7 +7,7 @@ using namespace gfx;
 VertexPool::VertexPool(const VertexFormat& fmt, uint vpc, uint ipc, uint chunks)
 {
     auto vertexChunkStride = fmt.stride() * vpc;
-    auto indexChunkStride  = sizeof(uint) * ipc;
+    auto indexChunkStride  = (uint) sizeof(uint) * ipc;
 
     m_buffer = VertexArray::create(vertexChunkStride * chunks, indexChunkStride * chunks);
     m_buffer->setFormat(fmt);

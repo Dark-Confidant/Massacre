@@ -53,7 +53,7 @@ Context::Context():
     GLint maxTexUnits;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTexUnits);
 
-    TextureUnit refUnit = {0};
+    TextureUnit refUnit = {};
     m_textureUnits.resize((size_t) maxTexUnits, refUnit);
 
     memset(m_buffers, 0, sizeof(m_buffers));
@@ -275,5 +275,5 @@ void Context::setActiveVertexArray(VertexArray* va)
 void Context::drawMesh(const Mesh2& mesh)
 {
     setActiveVertexArray(mesh.buffer);
-    glDrawElements(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT, (const GLvoid*) mesh.startIndex);
+    glDrawElements(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(mesh.startIndex));
 }

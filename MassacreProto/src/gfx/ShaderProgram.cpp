@@ -4,8 +4,8 @@
 #include "gfx/Context.h"
 #include "Debug.h"
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 //////////////////////////////////////////////////////////////////////////
 // creators
@@ -363,3 +363,6 @@ void ShaderProgram::Active::setUniform(int location, const dmat4& value)
 {
     glUniformMatrix4dv(location, 1, GL_TRUE, value);
 }
+
+} // ns gfx
+} // ns mcr

@@ -35,7 +35,7 @@ public:
 
 protected:
     ISprite() {}
-    ~ISprite() {}
+    virtual ~ISprite() {}
 };
 
 } // ns gfx

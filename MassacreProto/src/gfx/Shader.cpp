@@ -211,7 +211,6 @@ bool Shader::_parseCommand(const char* str, const char*& cmdfirst, const char*& 
 
     str = nextline(str);
 
-    bool limited = parsed == 3;
     char type[64], name[128], value[256];
     int  valBegin, valEnd;
 

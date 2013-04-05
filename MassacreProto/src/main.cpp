@@ -22,6 +22,7 @@ class GameLayer
 {
 public:
     GameLayer(Game* game): m_game(game) {}
+    virtual ~GameLayer() {}
 
     virtual void onLoad() = 0;
     virtual void onUnload() = 0;
@@ -272,10 +273,10 @@ public:
     }
 
 private:
+    Camera m_camera;
+    
     gfx::Renderer m_renderer;
     gfx::MaterialManager m_mm;
-
-    Camera m_camera;
 
     rcptr<Object> m_root, m_arena, m_sky;
     rcptr<Object> m_myself;
@@ -310,7 +311,8 @@ void Game::initGL()
 
     SDL_WM_SetCaption("MassacreProto", nullptr);
 
-    SDL_putenv("SDL_VIDEO_CENTERED=1");
+    char sdlEnv[] = "SDL_VIDEO_CENTERED=1";
+    SDL_putenv(sdlEnv); // fuck you, putenv(char*)
 
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -357,7 +359,7 @@ void Game::initGL()
         "GL_ARB_explicit_attrib_location"
     };
 
-    for (int i = 0; i < sizeof(reqexts) / sizeof(reqexts[0]); ++i)
+    for (uint i = 0; i < sizeof(reqexts) / sizeof(reqexts[0]); ++i)
         if (!glewIsSupported(reqexts[i]))
             debug("%s: MISSING", reqexts[i]);
 
@@ -378,7 +380,7 @@ void Game::initGL()
         {GL_MAX_FRAGMENT_UNIFORM_BLOCKS,      "Max UBOs, frag"  }
     };
 
-    for (int i = 0; i < sizeof(valuesOfInterest) / sizeof(valuesOfInterest[0]); ++i)
+    for (uint i = 0; i < sizeof(valuesOfInterest) / sizeof(valuesOfInterest[0]); ++i)
     {
         GLint val;
         glGetIntegerv(valuesOfInterest[i].name, &val);

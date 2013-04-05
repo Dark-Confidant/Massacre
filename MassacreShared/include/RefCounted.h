@@ -81,7 +81,7 @@ public:
         if (m_ptr)
             m_ptr->drop();
 
-        if (m_ptr = rhs)
+        if ((m_ptr = rhs))
             m_ptr->grab();
 
         return *this;

@@ -10,7 +10,7 @@ using namespace mcr;
 using namespace gfx;
 
 RenderData::RenderData(int pass_, const Object* obj_, const RenderAtom* atom):
-    pass(pass_), obj(obj_), vao(atom->vao), mtl(atom->material),
+    pass(pass_), obj(obj_), mtl(atom->material), vao(atom->vao),
     offset(sizeof(uint) * atom->start), numIndices(atom->size) {}
 
 bool gfx::operator<(const RenderData& lhs, const RenderData& rhs)
@@ -52,7 +52,8 @@ void Renderer::deregisterData(const RenderData* data)
 
 void Renderer::deregisterData(int pass, const Object* obj, const RenderAtom* atom)
 {
-    deregisterData(&RenderData(pass, obj, atom));
+    RenderData data(pass, obj, atom);
+    deregisterData(&data);
 }
 
 void Renderer::deregisterData(const Object* obj, const RenderAtom* atom)
@@ -78,6 +79,6 @@ void Renderer::render()
         }
 
         ctx.setActiveMaterial(data.mtl);
-        glDrawElements(GL_TRIANGLES, data.numIndices, GL_UNSIGNED_INT, (const GLvoid*) data.offset);
+        glDrawElements(GL_TRIANGLES, data.numIndices, GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(data.offset));
     }
 }

@@ -72,6 +72,7 @@ public:
             vals.push_back(T());
             *this >> vals.back();
         }
+        return *this;
     }
 
     template <typename T>
@@ -82,6 +83,7 @@ public:
             vals.push_back(T());
             *this >> vals.back();
         }
+        return *this;
     }
 
 
