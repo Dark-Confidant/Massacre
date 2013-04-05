@@ -39,7 +39,7 @@ std::string Path::format(const char* path)
     std::transform(result.cbegin(), result.cend(), result.begin(), toPathChar);
 
     if (result.back() == '/')
-        result.pop_back();
+        result.erase(result.size() - 1);
 
     return result;
 }

@@ -56,7 +56,7 @@ public:
 
     static unsigned hash()
     {
-        static unsigned hash = detail::ClassInfo::hashName(ClassInfo<T>::name);
+        static unsigned hash = detail::ClassInfo::hashName(ClassInfo<T>::name.c_str());
         return hash;
     }
 };
