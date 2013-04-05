@@ -61,6 +61,7 @@ link_libraries(
 	jpeg
 	png
 	freetype
+	GL
 )
 add_executable(massacre 
   ${MASSACRE_SRC} 
