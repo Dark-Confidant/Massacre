@@ -13,8 +13,7 @@ public:
 
     /*! Create a texture from file contents
         \param file File handle provided by \c FileSystem
-        \param upload Whether to upload image data to GPU
-        \param clearLocal Whether to clear local image data after uploading
+        \param imgOut Pointer to snatch the image created during the process
     */
     static rcptr<Texture> createFromFile(IFile* file, rcptr<Image>* imgOut = nullptr);
 
