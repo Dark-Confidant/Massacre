@@ -54,7 +54,7 @@ set(MASSACRE_SRC
 	
 add_executable(massacre 
   ${GFX_SRC} 
-  ${COMPONENTS_SRC} 
   ${GFX_RENDERABLES_SRC} 
+  ${COMPONENTS_SRC} 
   ${MASSACRE_SRC} 
   main.cpp)
