@@ -7,8 +7,8 @@
 
 #include "SmallObject.h"
 
-namespace mcr {
-namespace gfx {
+using namespace mcr;
+using namespace gfx;
 
 struct Font::Impl: public SmallObject
 {
@@ -50,6 +50,3 @@ void Font::load(IFile* file)
         //m_impl->font->glyph->bitmap.
     }
 }
-
-} // ns gfx
-} // ns mcr
