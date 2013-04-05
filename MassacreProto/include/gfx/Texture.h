@@ -16,7 +16,7 @@ public:
         \param upload Whether to upload image data to GPU
         \param clearLocal Whether to clear local image data after uploading
     */
-    static rcptr<Texture> createFromFile(IFile* file, rcptr<Image>& img = rcptr<Image>());
+    static rcptr<Texture> createFromFile(IFile* file, rcptr<Image>* imgOut = nullptr);
 
 
     //! Load image from PNG or JPEG file
