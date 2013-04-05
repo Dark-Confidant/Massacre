@@ -347,10 +347,6 @@ void Game::initGL()
     glClearColor(0, 0, 0, 1);
     //glPolygonOffset(-1.f, 5.f);
 
-#ifdef MCR_PLATFORM_WINDOWS
-    wglSwapIntervalEXT(0);
-#endif
-
     const char* reqexts[] =
     {
         "GL_ARB_multisample",

@@ -1,6 +1,12 @@
 #include "Universe.h"
 #include "gfx/Context.h"
 
+#if defined(MCR_PLATFORM_WINDOWS)
+#   include <GL/wglew.h>
+#elif defined(MCR_PLATFORM_LINUX)
+#   include <GL/glxew.h>
+#endif
+
 #include "gfx/ShaderProgram.h"
 #include "gfx/Texture.h"
 #include "gfx/Material.h"
@@ -84,6 +90,8 @@ Context::Context():
     glGetIntegerv(GL_BLEND_DST,  &m_renderState.blendFunc[1]);
 
     m_renderStateHash = m_renderState.hash();
+
+    wglSwapIntervalEXT(0);
 }
 
 Context::~Context()
