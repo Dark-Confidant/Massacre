@@ -30,24 +30,19 @@ struct ComDesc
     std::string name;
     ComCreator creator;
     ComFieldEnumerator fieldEnum;
-
-protected:
-    ComDesc();
 };
 
 class ComRegistry: public ExternalSingleton<ComRegistry>
 {
 public:
     template <typename T>
-    const ComDesc& addType(const std::string& name = ClassInfo<T>::name())
+    ComDesc addType(const std::string& name = ClassInfo<T>::name())
     {
-        T::Desc.name      = name;
-        T::Desc.creator   = &T::create;
-        T::Desc.fieldEnum = &T::enumFields;
-
+        // TODO: better logic
         m_list.push_back(&T::Desc);
 
-        return T::Desc;
+        ComDesc desc = {0, name, &T::create, &T::enumFields};
+        return desc;
     }
 
     void addOrderingRule(
