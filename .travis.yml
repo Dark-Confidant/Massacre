@@ -22,8 +22,6 @@ before_install:
   - rm -Rf yaml-cpp
   - sudo apt-get install gcc-4.7 libboost-dev libglew1.6-dev libsdl1.2-dev libgl1-mesa-dev
 script:
-  - mkdir build 
-  - cd build 
   - cmake ..
   - make -j4
   - make install
