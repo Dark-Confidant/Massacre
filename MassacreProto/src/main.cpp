@@ -393,13 +393,15 @@ void Game::run()
     m_layer->onLoad();
     m_layer->onActivate();
 
+    const int64 fpsDisplayInterval = 500; // num frames between updates
+
     for (int64 frames = 0, lastTime = 0; m_layer->onRun(); ++frames)
     {
-        if (frames == CLOCKS_PER_SEC)
+        if (frames == fpsDisplayInterval)
         {
             frames = 0;
             int64 time = clock();
-            double fps = CLOCKS_PER_SEC * CLOCKS_PER_SEC / double(time - lastTime);
+            double fps = fpsDisplayInterval * CLOCKS_PER_SEC / double(time - lastTime);
             lastTime = time;
 
             char caption[32];
