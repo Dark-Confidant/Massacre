@@ -48,8 +48,10 @@ void Render::setRenderer(gfx::Renderer* renderer)
     m_renderer = renderer;
 
     if (m_renderer)
+    {
         BOOST_FOREACH (auto& pair, m_atoms)
             pair.second = m_renderer->registerData(m_obj, pair.first);
+    }
 }
 
 void Render::onEvent(EventId event, const EventParams& params)
