@@ -62,12 +62,40 @@ const char* Path::ext(const char* path)
     return lastPartFrom(path, isDot);
 }
 
+#if defined(MCR_PLATFORM_WINDOWS)
+#include <windows.h>
+bool dirExists(const std::string& dirName_in)
+{
+  DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+  if (ftyp == INVALID_FILE_ATTRIBUTES)
+    return false;  //something is wrong with your path!
+
+  if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+    return true;   // this is a directory!
+
+  return false;    // this is not a directory!
+}
+#elif defined(MCR_PLATFORM_LINUX)
+#include <sys/stat.h>
+#include <dirent.h>
+bool dirExists(const std::string& dirName_in)
+{
+  struct stat st;
+  if(stat(dirName_in.c_str(), &st) == 0)
+    return S_ISDIR(st.st_mode);
+  return false;
+}
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 // resource management
 
 bool FileSystem::attachResource(const char* path)
 {
-    return m_paths.insert(Path::format(path)).second;
+    if (dirExists(Path::format(path)))
+      return m_paths.insert(Path::format(path)).second;
+    else
+      return false;
 }
 
 bool FileSystem::detachResource(const char* path)
@@ -168,3 +196,4 @@ rcptr<IFile> FileSystem::openFile(const char* filename, std::string* pathOut)
 
     return file;
 }
+

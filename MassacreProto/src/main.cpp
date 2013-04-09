@@ -70,7 +70,11 @@ public:
         m_camera.setZRange(vec2(1.f, 3000.f));
         m_camera.update();
 
-        m_mm.fs()->attachResource("DataArena/");
+        if (! m_mm.fs()->attachResource("DataArena/"))
+	{
+	  debug("Can't find data directory");
+	  exit(1);
+	};
 
         loadArena();
         loadSky();
