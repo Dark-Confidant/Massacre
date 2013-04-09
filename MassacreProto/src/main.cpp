@@ -70,11 +70,21 @@ public:
         m_camera.setZRange(vec2(1.f, 3000.f));
         m_camera.update();
 
-        if (! m_mm.fs()->attachResource("DataArena/"))
-	{
-	  debug("Can't find data directory");
-	  exit(1);
-	};
+#if defined(MCR_PLATFORM_WINDOWS)
+        if (!(m_mm.fs()->attachResource("DataArena/")))
+        {
+            debug("Can't find data directory");
+            exit(1);
+        };
+#elif defined(MCR_PLATFORM_LINUX)
+	// We should also check system wide data repository for linux
+        if (!(m_mm.fs()->attachResource("DataArena/")) &&
+	    !(m_mm.fs()->attachResource("/usr/share/massacre/")))
+        {
+            debug("Can't find data directory");
+            exit(1);
+        };
+#endif
 
         loadArena();
         loadSky();
