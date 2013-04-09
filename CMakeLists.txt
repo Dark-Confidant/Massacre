@@ -15,3 +15,4 @@ find_package(FreeType REQUIRED)
 set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -O3")
 
 add_subdirectory(MassacreProto)
+add_subdirectory(MassacreShared)

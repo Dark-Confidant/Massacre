@@ -69,3 +69,6 @@ add_executable(massacre
   ${GFX_RENDERABLES_SRC} 
   ${COMPONENTS_SRC} 
   main.cpp)
+
+INSTALL(TARGETS massacre 
+		DESTINATION bin)
