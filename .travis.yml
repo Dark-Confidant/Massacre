@@ -24,3 +24,4 @@ before_install:
 script:
   - cmake ..
   - make -j4
+  - make install
