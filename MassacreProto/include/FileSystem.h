@@ -87,6 +87,13 @@ public:
     static const char* ext(const char* path);
 };
 
+class Dir
+{
+public:
+    //! Check whether directory exists (involves some system calls)
+    static bool exists(const char* dirname);
+};
+
 class FileSystem: boost::noncopyable
 {
 public:
@@ -97,7 +104,7 @@ public:
     bool detachResource(const char* path);
 
     /*! Look for \c filename in all attached dirs and try to open it
-        \param path Path of successfully opened file (if any)
+        \param pathOut Path of a successfully opened file (if any)
         \return File handle to read from. If no file found, \c IFile::size() will return 0
     */
     rcptr<IFile> openFile(const char* filename, std::string* pathOut = nullptr);

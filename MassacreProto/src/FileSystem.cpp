@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <fstream>
 
+#ifdef MCR_PLATFORM_LINUX
+#   include <sys/stat.h>
+#   include <dirent.h>
+#endif
+
 using namespace mcr;
 
 //////////////////////////////////////////////////////////////////////////
@@ -62,39 +67,31 @@ const char* Path::ext(const char* path)
     return lastPartFrom(path, isDot);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// dir functions
+
+bool Dir::exists(const char* dirname)
+{
 #if defined(MCR_PLATFORM_WINDOWS)
-bool dirExists(const std::string& dirName_in)
-{
-    DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
-    if (ftyp == INVALID_FILE_ATTRIBUTES)
-        return false;  //something is wrong with your path!
 
-    if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
-        return true;   // this is a directory!
+    auto fattrs = GetFileAttributesA(dirname);
+    return fattrs != INVALID_FILE_ATTRIBUTES && (fattrs & FILE_ATTRIBUTE_DIRECTORY) != 0;
 
-    return false;    // this is not a directory!
-}
 #elif defined(MCR_PLATFORM_LINUX)
-#include <sys/stat.h>
-#include <dirent.h>
-bool dirExists(const std::string& dirName_in)
-{
+
     struct stat st;
-    if(stat(dirName_in.c_str(), &st) == 0)
-        return S_ISDIR(st.st_mode);
-    return false;
-}
+    return stat(dirname, &st) == 0 && S_ISDIR(st.st_mode);
+
 #endif
+}
 
 //////////////////////////////////////////////////////////////////////////
 // resource management
 
 bool FileSystem::attachResource(const char* path)
 {
-    if (dirExists(Path::format(path)))
-        return m_paths.insert(Path::format(path)).second;
-    else
-        return false;
+    auto neatPath = Path::format(path);
+    return Dir::exists(neatPath.c_str()) && m_paths.insert(neatPath).second;
 }
 
 bool FileSystem::detachResource(const char* path)
