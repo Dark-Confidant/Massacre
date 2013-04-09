@@ -71,19 +71,23 @@ public:
         m_camera.update();
 
 #if defined(MCR_PLATFORM_WINDOWS)
-        if (!(m_mm.fs()->attachResource("DataArena/")))
+
+        if (!m_mm.fs()->attachResource("DataArena/"))
         {
             debug("Can't find data directory");
             exit(1);
         };
+
 #elif defined(MCR_PLATFORM_LINUX)
-	// We should also check system wide data repository for linux
-        if (!(m_mm.fs()->attachResource("DataArena/")) &&
-	    !(m_mm.fs()->attachResource("/usr/share/massacre/")))
+
+        // We should also check system wide data repository for linux
+        if (!m_mm.fs()->attachResource("DataArena/")
+        &&  !m_mm.fs()->attachResource("/usr/share/massacre/"))
         {
             debug("Can't find data directory");
             exit(1);
         };
+
 #endif
 
         loadArena();
