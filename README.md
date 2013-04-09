@@ -11,6 +11,6 @@ Installation
 Now we support installation from gamerlay in **Gentoo** linux.
 
 ```bash
-# layman -a gamerlay
-# emerge games-engines/massacre games-util/massacre-data
+layman -a gamerlay
+emerge games-engines/massacre games-util/massacre-data
 ```
