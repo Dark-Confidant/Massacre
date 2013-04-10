@@ -1,6 +1,6 @@
 #include "Universe.h"
 
-#include <ctime>
+#include "Timer.h"
 
 #include "Camera.h"
 #include "gfx/Context.h"
@@ -203,12 +203,10 @@ public:
 
     bool onRun()
     {
-        m_currentTime    = clock();
-        m_deltaTime      = m_currentTime - m_lastUpdateTime;
-        m_lastUpdateTime = m_currentTime;
+        m_timer.refresh();
 
         handleKeys();
-        m_root->update(m_deltaTime); // update scene
+        m_root->update(m_timer.dmilliseconds()); // update scene
         updateCamera();
         render();
 
@@ -236,7 +234,7 @@ public:
                   + (m_keyStates[SDLK_q] << 2)
                   + (m_keyStates[SDLK_e] << 3);
 
-        auto turnStep = (.001f * m_deltaTime) * -turnSpeed;
+        auto turnStep = m_timer.dseconds() * -turnSpeed;
 
         vec2 face = m_myself->movement()->face() 
                   + vec2(0, turnStep * (m_keyStates[SDLK_d] - m_keyStates[SDLK_a]));
@@ -291,6 +289,7 @@ public:
     }
 
 private:
+    Timer m_timer;
     Camera m_camera;
     
     gfx::Renderer m_renderer;
@@ -299,7 +298,6 @@ private:
     rcptr<Object> m_root, m_arena, m_sky;
     rcptr<Object> m_myself;
 
-    int64 m_deltaTime, m_currentTime, m_lastUpdateTime;
     bool m_keyStates[SDLK_LAST];
 };
 
@@ -414,15 +412,16 @@ void Game::run()
     m_layer->onActivate();
 
     const int64 fpsDisplayInterval = 500; // num frames between updates
+    Timer timer;
 
     for (int64 frames = 0, lastTime = 0; m_layer->onRun(); ++frames)
     {
         if (frames == fpsDisplayInterval)
         {
             frames = 0;
-            int64 time = clock();
-            double fps = fpsDisplayInterval * CLOCKS_PER_SEC / double(time - lastTime);
-            lastTime = time;
+
+            timer.refresh();
+            double fps = fpsDisplayInterval / timer.dseconds();
 
             char caption[32];
             sprintf(caption, "%.2f FPS", fps);

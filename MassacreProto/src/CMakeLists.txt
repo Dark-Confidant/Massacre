@@ -19,7 +19,7 @@ set(GFX_RENDERABLES_SRC
   ${GFXR_PATH}/Mesh.cpp  
   ${GFXR_PATH}/Renderable.cpp 
   ${GFXR_PATH}/SpriteBatch.cpp)
-  
+
 set(GFX_PATH gfx)
 set(GFX_SRC 
   ${GFX_PATH}/GLUtility.cpp 
@@ -50,19 +50,20 @@ set(MASSACRE_SRC
   SmallObject.cpp 
   SuperGlobal.cpp 
   Timeline.cpp 
+  Timer.cpp 
   Universe.cpp)
-	
+
 link_libraries(
-    ${SDL_LIBRARY}
-    ${SDLIMAGE_LIBRARY}
-    SDLmain
-	yaml-cpp
-	GLEW
-	jpeg
-	png
-	freetype
-	GL
-)
+  ${SDL_LIBRARY}
+  ${SDLIMAGE_LIBRARY}
+  SDLmain
+  GLEW
+  GL
+  jpeg
+  png
+  freetype
+  yaml-cpp)
+
 add_executable(massacre 
   ${MASSACRE_SRC} 
   ${GFX_SRC} 
@@ -71,4 +72,4 @@ add_executable(massacre
   main.cpp)
 
 INSTALL(TARGETS massacre 
-		DESTINATION bin)
+        DESTINATION bin)

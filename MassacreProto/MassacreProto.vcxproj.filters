@@ -246,6 +246,9 @@
     <ClInclude Include="..\MassacreShared\include\MassacreBuildConfig.h">
       <Filter>Header Files\shared</Filter>
     </ClInclude>
+    <ClInclude Include="include\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\components\Hierarchy.cpp">
@@ -356,6 +359,9 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\gfx\Context.inl">
@@ -363,6 +369,9 @@
     </None>
     <None Include="include\gfx\Shader.inl">
       <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\Timer.inl">
+      <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
 </Project>

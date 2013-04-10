@@ -196,6 +196,7 @@
     <ClInclude Include="include\SmallObject.h" />
     <ClInclude Include="include\SuperGlobal.h" />
     <ClInclude Include="include\Timeline.h" />
+    <ClInclude Include="include\Timer.h" />
     <ClInclude Include="include\WorldAction.h" />
     <ClInclude Include="src\Universe.h" />
   </ItemGroup>
@@ -235,6 +236,7 @@
     <ClCompile Include="src\SmallObject.cpp" />
     <ClCompile Include="src\SuperGlobal.cpp" />
     <ClCompile Include="src\Timeline.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Universe.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Stress|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -244,6 +246,7 @@
   <ItemGroup>
     <None Include="include\gfx\Context.inl" />
     <None Include="include\gfx\Shader.inl" />
+    <None Include="include\Timer.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
