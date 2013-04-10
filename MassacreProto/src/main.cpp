@@ -234,7 +234,7 @@ public:
                   + (m_keyStates[SDLK_q] << 2)
                   + (m_keyStates[SDLK_e] << 3);
 
-        auto turnStep = m_timer.dseconds() * -turnSpeed;
+        auto turnStep = (float) m_timer.dseconds() * -turnSpeed;
 
         vec2 face = m_myself->movement()->face() 
                   + vec2(0, turnStep * (m_keyStates[SDLK_d] - m_keyStates[SDLK_a]));
@@ -276,6 +276,7 @@ public:
                 break;
 
             case SDL_VIDEORESIZE:
+                SDL_SetVideoMode(e.resize.w, e.resize.h, 32, SDL_OPENGL | SDL_RESIZABLE);
                 gfx::Context::active().setViewport(irect(e.resize.w, e.resize.h));
                 m_camera.setAspectRatio((float) e.resize.w / e.resize.h);
                 m_camera.update();
@@ -414,7 +415,7 @@ void Game::run()
     const int64 fpsDisplayInterval = 500; // num frames between updates
     Timer timer;
 
-    for (int64 frames = 0, lastTime = 0; m_layer->onRun(); ++frames)
+    for (int64 frames = 0; m_layer->onRun(); ++frames)
     {
         if (frames == fpsDisplayInterval)
         {
