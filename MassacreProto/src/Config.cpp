@@ -1,7 +1,8 @@
+#include "Universe.h"
+
 #include <yaml-cpp/parser.h>
 #include <yaml-cpp/node.h>
 
-#include "Universe.h"
 #include "Config.h"
 
 using namespace mcr;
