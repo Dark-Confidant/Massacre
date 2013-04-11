@@ -210,6 +210,7 @@
     <ClCompile Include="src\components\Render.cpp" />
     <ClCompile Include="src\components\Transform.cpp" />
     <ClCompile Include="src\ComRegistry.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\FileSystem.cpp" />
     <ClCompile Include="src\gfx\Context.cpp" />

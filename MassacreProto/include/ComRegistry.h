@@ -16,8 +16,8 @@
     mcr::ComRegistry::instance().addType<com>(#com)
 
 #define MCR_COMPONENT_ORDER(predecessor, successor) \
-    namespace { bool g_##predecessor##successor##Order = \
-        (mcr::ComRegistry::instance().addOrderingRule(#predecessor, #successor), true); }
+    static bool g_##predecessor##successor##Order = \
+        (mcr::ComRegistry::instance().addOrderingRule(#predecessor, #successor), true)
 
 namespace mcr {
 
