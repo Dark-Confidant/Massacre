@@ -58,7 +58,7 @@ int64 Timer::implTicksSinceStart() const
     timespec ts;
     clock_gettime(MCR_TIMER_CLOCK_ID, &ts);
 
-    return 1000000000ll * (ts.tv_sec - m_impl.start.tv_sec) + (ts.nsec - m_impl.start.tv_nsec);
+    return 1000000000ll * (ts.tv_sec - m_impl.start.tv_sec) + (ts.tv_nsec - m_impl.start.tv_nsec);
 }
 
 #   undef MCR_TIMER_CLOCK_ID
