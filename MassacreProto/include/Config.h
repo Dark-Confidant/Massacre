@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    const std::string* m_valueString;
+    const std::string* const m_valueString;
 };
 
 } // ns detail

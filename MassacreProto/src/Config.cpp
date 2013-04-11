@@ -20,7 +20,7 @@ void Config::load(IFile* file)
         parser.GetNextDocument(doc);
         debug("Reading config file");
     
-        for(YAML::Iterator it=doc.begin(); it!=doc.end(); ++it)
+        for(YAML::Iterator it = doc.begin(); it != doc.end(); ++it)
         {
             std::string key, value;
             it.first()  >> key;

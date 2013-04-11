@@ -35,15 +35,12 @@ public:
 
 protected:
     Game* m_game;
-    float turnSpeed;
 };
 
 // Game
 class Game
 {
 public:
-    Config    config;
-    
     Game();
     ~Game();
 
@@ -93,8 +90,8 @@ public:
         };
 
 #endif
-        m_game->config.load(m_mm.fs()->openFile("mainconf.yaml"));
-        turnSpeed = m_game->config["turn_speed"];
+        m_config.load(m_mm.fs()->openFile("mainconf.yaml"));
+        m_turnSpeed = m_config["turn_speed"];
 
         loadArena();
         loadSky();
@@ -233,14 +230,12 @@ public:
 
     void handleKeys()
     {
-        //static const auto turnSpeed = 70.f;
-        
         byte move =  m_keyStates[SDLK_w]
                   + (m_keyStates[SDLK_s] << 1)
                   + (m_keyStates[SDLK_q] << 2)
                   + (m_keyStates[SDLK_e] << 3);
 
-        auto turnStep = (float) m_timer.dseconds() * -turnSpeed;
+        auto turnStep = (float) m_timer.dseconds() * -m_turnSpeed;
 
         vec2 face = m_myself->movement()->face() 
                   + vec2(0, turnStep * (m_keyStates[SDLK_d] - m_keyStates[SDLK_a]));
@@ -296,6 +291,8 @@ public:
     }
 
 private:
+    Config m_config;
+
     Timer m_timer;
     Camera m_camera;
     
@@ -306,6 +303,7 @@ private:
     rcptr<Object> m_myself;
 
     bool m_keyStates[SDLK_LAST];
+    float m_turnSpeed;
 };
 
 //////////////////////////////////////////////////////////////////////////
