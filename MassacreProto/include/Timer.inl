@@ -1,14 +1,5 @@
 namespace mcr {
 
-inline Timer::Timer()
-{
-    initFrequency();
-    start();
-}
-
-inline Timer::~Timer() {}
-
-
 inline void Timer::start()
 {
     m_ticks = m_dticks = 0;
@@ -16,7 +7,7 @@ inline void Timer::start()
     m_msec  = m_dmsec  = 0;
     m_sec   = m_dsec   = 0;
 
-    m_startTick = queryTicks();
+    implStart();
 }
 
 inline void Timer::stop()
@@ -26,7 +17,7 @@ inline void Timer::stop()
 
 inline void Timer::refresh()
 {
-    int64  curTicks = queryTicks() - m_startTick;
+    int64  curTicks = implTicksSinceStart();
     double curSec   = double(curTicks) / m_frequency;
     int64  curMsec  = int64(1000.0 * curSec);
     int64  curMcsec = int64(1000000.0 * curSec);

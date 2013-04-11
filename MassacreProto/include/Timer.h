@@ -27,11 +27,14 @@ public:
     double dseconds() const;
 
 private:
-    void initFrequency();
-    int64 queryTicks() const;
+    void implInitFrequency();
+    void implStart();
+    int64 implTicksSinceStart() const;
+
+    struct Impl;
+    Impl& m_impl;
 
     int64 m_frequency;
-    int64 m_startTick;
     int64 m_ticks, m_mcsec, m_msec;
     int64 m_dticks, m_dmcsec, m_dmsec;
     double m_sec, m_dsec;
