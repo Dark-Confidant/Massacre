@@ -93,7 +93,7 @@ public:
         };
 
 #endif
-        m_game->config.load("mainconf.yaml", m_mm.fs());
+        m_game->config.load(m_mm.fs()->openFile("mainconf.yaml"));
         turnSpeed = m_game->config["turn_speed"];
 
         loadArena();

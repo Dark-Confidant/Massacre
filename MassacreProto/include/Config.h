@@ -1,57 +1,56 @@
 #pragma once
 
-#include <boost/lexical_cast.hpp>
-#include <string>
 #include <map>
+#include <boost/lexical_cast.hpp>
 
 #include "FileSystem.h"
 #include "Debug.h"
 
-namespace mcr {
+namespace mcr    {
+namespace detail {
 
-class Config {
-    
-private:
-    struct opbrack_impl;
-    
+class ConfigVar
+{
 public:
-    Config() {};
-    ~Config()
-    {
-        if (m_ownFs)
-            delete m_fs;
-    }
+    ConfigVar(const std::string* str): m_valueString(str) {}
+    ~ConfigVar() {} // not intended to be inherited
 
-    void load(const char* filename, FileSystem* fs = nullptr);
-    opbrack_impl operator[](const std::string& str) {
-        return opbrack_impl(str);
-    };
+    template <class T>
+    operator T() const
+    {
+        if (m_valueString)
+            return boost::lexical_cast<T>(*m_valueString);
+
+        return T();
+    }
 
 private:
-    FileSystem* m_fs;
-    bool m_ownFs;
-    const static int default_value = 0;   
-    static std::map<std::string, std::string> configuration;
-    
-struct opbrack_impl {
-    const std::string& str;
- 
-    opbrack_impl(std::string const& str) : str(str) {}
- 
-    template <class T>
-    operator T() const {
-            debug("Looking for %s in config", str.c_str());
-            if (configuration.find(str) != configuration.end()) {
-                debug("Found!");
-                return boost::lexical_cast<T>(configuration.find(str)->second);
-            }
-            else {
-                debug("Not found!");
-                return boost::lexical_cast<T>(0.0f);            // TODO: Think what to do in this case
-            }
-    }
+    const std::string* m_valueString;
 };
- 
 
+} // ns detail
+
+
+class Config
+{
+public:
+    Config() {}
+    virtual ~Config() {}
+
+    void load(IFile* file);
+
+    detail::ConfigVar operator[](const std::string& varName) const
+    {
+        auto it = s_configuration.find(varName);
+        if (it != s_configuration.end())
+            return &it->second;
+
+        debug("Missing config variable `%s`", varName.c_str());
+        return nullptr;
+    }
+
+private:
+    static std::map<std::string, std::string> s_configuration;
 };
-}
+
+} // ns mcr
