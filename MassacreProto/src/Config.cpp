@@ -1,9 +1,7 @@
-#include "FileSystem.h"
-#include "Config.h"
-#include <Debug.h>
 #include <yaml-cpp/parser.h>
 #include <yaml-cpp/node.h>
-#include <iostream>
+
+#include "Config.h"
 
 using namespace mcr;
 

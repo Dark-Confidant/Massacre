@@ -35,7 +35,7 @@ public:
 
 protected:
     Game* m_game;
-    double turnSpeed;
+    float turnSpeed;
 };
 
 // Game

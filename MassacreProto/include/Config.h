@@ -1,13 +1,11 @@
 #pragma once
 
-#include "FileSystem.h"
-#include "Debug.h"
-#include <bits/stl_map.h>
-#include <boost/any.hpp>
 #include <boost/lexical_cast.hpp>
 #include <string>
 #include <map>
-#include <iostream>
+
+#include "FileSystem.h"
+#include "Debug.h"
 
 namespace mcr {
 
