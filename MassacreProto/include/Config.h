@@ -1,8 +1,7 @@
 #pragma once
 
 #include <map>
-#include <boost/lexical_cast.hpp>
-#include <boost/any.hpp>
+#include <sstream>
 
 #include "FileSystem.h"
 #include "Debug.h"
@@ -20,8 +19,15 @@ public:
     operator T() const
     {
         if (m_valueString)
-            return boost::lexical_cast<T>(*m_valueString);
+        {
+            std::stringstream ss;
+            ss << *m_valueString;
 
+            T result;
+            ss >> result;
+
+            return result;
+        }
         return T();
     }
 
@@ -29,10 +35,10 @@ protected:
     const std::string* const m_valueString;
 };
 
+template <typename T>
 class ConfigVarWithDefault: public ConfigVar
 {
 public:
-    template <typename T>
     ConfigVarWithDefault(const ConfigVar& var, const T& defaultValue):
     ConfigVar(var),
         m_defaultValue(defaultValue) {}
@@ -40,23 +46,22 @@ public:
     ~ConfigVarWithDefault() {}
 
 
-    template <typename T>
     operator T() const
     {
         if (!m_valueString)
-            return boost::any_cast<T>(m_defaultValue);
+            return m_defaultValue;
 
         return static_cast<const ConfigVar&>(*this);
     }
 
 protected:
-    boost::any m_defaultValue;
+    T m_defaultValue;
 };
 
 template <typename T>
-inline ConfigVarWithDefault operator||(const ConfigVar& var, const T& defaultValue)
+inline ConfigVarWithDefault<T> operator||(const ConfigVar& var, const T& defaultValue)
 {
-    return ConfigVarWithDefault(var, defaultValue);
+    return ConfigVarWithDefault<T>(var, defaultValue);
 }
 
 } // ns detail
