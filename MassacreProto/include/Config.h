@@ -11,12 +11,27 @@ namespace mcr {
 
 class Config {
     
-    static std::map<std::string, std::string> configuration;
+private:
+    struct opbrack_impl;
+    
+public:
+    Config() {};
+    ~Config()
+    {
+        if (m_ownFs)
+            delete m_fs;
+    }
+
+    void load(const char* filename, FileSystem* fs = nullptr);
+    opbrack_impl operator[](const std::string& str) {
+        return opbrack_impl(str);
+    };
 
 private:
     FileSystem* m_fs;
     bool m_ownFs;
     const static int default_value = 0;   
+    static std::map<std::string, std::string> configuration;
     
 struct opbrack_impl {
     const std::string& str;
@@ -37,18 +52,6 @@ struct opbrack_impl {
     }
 };
  
-public:
-    Config() {};
-    ~Config()
-    {
-        if (m_ownFs)
-            delete m_fs;
-    }
 
-    void load(const char* filename, FileSystem* fs = nullptr);
-    
-    opbrack_impl operator[](const std::string& str) {
-        return opbrack_impl(str);
-    };
 };
 }
