@@ -26,7 +26,6 @@ set(GFX_SRC
   ${GFX_PATH}/Font.cpp 
   ${GFX_PATH}/Image.cpp
   ${GFX_PATH}/Material.cpp 
-  ${GFX_PATH}/Mesh2.cpp 
   ${GFX_PATH}/Renderer.cpp
   ${GFX_PATH}/Shader.cpp 
   ${GFX_PATH}/Texture.cpp

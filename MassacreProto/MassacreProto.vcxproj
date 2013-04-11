@@ -169,6 +169,8 @@
     <ClInclude Include="include\FileSystem.h" />
     <ClInclude Include="include\FnTraits.h" />
     <ClInclude Include="include\gfx\Context.h" />
+    <ClInclude Include="include\gfx\experimental\Mesh.h" />
+    <ClInclude Include="include\gfx\experimental\MeshStorage.h" />
     <ClInclude Include="include\gfx\Font.h" />
     <ClInclude Include="include\gfx\GBuffer.h" />
     <ClInclude Include="include\gfx\GLUtility.h" />
@@ -178,7 +180,6 @@
     <ClInclude Include="include\gfx\ISprite.h" />
     <ClInclude Include="include\gfx\Material.h" />
     <ClInclude Include="include\gfx\MaterialManager.h" />
-    <ClInclude Include="include\gfx\Mesh2.h" />
     <ClInclude Include="include\gfx\renderables\Mesh.h" />
     <ClInclude Include="include\gfx\renderables\Renderable.h" />
     <ClInclude Include="include\gfx\renderables\SpriteBatch.h" />
@@ -220,7 +221,6 @@
     <ClCompile Include="src\gfx\ImageFormat.cpp" />
     <ClCompile Include="src\gfx\Material.cpp" />
     <ClCompile Include="src\gfx\MaterialManager.cpp" />
-    <ClCompile Include="src\gfx\Mesh2.cpp" />
     <ClCompile Include="src\gfx\renderables\Mesh.cpp" />
     <ClCompile Include="src\gfx\renderables\Renderable.cpp" />
     <ClCompile Include="src\gfx\renderables\SpriteBatch.cpp" />

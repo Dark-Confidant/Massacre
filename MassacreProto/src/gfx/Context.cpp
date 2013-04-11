@@ -11,10 +11,12 @@
 #include "gfx/Texture.h"
 #include "gfx/Material.h"
 #include "gfx/GBuffer.h"
-#include "gfx/Mesh2.h"
 
-using namespace mcr;
-using namespace gfx;
+#include "gfx/experimental/Mesh.h"
+#include "gfx/experimental/MeshStorage.h"
+
+namespace mcr {
+namespace gfx {
 
 Context* Context::s_active;
 
@@ -272,8 +274,24 @@ void Context::setActiveVertexArray(VertexArray* va)
     m_activeVertexArray = va;
 }
 
-void Context::drawMesh(const Mesh2& mesh)
+experimental::MeshStorage* Context::activeMeshStorage() const
 {
-    setActiveVertexArray(mesh.buffer);
-    glDrawElements(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(mesh.startIndex));
+    throw 1;
+    return nullptr;
 }
+
+void Context::setActiveMeshStorage(experimental::MeshStorage* storage)
+{
+    throw 1;
+}
+
+void Context::drawMesh(const experimental::Mesh& mesh)
+{
+    setActiveMeshStorage(mesh.storage);
+
+    glDrawElements(mesh.primitiveType, mesh.numIndices, GL_UNSIGNED_INT,
+        reinterpret_cast<const GLvoid*>(mesh.startIndex));
+}
+
+} // ns gfx
+} // ns mcr
