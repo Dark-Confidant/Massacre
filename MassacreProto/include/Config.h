@@ -2,6 +2,7 @@
 
 #include <map>
 #include <boost/lexical_cast.hpp>
+#include <boost/any.hpp>
 
 #include "FileSystem.h"
 #include "Debug.h"
@@ -13,7 +14,7 @@ class ConfigVar
 {
 public:
     ConfigVar(const std::string* str): m_valueString(str) {}
-    ~ConfigVar() {} // not intended to be inherited
+    ~ConfigVar() {} // inherit with care
 
     template <class T>
     operator T() const
@@ -24,9 +25,39 @@ public:
         return T();
     }
 
-private:
+protected:
     const std::string* const m_valueString;
 };
+
+class ConfigVarWithDefault: public ConfigVar
+{
+public:
+    template <typename T>
+    ConfigVarWithDefault(const ConfigVar& var, const T& defaultValue):
+    ConfigVar(var),
+        m_defaultValue(defaultValue) {}
+
+    ~ConfigVarWithDefault() {}
+
+
+    template <typename T>
+    operator T() const
+    {
+        if (!m_valueString)
+            return boost::any_cast<T>(m_defaultValue);
+
+        return static_cast<const ConfigVar&>(*this);
+    }
+
+protected:
+    boost::any m_defaultValue;
+};
+
+template <typename T>
+inline ConfigVarWithDefault operator||(const ConfigVar& var, const T& defaultValue)
+{
+    return ConfigVarWithDefault(var, defaultValue);
+}
 
 } // ns detail
 

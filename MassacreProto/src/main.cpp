@@ -77,7 +77,7 @@ public:
         {
             debug("Can't find data directory");
             exit(1);
-        };
+        }
 
 #elif defined(MCR_PLATFORM_LINUX)
 
@@ -87,11 +87,14 @@ public:
         {
             debug("Can't find data directory");
             exit(1);
-        };
+        }
 
 #endif
         m_config.load(m_mm.fs()->openFile("mainconf.yaml"));
-        m_turnSpeed = m_config["turn_speed"];
+
+        m_turnSpeed = m_config["turn_speed"] || 60.f;
+        m_velocity  = m_config["velocity"]   || 100.f;
+        m_reach     = m_config["reach"]      || 780.f;
 
         loadArena();
         loadSky();
@@ -108,6 +111,9 @@ public:
 
         auto mesh = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Arena/arena.mesh"));
         auto va   = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
+
+        // move
+        va->transformAttribs(0, math::buildTransform(vec3(-600, 0, 100)));
 
         // flip by v
         va->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
@@ -197,7 +203,7 @@ public:
     {
         m_myself = Object::create(m_root);
 
-        m_myself->addComponent<Movement>()->setVelocity(100.f);
+        m_myself->addComponent<Movement>()->setVelocity(m_velocity);
         m_myself->transform()->setY(20);
     }
 
@@ -242,6 +248,20 @@ public:
 
         m_myself->movement()->setFlags(move);
         m_myself->movement()->setFace(face);
+
+        if (!math::equals(m_reach, 0.f))
+        {
+            auto& pos = m_myself->transform()->position();
+            auto bias = math::normalize(vec2(pos.x(), pos.z()));
+
+            auto dir = m_myself->movement()->direction();
+            auto affinity = .5f * math::length(bias + vec2(dir.x(), dir.z()));
+
+            auto tensity = math::length(vec2(pos.x(), pos.z())) / m_reach;
+            auto factor = std::max(0.f, 1.f - affinity * tensity);
+
+            m_myself->movement()->setVelocity(factor * m_velocity);
+        }
 
         m_myself->transform()->setRotation(vec3(face, 0));
     }
@@ -303,7 +323,7 @@ private:
     rcptr<Object> m_myself;
 
     bool m_keyStates[SDLK_LAST];
-    float m_turnSpeed;
+    float m_turnSpeed, m_velocity, m_reach;
 };
 
 //////////////////////////////////////////////////////////////////////////
