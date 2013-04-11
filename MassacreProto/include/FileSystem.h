@@ -4,7 +4,7 @@
 #include <set>
 #include <vector>
 #include <streambuf>
-#include <boost/noncopyable.hpp>
+#include "NonCopyable.h"
 #include "Io.h"
 
 namespace mcr {
@@ -30,7 +30,7 @@ public:
     virtual FileSystem* fs() const = 0;
 };
 
-class FileStream: public std::streambuf, boost::noncopyable
+class FileStream: public std::streambuf, NonCopyable
 {
 public:
     FileStream(IFile* file, size_t bufSize = 1024, size_t putSize = 16):
@@ -94,7 +94,7 @@ public:
     static bool exists(const char* dirname);
 };
 
-class FileSystem: boost::noncopyable
+class FileSystem: NonCopyable
 {
 public:
     //! Add directory to look for files
@@ -113,7 +113,7 @@ protected:
     std::set<std::string> m_paths;
 };
 
-class Resource: public RefCounted, boost::noncopyable
+class Resource: public RefCounted, NonCopyable
 {
 public:
     /*! Create Resource control and attach \c path to \c fs

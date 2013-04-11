@@ -141,6 +141,7 @@
     <ClInclude Include="..\MassacreShared\include\math\Matrix.h" />
     <ClInclude Include="..\MassacreShared\include\math\Rect.h" />
     <ClInclude Include="..\MassacreShared\include\math\Vector.h" />
+    <ClInclude Include="..\MassacreShared\include\NonCopyable.h" />
     <ClInclude Include="..\MassacreShared\include\RefCounted.h" />
     <ClInclude Include="include\Animation.h" />
     <ClInclude Include="include\AnimationController.h" />

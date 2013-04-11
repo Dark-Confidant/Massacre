@@ -1,12 +1,13 @@
 #pragma once
 
+#include "NonCopyable.h"
 #include "Material.h"
 #include "math/Rect.h"
 
 namespace mcr {
 namespace gfx {
 
-class MaterialManager: boost::noncopyable
+class MaterialManager: NonCopyable
 {
 public:
     MaterialManager(): m_fs(new FileSystem), m_ownFs(true) {}

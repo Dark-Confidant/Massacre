@@ -434,7 +434,7 @@ void Game::run()
 // 8008135
 //////////////////////////////////////////////////////////////////////////
 
-int main()
+int main(int argc, char* argv[])
 {
     Game game;
     game.run();
@@ -445,6 +445,20 @@ int main()
 #ifdef MCR_PLATFORM_WINDOWS
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-    main();
+    std::string commandLine = GetCommandLineA();
+
+    std::vector<std::string> arguments;
+    boost::split(arguments, commandLine, boost::is_space());
+
+    std::vector<char*> argv;
+    BOOST_FOREACH (auto& arg, arguments)
+    {
+        boost::trim_if(arg, boost::is_any_of("\""));
+
+        if (arg.size())
+            argv.push_back(&arg[0]);
+    }
+
+    main((int) argv.size(), &argv[0]);
 }
 #endif
