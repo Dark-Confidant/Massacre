@@ -12,6 +12,7 @@
 #include "components/Render.h"
 #include "components/Model.h"
 #include "components/Movement.h"
+#include <Config.h>
 
 using namespace mcr;
 
@@ -40,6 +41,8 @@ protected:
 class Game
 {
 public:
+    Config    config;
+    
     Game();
     ~Game();
 
@@ -89,6 +92,7 @@ public:
         };
 
 #endif
+        m_game->config.load("mainconf.yaml", m_mm.fs());
 
         loadArena();
         loadSky();
@@ -227,7 +231,11 @@ public:
 
     void handleKeys()
     {
-        static const auto turnSpeed = 70.f;
+        //static const auto turnSpeed = 70.f;
+        
+        double turnSpeed = m_game->config["turn_speed"];
+        
+        debug("turnSpeed", turnSpeed);
 
         byte move =  m_keyStates[SDLK_w]
                   + (m_keyStates[SDLK_s] << 1)

@@ -51,6 +51,7 @@ set(MASSACRE_SRC
   SuperGlobal.cpp 
   Timeline.cpp 
   Timer.cpp 
+  Config.cpp
   Universe.cpp)
 
 link_libraries(
