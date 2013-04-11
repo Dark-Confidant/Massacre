@@ -35,6 +35,7 @@ public:
 
 protected:
     Game* m_game;
+    double turnSpeed;
 };
 
 // Game
@@ -93,6 +94,7 @@ public:
 
 #endif
         m_game->config.load("mainconf.yaml", m_mm.fs());
+        turnSpeed = m_game->config["turn_speed"];
 
         loadArena();
         loadSky();
@@ -233,10 +235,6 @@ public:
     {
         //static const auto turnSpeed = 70.f;
         
-        double turnSpeed = m_game->config["turn_speed"];
-        
-        debug("turnSpeed", turnSpeed);
-
         byte move =  m_keyStates[SDLK_w]
                   + (m_keyStates[SDLK_s] << 1)
                   + (m_keyStates[SDLK_q] << 2)
