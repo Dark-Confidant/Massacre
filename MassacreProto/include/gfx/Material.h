@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <boost/functional/hash.hpp>
 #include "RenderState.h"
 #include "ShaderProgram.h"
 #include "Texture.h"

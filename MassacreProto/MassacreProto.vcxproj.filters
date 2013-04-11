@@ -43,6 +43,9 @@
     <Filter Include="Header Files\shared\bb">
       <UniqueIdentifier>{f2ad0508-3d5d-469c-9fff-e744c59c8889}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gfx\experimental">
+      <UniqueIdentifier>{7a00f45a-2247-465d-933e-776cd0a502e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Universe.h">
@@ -116,9 +119,6 @@
     </ClInclude>
     <ClInclude Include="include\gfx\renderables\SpriteBatch.h">
       <Filter>Header Files\gfx\renderables</Filter>
-    </ClInclude>
-    <ClInclude Include="include\gfx\Mesh2.h">
-      <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\gfx\RenderAtom.h">
       <Filter>Header Files\gfx</Filter>
@@ -249,6 +249,15 @@
     <ClInclude Include="include\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\MassacreShared\include\NonCopyable.h">
+      <Filter>Header Files\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gfx\experimental\Mesh.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gfx\experimental\MeshStorage.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\components\Hierarchy.cpp">
@@ -324,9 +333,6 @@
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\MaterialManager.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\Mesh2.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\Object.cpp">

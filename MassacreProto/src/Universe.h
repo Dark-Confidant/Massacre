@@ -15,3 +15,4 @@
 
 #include <cassert>
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>

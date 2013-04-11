@@ -12,7 +12,13 @@ class Texture;
 class Material;
 class GBuffer;
 class VertexArray;
-struct Mesh2;
+
+namespace experimental {
+
+class MeshStorage;
+struct Mesh;
+
+} // ns experimental
 
 enum TexTarget
 {
@@ -78,7 +84,10 @@ public:
     VertexArray* activeVertexArray() const;
     void setActiveVertexArray(VertexArray* va);
 
-    void drawMesh(const Mesh2& mesh);
+    experimental::MeshStorage* activeMeshStorage() const;
+    void setActiveMeshStorage(experimental::MeshStorage* storage);
+
+    void drawMesh(const experimental::Mesh& mesh);
 
 protected:
     static Context* s_active;
