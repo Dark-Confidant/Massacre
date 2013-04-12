@@ -274,6 +274,17 @@ void Context::setActiveVertexArray(VertexArray* va)
     m_activeVertexArray = va;
 }
 
+void Context::clear()
+{
+    if (!m_renderState.depthWrite)
+    {
+        m_renderState.depthWrite = true;
+        glDepthMask(true);
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 experimental::MeshStorage* Context::activeMeshStorage() const
 {
     throw 1;

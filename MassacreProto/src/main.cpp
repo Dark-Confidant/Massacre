@@ -250,15 +250,12 @@ public:
     void render()
     {
         auto& ctx = gfx::Context::active();
-        
-        ctx.setRenderState(gfx::RenderState());
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ctx.clear();
 
         m_camera.dumpMatrices();
 
         ctx.setActiveVertexArray(m_skyBuffer);
-
         for (auto i = 0u; i < m_sky.size(); ++i)
         {
             ctx.setActiveMaterial(m_sky[i]);
@@ -306,7 +303,7 @@ public:
             auto bias = math::normalize(vec2(pos.x(), pos.z()));
 
             auto dir = m_myself->movement()->direction();
-            auto affinity = .5f * math::length(bias + vec2(dir.x(), dir.z()));
+            auto affinity = .7071068f * math::length(bias + vec2(dir.x(), dir.z()));
 
             auto tensity = math::length(vec2(pos.x(), pos.z())) / m_reach;
             auto factor = std::max(0.f, 1.f - affinity * tensity);

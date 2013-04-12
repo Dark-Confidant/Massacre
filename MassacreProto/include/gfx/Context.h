@@ -84,6 +84,8 @@ public:
     VertexArray* activeVertexArray() const;
     void setActiveVertexArray(VertexArray* va);
 
+    void clear();
+
     experimental::MeshStorage* activeMeshStorage() const;
     void setActiveMeshStorage(experimental::MeshStorage* storage);
 
