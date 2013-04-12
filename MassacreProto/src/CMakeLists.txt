@@ -9,9 +9,7 @@ include_directories(${PROJECT_SOURCE_DIR}/MassacreShared/include)
 set(COMPONENTS_PATH components)
 set(COMPONENTS_SRC 
   ${COMPONENTS_PATH}/Hierarchy.cpp 
-  ${COMPONENTS_PATH}/Model.cpp 
   ${COMPONENTS_PATH}/Movement.cpp 
-  ${COMPONENTS_PATH}/Render.cpp
   ${COMPONENTS_PATH}/Transform.cpp)
 
 set(GFXR_PATH gfx/renderables)
@@ -26,7 +24,6 @@ set(GFX_SRC
   ${GFX_PATH}/Font.cpp 
   ${GFX_PATH}/Image.cpp
   ${GFX_PATH}/Material.cpp 
-  ${GFX_PATH}/Renderer.cpp
   ${GFX_PATH}/Shader.cpp 
   ${GFX_PATH}/Texture.cpp
   ${GFX_PATH}/VertexFormat.cpp 
