@@ -25,9 +25,6 @@
     <Filter Include="Source Files\components">
       <UniqueIdentifier>{3ad2f6dd-0f96-4ebd-baa0-dbf6876c1ef8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\events">
-      <UniqueIdentifier>{c8d815a0-b27b-457e-8135-7938dc4e54d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\gfx\renderables">
       <UniqueIdentifier>{3cc59c58-0014-4d00-a59e-c60e5bd91681}</UniqueIdentifier>
     </Filter>
@@ -89,21 +86,6 @@
     </ClInclude>
     <ClInclude Include="include\components\Transform.h">
       <Filter>Header Files\components</Filter>
-    </ClInclude>
-    <ClInclude Include="include\events\Event.h">
-      <Filter>Header Files\events</Filter>
-    </ClInclude>
-    <ClInclude Include="include\events\EventArray.h">
-      <Filter>Header Files\events</Filter>
-    </ClInclude>
-    <ClInclude Include="include\events\EventListener.h">
-      <Filter>Header Files\events</Filter>
-    </ClInclude>
-    <ClInclude Include="include\events\EventParams.h">
-      <Filter>Header Files\events</Filter>
-    </ClInclude>
-    <ClInclude Include="include\events\EventTarget.h">
-      <Filter>Header Files\events</Filter>
     </ClInclude>
     <ClInclude Include="include\gfx\renderables\Mesh.h">
       <Filter>Header Files\gfx\renderables</Filter>

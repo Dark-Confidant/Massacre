@@ -1,19 +1,16 @@
 #pragma once
 
 #include <map>
-#include "events/EventTarget.h"
 #include "components/Hierarchy.h"
 #include "components/Transform.h"
 #include "components/Movement.h"
 
 namespace mcr {
 
-class Object: public RefCounted, public EventTarget
+class Object: public RefCounted
 {
 public:
     static const uint NumComponents = 16;
-    static const Event ComAdded, ComRemoved;
-    static const EventArray Events;
 
     static rcptr<Object> create(Object* parent = nullptr)
     {
@@ -43,9 +40,6 @@ public:
         if (!slot)
         {
             slot = ComRegistry::instance().createComponent(id, this);
-
-            notify(ComAdded, id);
-
             m_activeComponents.push_back(slot);
         }
 
@@ -58,7 +52,6 @@ public:
         if (!slot)
             return false;
 
-        notify(ComRemoved, id);
 
         for (uint i = 0; i < m_activeComponents.size() - 1; ++i)
             if (m_activeComponents[i] == slot)

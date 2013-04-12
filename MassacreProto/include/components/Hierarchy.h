@@ -27,8 +27,6 @@ protected:
     Hierarchy(Object* obj): Component(obj), m_parent(nullptr) {}
     ~Hierarchy() {}
 
-    void onEvent(EventId, const EventParams&) {}
-
     Object* m_parent;
     ObjectList m_children;
 };

@@ -63,8 +63,6 @@ protected:
 
     ~Movement() {}
 
-    void onEvent(EventId, const EventParams&) {}
-
     uint m_flags;
     vec2 m_face;
     float m_velocity;

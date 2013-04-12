@@ -133,8 +133,6 @@ protected:
     Transform(Object* obj): Component(obj), m_scale(1) {}
     ~Transform() {}
 
-    void onEvent(EventId, const EventParams&) {}
-
     void rebuildRotation()
     {
         m_local.setRotation(m_rotation);

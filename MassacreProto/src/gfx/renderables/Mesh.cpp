@@ -103,10 +103,6 @@ void Mesh::load(IFile* file)
 
 
     // read parts
-
-    BOOST_FOREACH (auto& part, m_parts)
-        notify(AtomRemoved, &part);
-
     auto dir = Resource::create(file->fs(), Path::dir(file->filename()).c_str());
 
     m_parts.resize(header.numParts);
@@ -151,9 +147,6 @@ void Mesh::load(IFile* file)
             mtl->setTexture(i, getCachedTexture(file->fs(), texName));
         }
     }
-
-    BOOST_FOREACH (auto& part, m_parts)
-        notify(AtomRemoved, &part);
 }
 
 void Mesh::optimizeAtomsTMP()

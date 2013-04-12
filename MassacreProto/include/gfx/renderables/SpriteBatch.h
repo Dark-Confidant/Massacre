@@ -43,7 +43,6 @@ public:
     void setMaterial(Material* mtl)
     {
         m_atom.material = mtl;
-        notify(AtomInvalidated, &m_atom);
     }
 
     uint numAtoms() const { return 1; }

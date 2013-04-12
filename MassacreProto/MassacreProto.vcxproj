@@ -157,11 +157,6 @@
     <ClInclude Include="include\components\Transform.h" />
     <ClInclude Include="include\ComRegistry.h" />
     <ClInclude Include="include\Debug.h" />
-    <ClInclude Include="include\events\Event.h" />
-    <ClInclude Include="include\events\EventArray.h" />
-    <ClInclude Include="include\events\EventListener.h" />
-    <ClInclude Include="include\events\EventParams.h" />
-    <ClInclude Include="include\events\EventTarget.h" />
     <ClInclude Include="include\ExternalSingleton.h" />
     <ClInclude Include="include\FieldTree.h" />
     <ClInclude Include="include\FileSystem.h" />
