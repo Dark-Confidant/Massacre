@@ -153,9 +153,7 @@
     <ClInclude Include="include\ClassInfo.h" />
     <ClInclude Include="include\Component.h" />
     <ClInclude Include="include\components\Hierarchy.h" />
-    <ClInclude Include="include\components\Model.h" />
     <ClInclude Include="include\components\Movement.h" />
-    <ClInclude Include="include\components\Render.h" />
     <ClInclude Include="include\components\Transform.h" />
     <ClInclude Include="include\ComRegistry.h" />
     <ClInclude Include="include\Debug.h" />
@@ -184,7 +182,6 @@
     <ClInclude Include="include\gfx\renderables\Renderable.h" />
     <ClInclude Include="include\gfx\renderables\SpriteBatch.h" />
     <ClInclude Include="include\gfx\RenderAtom.h" />
-    <ClInclude Include="include\gfx\Renderer.h" />
     <ClInclude Include="include\gfx\RenderState.h" />
     <ClInclude Include="include\gfx\Shader.h" />
     <ClInclude Include="include\gfx\ShaderProgram.h" />
@@ -205,9 +202,7 @@
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\components\Hierarchy.cpp" />
-    <ClCompile Include="src\components\Model.cpp" />
     <ClCompile Include="src\components\Movement.cpp" />
-    <ClCompile Include="src\components\Render.cpp" />
     <ClCompile Include="src\components\Transform.cpp" />
     <ClCompile Include="src\ComRegistry.cpp" />
     <ClCompile Include="src\Config.cpp" />
@@ -225,7 +220,6 @@
     <ClCompile Include="src\gfx\renderables\Mesh.cpp" />
     <ClCompile Include="src\gfx\renderables\Renderable.cpp" />
     <ClCompile Include="src\gfx\renderables\SpriteBatch.cpp" />
-    <ClCompile Include="src\gfx\Renderer.cpp" />
     <ClCompile Include="src\gfx\RenderState.cpp" />
     <ClCompile Include="src\gfx\Shader.cpp" />
     <ClCompile Include="src\gfx\ShaderProgram.cpp" />

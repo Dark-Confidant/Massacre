@@ -1,18 +1,15 @@
 #include "Universe.h"
 
+#include "Config.h"
 #include "Timer.h"
 
 #include "Camera.h"
 #include "gfx/Context.h"
 #include "gfx/renderables/Mesh.h"
-#include "gfx/Renderer.h"
 #include "gfx/MaterialManager.h"
 
 #include "Object.h"
-#include "components/Render.h"
-#include "components/Model.h"
 #include "components/Movement.h"
-#include <Config.h>
 
 using namespace mcr;
 
@@ -58,9 +55,7 @@ class BattleScreen: public GameLayer
 {
 public:
     BattleScreen(Game* game):
-    GameLayer(game),
-        m_camera(),
-        m_renderer(&m_camera)
+    GameLayer(game)
     {
         memset(m_keyStates, 0, sizeof(m_keyStates));
         m_root = Object::create();
@@ -102,21 +97,21 @@ public:
 
     void loadArena()
     {
-        auto diffuse = m_mm.getMaterial("Models/Arena/arena.mtl");
-        auto trans   = m_mm.getMaterial("Models/Arena/branch.mtl");
-        auto leaves  = m_mm.getMaterial("Models/Arena/leaves.mtl");
+        m_opaque      = m_mm.getMaterial("Models/Arena/arena.mtl");
+        m_transparent = m_mm.getMaterial("Models/Arena/branch.mtl");
+        m_translucent = m_mm.getMaterial("Models/Arena/leaves.mtl");
 
-        auto diffuseAtlas = m_mm.parseAtlasTMP("Models/Arena/arena.json");
-        auto transAtlas   = m_mm.parseAtlasTMP("Models/Arena/trans.json");
+        auto opaqueAtlas      = m_mm.parseAtlasTMP("Models/Arena/arena.json");
+        auto transparentAtlas = m_mm.parseAtlasTMP("Models/Arena/trans.json");
 
-        auto mesh = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Arena/arena.mesh"));
-        auto va   = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
+        auto mesh     = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Arena/arena.mesh"));
+        m_arenaBuffer = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
 
         // move
-        va->transformAttribs(0, math::buildTransform(vec3(-600, 0, 100)));
+        m_arenaBuffer->transformAttribs(0, math::buildTransform(vec3(-600, 0, 100)));
 
         // flip by v
-        va->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
+        m_arenaBuffer->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
 
         for (uint i = 0; i < mesh->numAtoms(); ++i)
         {
@@ -125,23 +120,23 @@ public:
 
             bool transformBit = false;
 
-            auto it = diffuseAtlas.find(tex);
-            if (it != diffuseAtlas.end())
+            auto it = opaqueAtlas.find(tex);
+            if (it != opaqueAtlas.end())
             {
                 transformBit = true;
-                atom->material = diffuse;
+                atom->material = m_opaque;
             }
             else
             {
-                it = transAtlas.find(tex);
-                if (it != transAtlas.end())
+                it = transparentAtlas.find(tex);
+                if (it != transparentAtlas.end())
                 {
                     transformBit = true;
 
                     if (tex.substr(0, 6) == "leaves")
-                        atom->material = leaves;
+                        atom->material = m_translucent;
                     else
-                        atom->material = trans;
+                        atom->material = m_transparent;
                 }
             }
 
@@ -152,44 +147,39 @@ public:
                     vec3(),
                     vec3(it->second.size(), 0.f));
 
-                va->transformAttribsIndexed(2, tf, atom->start, atom->size);
+                m_arenaBuffer->transformAttribsIndexed(2, tf, atom->start, atom->size);
                 continue;
             }
 
             atom->material->initProgram(
-                diffuse->program()->shader(0),
-                diffuse->program()->shader(1));
+                m_opaque->program()->shader(0),
+                m_opaque->program()->shader(1));
         }
 
         mesh->optimizeAtomsTMP();
 
-        RenderData
-            diffuseData = {diffuse, va},
-            transData   = {trans,   va},
-            leavesData  = {leaves,  va};
-
         for (uint i = 0; i < mesh->numAtoms(); ++i)
         {
-            auto atom = const_cast<gfx::RenderAtom*>(mesh->atom(i));
+            auto atom = mesh->atom(i);
 
-            if (atom->material == diffuse)
-                diffuseData.atoms.push_back(atom);
+            if (atom->material == m_opaque)
+                m_opaqueAtoms.push_back(atom);
 
-            else if (atom->material == trans)
-                transData.atoms.push_back(atom);
+            else if (atom->material == m_transparent)
+                m_transparentAtoms.push_back(atom);
 
-            else if (atom->material == leaves)
-                leavesData.atoms.push_back(atom);
+            else if (atom->material == m_translucent)
+                m_translucentAtoms.push_back(atom);
+
+            else
+            {
+                m_other.push_back(atom->material);
+                m_otherAtoms.push_back(atom);
+            }
+
         }
 
-        m_renderData.push_back(diffuseData);
-        m_renderData.push_back(transData);
-        m_renderData.push_back(leavesData);
-
-        m_arena = Object::create(m_root);
-
-        m_arena->addComponent<Render>()->setRenderer(&m_renderer);
-        m_arena->addComponent<Model>()->setMesh(mesh);
+        m_meshes.insert(mesh);
     }
 
     void loadSky()
@@ -197,11 +187,11 @@ public:
         auto vert = m_mm.getShader("Shaders/sky_t0.vert");
         auto frag = m_mm.getShader("Shaders/diffuse.frag");
 
-        auto mesh = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Sky/sky.mesh"));
-        auto va   = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
+        auto mesh   = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Sky/sky.mesh"));
+        m_skyBuffer = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
 
         // flip by v
-        va->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
+        m_skyBuffer->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
 
         for (uint i = 0; i < mesh->numAtoms(); ++i)
         {
@@ -211,12 +201,12 @@ public:
 
             mtl->set(&gfx::RenderState::depthTest, false);
             mtl->setPassHint(-1);
+
+            m_sky.push_back(mtl);
+            m_skyAtoms.push_back(mesh->atom(i));
         }
 
-        m_sky = Object::create(m_root);
-
-        m_sky->addComponent<Render>()->setRenderer(&m_renderer);
-        m_sky->addComponent<Model>()->setMesh(mesh);
+        m_meshes.insert(mesh);
     }
 
     void onUnload() {}
@@ -245,6 +235,18 @@ public:
         return handleEvents();
     }
 
+    void renderAtom(const gfx::RenderAtom* atom)
+    {
+        glDrawElements(GL_TRIANGLES, atom->size, GL_UNSIGNED_INT,
+            reinterpret_cast<const GLvoid*>(sizeof(uint) * atom->start));
+    }
+
+    void renderAtoms(const std::vector<const gfx::RenderAtom*>& atoms)
+    {
+        for (auto i = 0u; i < atoms.size(); ++i)
+            renderAtom(atoms[i]);
+    }
+
     void render()
     {
         auto& ctx = gfx::Context::active();
@@ -255,16 +257,29 @@ public:
 
         m_camera.dumpMatrices();
 
-        BOOST_FOREACH (auto& rd, m_renderData)
-        {
-            ctx.setActiveMaterial(rd.mtl);
-            ctx.setActiveVertexArray(rd.va);
+        ctx.setActiveVertexArray(m_skyBuffer);
 
-            BOOST_FOREACH (auto atom, rd.atoms)
-            {
-                glDrawElements(GL_TRIANGLES, atom->size, GL_UNSIGNED_INT,
-                    reinterpret_cast<const GLvoid*>(sizeof(uint) * atom->start));
-            }
+        for (auto i = 0u; i < m_sky.size(); ++i)
+        {
+            ctx.setActiveMaterial(m_sky[i]);
+            renderAtom(m_skyAtoms[i]);
+        }
+
+        ctx.setActiveVertexArray(m_arenaBuffer);
+
+        ctx.setActiveMaterial(m_opaque);
+        renderAtoms(m_opaqueAtoms);
+
+        ctx.setActiveMaterial(m_transparent);
+        renderAtoms(m_transparentAtoms);
+
+        ctx.setActiveMaterial(m_translucent);
+        renderAtoms(m_translucentAtoms);
+
+        for (auto i = 0u; i < m_other.size(); ++i)
+        {
+            ctx.setActiveMaterial(m_other[i]);
+            renderAtom(m_otherAtoms[i]);
         }
 
         SDL_GL_SwapBuffers();
@@ -348,23 +363,26 @@ public:
 
 private:
     Config m_config;
-
     Timer m_timer;
+
     Camera m_camera;
-    
-    gfx::Renderer m_renderer;
     gfx::MaterialManager m_mm;
 
-    struct RenderData
-    {
-        rcptr<gfx::Material> mtl;
-        gfx::VertexArray* va;
-        std::vector<gfx::RenderAtom*> atoms;
-    };
-    std::vector<RenderData> m_renderData;
+    std::set<rcptr<gfx::Mesh>> m_meshes;
 
-    rcptr<Object> m_root, m_arena, m_sky;
-    rcptr<Object> m_myself;
+    rcptr<gfx::Material> m_opaque, m_transparent, m_translucent;
+    std::vector<rcptr<gfx::Material>> m_other, m_sky;
+
+    rcptr<gfx::VertexArray> m_arenaBuffer, m_skyBuffer;
+
+    std::vector<const gfx::RenderAtom*>
+        m_opaqueAtoms,
+        m_transparentAtoms,
+        m_translucentAtoms,
+        m_otherAtoms,
+        m_skyAtoms;
+
+    rcptr<Object> m_root, m_myself;
 
     bool m_keyStates[SDLK_LAST];
     float m_turnSpeed, m_velocity, m_reach;
