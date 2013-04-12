@@ -163,6 +163,29 @@ public:
 
         mesh->optimizeAtomsTMP();
 
+        RenderData
+            diffuseData = {diffuse, va},
+            transData   = {trans,   va},
+            leavesData  = {leaves,  va};
+
+        for (uint i = 0; i < mesh->numAtoms(); ++i)
+        {
+            auto atom = const_cast<gfx::RenderAtom*>(mesh->atom(i));
+
+            if (atom->material == diffuse)
+                diffuseData.atoms.push_back(atom);
+
+            else if (atom->material == trans)
+                transData.atoms.push_back(atom);
+
+            else if (atom->material == leaves)
+                leavesData.atoms.push_back(atom);
+        }
+
+        m_renderData.push_back(diffuseData);
+        m_renderData.push_back(transData);
+        m_renderData.push_back(leavesData);
+
         m_arena = Object::create(m_root);
 
         m_arena->addComponent<Render>()->setRenderer(&m_renderer);
@@ -224,12 +247,25 @@ public:
 
     void render()
     {
-        gfx::Context::active().setRenderState(gfx::RenderState());
+        auto& ctx = gfx::Context::active();
+        
+        ctx.setRenderState(gfx::RenderState());
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_camera.dumpMatrices();
-        m_renderer.render();
+
+        BOOST_FOREACH (auto& rd, m_renderData)
+        {
+            ctx.setActiveMaterial(rd.mtl);
+            ctx.setActiveVertexArray(rd.va);
+
+            BOOST_FOREACH (auto atom, rd.atoms)
+            {
+                glDrawElements(GL_TRIANGLES, atom->size, GL_UNSIGNED_INT,
+                    reinterpret_cast<const GLvoid*>(sizeof(uint) * atom->start));
+            }
+        }
 
         SDL_GL_SwapBuffers();
     }
@@ -318,6 +354,14 @@ private:
     
     gfx::Renderer m_renderer;
     gfx::MaterialManager m_mm;
+
+    struct RenderData
+    {
+        rcptr<gfx::Material> mtl;
+        gfx::VertexArray* va;
+        std::vector<gfx::RenderAtom*> atoms;
+    };
+    std::vector<RenderData> m_renderData;
 
     rcptr<Object> m_root, m_arena, m_sky;
     rcptr<Object> m_myself;
