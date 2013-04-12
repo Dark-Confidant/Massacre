@@ -19,12 +19,6 @@
     <Filter Include="Source Files\gfx">
       <UniqueIdentifier>{4cab3aa0-5ed1-47f5-bd1b-eeced0b49fa4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\components">
-      <UniqueIdentifier>{0b541852-508e-4be4-a34a-057035b8e80a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\components">
-      <UniqueIdentifier>{3ad2f6dd-0f96-4ebd-baa0-dbf6876c1ef8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\gfx\renderables">
       <UniqueIdentifier>{3cc59c58-0014-4d00-a59e-c60e5bd91681}</UniqueIdentifier>
     </Filter>
@@ -78,15 +72,6 @@
     <ClInclude Include="..\MassacreShared\include\math\Vector.h">
       <Filter>Header Files\shared\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\components\Hierarchy.h">
-      <Filter>Header Files\components</Filter>
-    </ClInclude>
-    <ClInclude Include="include\components\Movement.h">
-      <Filter>Header Files\components</Filter>
-    </ClInclude>
-    <ClInclude Include="include\components\Transform.h">
-      <Filter>Header Files\components</Filter>
-    </ClInclude>
     <ClInclude Include="include\gfx\renderables\Mesh.h">
       <Filter>Header Files\gfx\renderables</Filter>
     </ClInclude>
@@ -111,31 +96,19 @@
     <ClInclude Include="include\gfx\Texture.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="include\gfx\UniformSlot.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\gfx\VertexArray.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\gfx\VertexFormat.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="include\gfx\VertexPool.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\gfx\Context.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="include\gfx\Font.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\gfx\GBuffer.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\gfx\GLUtility.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="include\gfx\GPool.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\gfx\Image.h">
@@ -156,9 +129,6 @@
     <ClInclude Include="include\ExternalSingleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\FieldTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,49 +138,10 @@
     <ClInclude Include="include\Io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\SmallObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SuperGlobal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Timeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WorldAction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AnimationController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AnimationCurve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Binder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Channel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ClassInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ComRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Debug.h">
@@ -233,15 +164,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\components\Hierarchy.cpp">
-      <Filter>Source Files\components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\components\Movement.cpp">
-      <Filter>Source Files\components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\components\Transform.cpp">
-      <Filter>Source Files\components</Filter>
-    </ClCompile>
     <ClCompile Include="src\gfx\renderables\Mesh.cpp">
       <Filter>Source Files\gfx\renderables</Filter>
     </ClCompile>
@@ -269,22 +191,13 @@
     <ClCompile Include="src\gfx\VertexFormat.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
-    <ClCompile Include="src\gfx\VertexPool.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
     <ClCompile Include="src\gfx\Context.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\Font.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\GBuffer.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\GLUtility.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\GPool.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\Image.cpp">
@@ -299,25 +212,13 @@
     <ClCompile Include="src\gfx\MaterialManager.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
-    <ClCompile Include="src\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\SmallObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SuperGlobal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Timeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Universe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ComRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Debug.cpp">

@@ -6,12 +6,6 @@ include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/src)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/extras/SimpleMesh)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreShared/include)
 
-set(COMPONENTS_PATH components)
-set(COMPONENTS_SRC 
-  ${COMPONENTS_PATH}/Hierarchy.cpp 
-  ${COMPONENTS_PATH}/Movement.cpp 
-  ${COMPONENTS_PATH}/Transform.cpp)
-
 set(GFXR_PATH gfx/renderables)
 set(GFX_RENDERABLES_SRC
   ${GFXR_PATH}/Mesh.cpp  
@@ -21,7 +15,6 @@ set(GFX_RENDERABLES_SRC
 set(GFX_PATH gfx)
 set(GFX_SRC 
   ${GFX_PATH}/GLUtility.cpp 
-  ${GFX_PATH}/Font.cpp 
   ${GFX_PATH}/Image.cpp
   ${GFX_PATH}/Material.cpp 
   ${GFX_PATH}/Shader.cpp 
@@ -29,25 +22,19 @@ set(GFX_SRC
   ${GFX_PATH}/VertexFormat.cpp 
   ${GFX_PATH}/Context.cpp
   ${GFX_PATH}/GBuffer.cpp
-  ${GFX_PATH}/GPool.cpp
   ${GFX_PATH}/ImageFormat.cpp 
   ${GFX_PATH}/MaterialManager.cpp 
   ${GFX_PATH}/RenderState.cpp
   ${GFX_PATH}/ShaderProgram.cpp
-  ${GFX_PATH}/VertexArray.cpp
-  ${GFX_PATH}/VertexPool.cpp)  
+  ${GFX_PATH}/VertexArray.cpp)
 
 set(MASSACRE_SRC
   Camera.cpp 
-  ComRegistry.cpp 
   Debug.cpp 
   FileSystem.cpp 
-  Object.cpp
   SmallObject.cpp 
-  SuperGlobal.cpp 
-  Timeline.cpp 
   Timer.cpp 
-  Config.cpp
+  Config.cpp 
   Universe.cpp)
 
 link_libraries(
@@ -58,14 +45,12 @@ link_libraries(
   GL
   jpeg
   png
-  freetype
   yaml-cpp)
 
 add_executable(massacre 
   ${MASSACRE_SRC} 
   ${GFX_SRC} 
   ${GFX_RENDERABLES_SRC} 
-  ${COMPONENTS_SRC} 
   main.cpp)
 
 INSTALL(TARGETS massacre 

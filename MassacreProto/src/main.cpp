@@ -8,9 +8,6 @@
 #include "gfx/renderables/Mesh.h"
 #include "gfx/MaterialManager.h"
 
-#include "Object.h"
-#include "components/Movement.h"
-
 using namespace mcr;
 
 class Game;
@@ -58,7 +55,6 @@ public:
     GameLayer(game)
     {
         memset(m_keyStates, 0, sizeof(m_keyStates));
-        m_root = Object::create();
     }
 
     void onLoad()
@@ -214,10 +210,7 @@ public:
 
     void onActivate()
     {
-        m_myself = Object::create(m_root);
-
-        m_myself->addComponent<Movement>()->setVelocity(m_velocity);
-        m_myself->transform()->setY(20);
+        m_pos.setY(20);
     }
 
     void onDeactivate() {}
@@ -228,8 +221,6 @@ public:
         m_timer.refresh();
 
         handleKeys();
-        m_root->update(m_timer.dmilliseconds()); // update scene
-        updateCamera();
         render();
 
         return handleEvents();
@@ -284,46 +275,38 @@ public:
 
     void handleKeys()
     {
-        byte move =  m_keyStates[SDLK_w]
-                  + (m_keyStates[SDLK_s] << 1)
-                  + (m_keyStates[SDLK_q] << 2)
-                  + (m_keyStates[SDLK_e] << 3);
+        auto mv = math::normalize(vec3(
+                0.f + m_keyStates[SDLK_e] - m_keyStates[SDLK_q], 0,
+                0.f + m_keyStates[SDLK_s] - m_keyStates[SDLK_w]));
 
-        auto turnStep = (float) m_timer.dseconds() * -m_turnSpeed;
+        auto yAngle = math::deg2rad * m_rot.y();
+        auto ySine = sin(yAngle), yCosine = cos(yAngle);
 
-        vec2 face = m_myself->movement()->face() 
-                  + vec2(0, turnStep * (m_keyStates[SDLK_d] - m_keyStates[SDLK_a]));
+        auto dir = mv.x() * vec3(yCosine, 0, -ySine) + mv.z() * vec3(ySine, 0, yCosine);
+        auto velocity = m_velocity;
 
-        m_myself->movement()->setFlags(move);
-        m_myself->movement()->setFace(face);
 
         if (!math::equals(m_reach, 0.f))
         {
-            auto& pos = m_myself->transform()->position();
-            auto bias = math::normalize(vec2(pos.x(), pos.z()));
-
-            auto dir = m_myself->movement()->direction();
+            auto bias     = math::normalize(vec2(m_pos.x(), m_pos.z()));
             auto affinity = .7071068f * math::length(bias + vec2(dir.x(), dir.z()));
+            auto tensity  = math::length(vec2(m_pos.x(), m_pos.z())) / m_reach;
 
-            auto tensity = math::length(vec2(pos.x(), pos.z())) / m_reach;
-            auto factor = std::max(0.f, 1.f - affinity * tensity);
-
-            m_myself->movement()->setVelocity(factor * m_velocity);
+            velocity *= std::max(0.f, 1.f - affinity * tensity);
         }
 
-        m_myself->transform()->setRotation(vec3(face, 0));
-    }
+        m_pos += (float) m_timer.dseconds() * velocity * dir;
 
-    void updateCamera()
-    {
+        auto turnStep = (float) m_timer.dseconds() * -m_turnSpeed;
+        m_rot += vec3(0, turnStep * (m_keyStates[SDLK_d] - m_keyStates[SDLK_a]), 0);
+
+
         static const vec3 camOffset(0, 35, 0);
 
-        auto mat = m_myself->transform()->global();
+        auto tf = math::buildTransform(vec3(), m_rot);
 
-        mat.scaleDown(m_myself->transform()->scale());
-
-        m_camera.setViewMatrix(mat, true);
-        m_camera.setPosition(mat.translation() + camOffset * mat);
+        m_camera.setViewMatrix(tf, true);
+        m_camera.setPosition(m_pos + camOffset * tf);
     }
 
     // [Esc] and window resize
@@ -379,9 +362,10 @@ private:
         m_otherAtoms,
         m_skyAtoms;
 
-    rcptr<Object> m_root, m_myself;
-
     bool m_keyStates[SDLK_LAST];
+
+    vec3 m_pos, m_rot;
+    uint m_moveFlags;
     float m_turnSpeed, m_velocity, m_reach;
 };
 
@@ -393,7 +377,6 @@ Game::Game()
     g_enableLoggingToFile = true;
 
     initGL();
-    ComRegistry::instance().startup();
 
     m_layer = new BattleScreen(this);
 }
