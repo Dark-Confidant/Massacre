@@ -149,6 +149,8 @@
     <ClInclude Include="include\FileSystem.h" />
     <ClInclude Include="include\FnTraits.h" />
     <ClInclude Include="include\gfx\Context.h" />
+    <ClInclude Include="include\gfx\experimental\IMeshLoader.h" />
+    <ClInclude Include="include\gfx\experimental\IMeshSaver.h" />
     <ClInclude Include="include\gfx\experimental\Mesh.h" />
     <ClInclude Include="include\gfx\experimental\MeshStorage.h" />
     <ClInclude Include="include\gfx\GBuffer.h" />
@@ -171,6 +173,8 @@
     <ClInclude Include="include\Io.h" />
     <ClInclude Include="include\SmallObject.h" />
     <ClInclude Include="include\Timer.h" />
+    <ClInclude Include="src\gfx\experimental\SimpleMeshLoader.h" />
+    <ClInclude Include="src\gfx\experimental\SimpleMeshSaver.h" />
     <ClInclude Include="src\Universe.h" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +183,8 @@
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\FileSystem.cpp" />
     <ClCompile Include="src\gfx\Context.cpp" />
+    <ClCompile Include="src\gfx\experimental\SimpleMeshLoader.cpp" />
+    <ClCompile Include="src\gfx\experimental\SimpleMeshSaver.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
     <ClCompile Include="src\gfx\GLUtility.cpp" />
     <ClCompile Include="src\gfx\Image.cpp" />

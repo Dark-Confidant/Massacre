@@ -298,7 +298,8 @@ void Context::setActiveMeshStorage(experimental::MeshStorage* storage)
 
 void Context::drawMesh(const experimental::Mesh& mesh)
 {
-    setActiveMeshStorage(mesh.storage);
+    //setActiveMeshStorage(mesh.storage);
+    setActiveVertexArray(mesh.buffer);
 
     glDrawElements(mesh.primitiveType, mesh.numIndices, GL_UNSIGNED_INT,
         reinterpret_cast<const GLvoid*>(mesh.startIndex));

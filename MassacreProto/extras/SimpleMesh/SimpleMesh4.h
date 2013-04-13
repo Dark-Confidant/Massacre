@@ -3,7 +3,7 @@
 
 #define SIMPLE_MESH_VERSION 4
 
-namespace SimpleMesh {
+namespace SimpleMesh4 {
 
 struct Header
 {
@@ -15,7 +15,6 @@ struct Header
     unsigned int   attributeDataOffset, numAttributes;
     unsigned int   vertexDataOffset, numVertices;
     unsigned int   indexDataOffset, numIndices;
-    unsigned int   partDataOffset, numParts;
 
     bool checkSignature() const
     {
@@ -53,12 +52,10 @@ struct VertexAttribute
     }
 };
 
-struct Part
-{
-    unsigned int start, size;
-    // null-terminated hint string
-};
+} // ns SimpleMesh4
 
-} // ns SimpleMesh
+#ifndef SIMPLE_MESH_STRICT_NS
+namespace SimpleMesh = SimpleMesh4;
+#endif
 
 #pragma pack(pop)

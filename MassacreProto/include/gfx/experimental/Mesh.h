@@ -1,6 +1,7 @@
 #pragma once
 
-#include "RefCounted.h"
+#include <RefCounted.h>
+#include <gfx/VertexArray.h>
 
 namespace mcr          {
 namespace gfx          {
@@ -12,11 +13,13 @@ namespace experimental {
     - Draw meshes
 */
 
-class MeshStorage;
+//class MeshStorage;
 
 struct Mesh: public RefCounted
 {
-    MeshStorage* storage;
+    //MeshStorage* storage;
+    rcptr<VertexArray> buffer;
+    uint startVertex, numVertices;
     uint startIndex, numIndices;
     uint primitiveType;
 };

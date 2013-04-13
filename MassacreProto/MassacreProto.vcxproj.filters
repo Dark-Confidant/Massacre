@@ -37,6 +37,9 @@
     <Filter Include="Header Files\gfx\experimental">
       <UniqueIdentifier>{7a00f45a-2247-465d-933e-776cd0a502e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gfx\experimental">
+      <UniqueIdentifier>{0782b7b4-c464-480a-b911-21d256dbe9fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Universe.h">
@@ -162,6 +165,18 @@
     <ClInclude Include="include\gfx\experimental\MeshStorage.h">
       <Filter>Header Files\gfx\experimental</Filter>
     </ClInclude>
+    <ClInclude Include="include\gfx\experimental\IMeshLoader.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gfx\experimental\SimpleMeshLoader.h">
+      <Filter>Source Files\gfx\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gfx\experimental\IMeshSaver.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gfx\experimental\SimpleMeshSaver.h">
+      <Filter>Source Files\gfx\experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\renderables\Mesh.cpp">
@@ -235,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="src\Config.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\experimental\SimpleMeshSaver.cpp">
+      <Filter>Source Files\gfx\experimental</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\experimental\SimpleMeshLoader.cpp">
+      <Filter>Source Files\gfx\experimental</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
