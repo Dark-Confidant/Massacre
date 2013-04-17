@@ -3,9 +3,10 @@
 
 #include <stdexcept>
 #include <boost/lexical_cast.hpp>
+#include "Debug.h"
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 uint VertexFormat::typeSize(uint type)
 {
@@ -29,6 +30,7 @@ uint VertexFormat::typeSize(uint type)
     }
     return 0;
 }
+
 
 VertexFormat::VertexFormat(const char* fmt):
     m_stride(0)
@@ -96,46 +98,6 @@ VertexFormat::VertexFormat(const char* fmt):
 }
 
 
-uint VertexFormat::addAttrib(uint type, uint length, char semantic, uint offset)
-{
-    auto size = typeSize(type);
-
-    if (!size)
-        return -1;
-
-    auto stride = offset + length * size;
-
-    if (m_stride < stride)
-        m_stride = stride;
-
-    uint loc = (uint) m_attribs.size();
-
-    Attrib attrib = {loc, type, length, offset, semantic};
-    m_attribs.emplace_back(attrib);
-
-    return loc;
-}
-
-uint VertexFormat::addAttrib(uint type, uint length, char semantic)
-{
-    return addAttrib(type, length, semantic, m_stride);
-}
-
-const VertexFormat::Attrib& VertexFormat::attribBySemantic(char semantic) const
-{
-    for (uint i = m_attribs.size(); i--;)
-        if (m_attribs[i].semantic == semantic)
-            return m_attribs[i];
-
-    throw std::runtime_error(std::string("Semantic not found: ") + semantic);
-}
-
-void VertexFormat::clear()
-{
-    m_attribs.clear();
-    m_stride = 0;
-}
-
 std::string VertexFormat::toString() const
 {
     std::string result;
@@ -160,8 +122,8 @@ std::string VertexFormat::toString() const
         case GL_FLOAT:          result += 'f';  break;
         case GL_DOUBLE:         result += 'd';  break;
         default:
-            throw std::runtime_error("Unknown attrib type: "
-                + boost::lexical_cast<std::string>(attrib.type));
+            result += '?';
+            debug("Warning: unknown attrib type %u", attrib.type);
         }
 
         result += ' ';
@@ -169,3 +131,6 @@ std::string VertexFormat::toString() const
 
     return result;
 }
+
+} // ns gfx
+} // ns mcr

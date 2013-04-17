@@ -95,11 +95,11 @@ SpriteBatch::SpriteBatch(uint maxSprites, const VertexFormat& fmt):
 
     m_dirtySprites(0), m_maxSprites(maxSprites)
 {
-    auto& posAttrib = fmt.attribBySemantic(PositionSemantic);
-    auto& tcAttrib  = fmt.attribBySemantic(TexcoordSemantic);
+    auto& posAttrib = *fmt.attribBySemantic(PositionSemantic);
+    auto& tcAttrib  = *fmt.attribBySemantic(TexcoordSemantic);
 
-    assert(posAttrib.length == 3 && posAttrib.type == GL_FLOAT);
-    assert(tcAttrib.length == 2 && tcAttrib.type == GL_FLOAT);
+    assert(&posAttrib && posAttrib.length == 3 && posAttrib.type == GL_FLOAT);
+    assert(&tcAttrib  && tcAttrib .length == 2 && tcAttrib .type == GL_FLOAT);
 
 
     m_vertexSize = fmt.stride();

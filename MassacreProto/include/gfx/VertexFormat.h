@@ -16,23 +16,23 @@ public:
         char semantic;
     };
 
-    VertexFormat(const char* fmt = "");
+    MCR_EXTERN VertexFormat(const char* fmt = "");
 
-    static uint typeSize(uint type);
+    MCR_EXTERN static uint typeSize(uint type);
 
     uint addAttrib(uint type, uint length, char semantic, uint offset);
     uint addAttrib(uint type, uint length, char semantic = '\0');
 
-    uint numAttribs() const { return (uint) m_attribs.size(); }
+    uint numAttribs() const;
 
-    const Attrib& attrib(uint i) const { return m_attribs[i]; }
-    const Attrib& attribBySemantic(char semantic) const;
+    const Attrib& attrib(uint i) const;
+    const Attrib* attribBySemantic(char semantic) const;
 
-    uint stride() const { return m_stride; }
+    uint stride() const;
 
     void clear();
 
-    std::string toString() const;
+    MCR_EXTERN std::string toString() const;
 
 protected:
     std::vector<Attrib> m_attribs;
@@ -41,3 +41,5 @@ protected:
 
 } // ns gfx
 } // ns mcr
+
+#include "VertexFormat.inl"
