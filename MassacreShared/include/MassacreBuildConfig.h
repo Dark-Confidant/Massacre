@@ -15,10 +15,13 @@
 #       define MCR_EXTERN __declspec(dllimport) 
 #   endif
 #   define MCR_PLUGIN_EXTERN __declspec(dllexport)
-#elif defined(__GNUC__)
-#   define MCR_EXTERN extern
-#   define MCR_PLUGIN_EXTERN extern
+#   define MCR_INTERN 
+#elif defined(__GNUC__) && (__GNUC__ >= 4)
+#   define MCR_EXTERN __attribute__ ((visibility ("default")))
+#   define MCR_PLUGIN_EXTERN MCR_EXTERN
+#   define MCR_INTERN __attribute__ ((visibility ("hidden")))
 #else
 #   define MCR_EXTERN 
 #   define MCR_PLUGIN_EXTERN 
+#   define MCR_INTERN 
 #endif
