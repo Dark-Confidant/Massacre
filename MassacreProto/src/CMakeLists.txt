@@ -8,8 +8,8 @@ include_directories(${PROJECT_SOURCE_DIR}/MassacreShared/include)
 
 set(GFXE_PATH gfx/experimental)
 set(GFX_EXPERIMENTAL_SRC
-  ${GFXE_PATH}/SimpleMeshLoader.cpp
-  ${GFXE_PATH}/SimpleMeshSaver.cpp)
+  ${GFXE_PATH}/SimpleMeshImporter.cpp
+  ${GFXE_PATH}/SimpleMeshExporter.cpp)
 
 set(GFXR_PATH gfx/renderables)
 set(GFX_RENDERABLES_SRC
