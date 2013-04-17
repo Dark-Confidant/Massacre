@@ -8,6 +8,8 @@
 #include "gfx/renderables/Mesh.h"
 #include "gfx/MaterialManager.h"
 
+#include <gfx/experimental/IMeshImporter.h>
+
 using namespace mcr;
 
 class Game;
@@ -43,6 +45,86 @@ public:
 
 protected:
     GameLayer* m_layer;
+};
+
+class MeshManager
+{
+public:
+    MeshManager(FileSystem* fs): m_fs(fs)
+    {
+        m_buffer = gfx::VertexArray::create();
+        m_loader = gfx::experimental::createSimpleMeshLoader();
+    }
+
+    bool load(const char* filename, ...)
+    {
+        using namespace gfx::experimental;
+
+        std::vector<rcptr<IMeshImportTask>> tasks;
+
+        for (auto arg = &filename; *arg; ++arg)
+            tasks.push_back(m_loader->createTask(m_fs->openFile(*arg)));
+
+        IMeshImportTask::MeshInfo total;
+        total.numVertices = total.numIndices = 0;
+
+        bool fail = false;
+
+        BOOST_FOREACH (IMeshImportTask* task, tasks)
+        {
+            IMeshImportTask::MeshInfo info;
+
+            if (!task->estimate(info))
+            {
+                fail = true;
+                break;
+            }
+
+            rcptr<Mesh> mesh = new Mesh;
+
+            mesh->buffer = m_buffer;
+            mesh->startVertex = total.numVertices;
+            mesh->numVertices = info.numVertices;
+            mesh->startIndex = total.numIndices;
+            mesh->numIndices = info.numIndices;
+            mesh->primitiveType = GL_TRIANGLES;
+
+            m_meshes.push_back(mesh);
+
+            total.numVertices += info.numVertices;
+            total.numVertices += info.numVertices;
+
+            if (total.vertexFormat.numAttribs() == 0)
+                total.vertexFormat = info.vertexFormat;
+        }
+
+        if (!fail)
+        {
+            m_buffer->setFormat(total.vertexFormat);
+            m_buffer->vertices()->init(total.numVertices * total.vertexFormat.stride(), GL_STATIC_DRAW);
+            m_buffer->indices()->init(total.numIndices * sizeof(uint), GL_STATIC_DRAW);
+
+            for (uint i = 0; i < tasks.size(); ++i)
+            {
+                if (!tasks[i]->import(total.vertexFormat, *m_meshes[i]))
+                {
+                    fail = true;
+                    break;
+                }
+            }
+        }
+
+        if (fail)
+            m_meshes.clear();
+
+        return !fail;
+    }
+
+private:
+    FileSystem* m_fs;
+    rcptr<gfx::VertexArray> m_buffer;
+    rcptr<gfx::experimental::IMeshImporter> m_loader;
+    std::vector<rcptr<gfx::experimental::Mesh>> m_meshes;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,6 +181,9 @@ public:
 
         auto opaqueAtlas      = m_mm.parseAtlasTMP("Models/Arena/arena.json");
         auto transparentAtlas = m_mm.parseAtlasTMP("Models/Arena/trans.json");
+
+        MeshManager mgr(m_mm.fs());
+        mgr.load("foo", "bar", "baz", nullptr);
 
         auto mesh     = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Arena/arena.mesh"));
         m_arenaBuffer = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack

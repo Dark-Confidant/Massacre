@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "SimpleMeshLoader.h"
+#include "SimpleMeshImporter.h"
 
 namespace mcr          {
 namespace gfx          {
@@ -15,21 +15,18 @@ const GLenum g_attribTypesTr[] =
 };
 } // ns
 
-rcptr<IMeshLoader> createSimpleMeshLoader()
+rcptr<IMeshImporter> createSimpleMeshLoader()
 {
-    return new SimpleMeshLoader;
+    return new SimpleMeshImporter;
 }
 
-bool SimpleMeshLoadTask::estimate(MeshInfo& infoOut)
+bool SimpleMeshImportTask::estimate(MeshInfo& infoOut)
 {
     if (m_file->read(m_header) != sizeof(m_header))
         return false;
 
     if (!m_header.checkSignature() || m_header.version != SIMPLE_MESH_VERSION)
         return false;
-
-    m_info.vertexDataSize = m_header.numVertices * m_header.vertexSize;
-    m_info.indexDataSize  = m_header.numIndices  * sizeof(uint);
 
     auto attribs = new SimpleMesh::VertexAttribute[m_header.numAttributes];
 
@@ -41,11 +38,14 @@ bool SimpleMeshLoadTask::estimate(MeshInfo& infoOut)
 
     delete [] attribs;
 
+    m_info.numVertices = m_header.numVertices;
+    m_info.numIndices  = m_header.numIndices;
+
     infoOut = m_info;
     return true;
 }
 
-bool SimpleMeshLoadTask::load(const VertexFormat& bufferFormat, Mesh& mesh)
+bool SimpleMeshImportTask::import(const VertexFormat& bufferFormat, Mesh& mesh)
 {
     // not capable of converting
     if (m_info.vertexFormat.numAttribs() != bufferFormat.numAttribs())
@@ -62,19 +62,20 @@ bool SimpleMeshLoadTask::load(const VertexFormat& bufferFormat, Mesh& mesh)
 
     size_t written = 0;
 
-    void* vertices = mesh.buffer->vertices()->map(mesh.startVertex, mesh.numVertices, GL_MAP_WRITE_BIT);
-    void* indices  = mesh.buffer->indices()->map(mesh.startIndex, mesh.numIndices, GL_MAP_WRITE_BIT);
+    auto vertices = mesh.mapVertices(GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+    auto indices  = mesh.mapIndices (GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
 
     m_file->seek(m_header.vertexDataOffset);
-    written += m_file->read(vertices, m_info.vertexDataSize);
+    written += m_file->read(vertices, m_header.numVertices * m_header.vertexSize);
 
     m_file->seek(m_header.indexDataOffset);
-    written += m_file->read(indices, m_info.indexDataSize);
+    written += m_file->read(indices, m_header.numIndices);
 
-    mesh.buffer->vertices()->unmap();
-    mesh.buffer->indices()->unmap();
+    mesh.unmapVertices();
+    mesh.unmapIndices();
 
-    return written == m_info.vertexDataSize + m_info.indexDataSize;
+    return written == m_header.numVertices * m_header.vertexSize
+                    + m_header.numIndices  * sizeof(uint);
 }
 
 } // ns experimental

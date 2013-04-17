@@ -165,16 +165,19 @@
     <ClInclude Include="include\gfx\experimental\MeshStorage.h">
       <Filter>Header Files\gfx\experimental</Filter>
     </ClInclude>
-    <ClInclude Include="include\gfx\experimental\IMeshLoader.h">
+    <ClInclude Include="include\IPlugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gfx\experimental\IMeshImporter.h">
       <Filter>Header Files\gfx\experimental</Filter>
     </ClInclude>
-    <ClInclude Include="src\gfx\experimental\SimpleMeshLoader.h">
+    <ClInclude Include="include\gfx\experimental\IMeshExporter.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gfx\experimental\SimpleMeshImporter.h">
       <Filter>Source Files\gfx\experimental</Filter>
     </ClInclude>
-    <ClInclude Include="include\gfx\experimental\IMeshSaver.h">
-      <Filter>Header Files\gfx\experimental</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gfx\experimental\SimpleMeshSaver.h">
+    <ClInclude Include="src\gfx\experimental\SimpleMeshExporter.h">
       <Filter>Source Files\gfx\experimental</Filter>
     </ClInclude>
   </ItemGroup>
@@ -251,10 +254,10 @@
     <ClCompile Include="src\Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gfx\experimental\SimpleMeshSaver.cpp">
+    <ClCompile Include="src\gfx\experimental\SimpleMeshImporter.cpp">
       <Filter>Source Files\gfx\experimental</Filter>
     </ClCompile>
-    <ClCompile Include="src\gfx\experimental\SimpleMeshLoader.cpp">
+    <ClCompile Include="src\gfx\experimental\SimpleMeshExporter.cpp">
       <Filter>Source Files\gfx\experimental</Filter>
     </ClCompile>
   </ItemGroup>
@@ -267,6 +270,9 @@
     </None>
     <None Include="include\Timer.inl">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="include\gfx\VertexFormat.inl">
+      <Filter>Header Files\gfx</Filter>
     </None>
   </ItemGroup>
 </Project>

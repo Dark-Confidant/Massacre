@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "SimpleMeshSaver.h"
+#include "SimpleMeshExporter.h"
 
 #include <fstream>
 #include <SimpleMesh4.h>
@@ -26,12 +26,12 @@ const uint g_primitiveTypeTr[] =
 };
 } // ns
 
-rcptr<IMeshSaver> createSimpleMeshSaver()
+rcptr<IMeshExporter> createSimpleMeshExporter()
 {
-    return new SimpleMeshSaver;
+    return new SimpleMeshExporter;
 }
 
-bool SimpleMeshSaver::save(const Mesh& mesh, const char* filename) const
+bool SimpleMeshExporter::export_(const Mesh& mesh, const char* filename) const
 {
     auto& fmt = mesh.buffer->format();
 
@@ -76,14 +76,11 @@ bool SimpleMeshSaver::save(const Mesh& mesh, const char* filename) const
         return false;
 
 
-    const void* vertices = mesh.buffer->vertices()->map(mesh.startVertex, mesh.numVertices, GL_MAP_READ_BIT);
-    const void* indices  = mesh.buffer->indices()->map(mesh.startIndex, mesh.numIndices, GL_MAP_READ_BIT);
+    file.write((const char*) mesh.mapVertices(), header.numVertices * header.vertexSize);
+    file.write((const char*) mesh.mapIndices(), header.numIndices * sizeof(uint));
 
-    file.write((const char*) vertices, header.numVertices * header.vertexSize);
-    file.write((const char*) indices, header.numIndices * sizeof(uint));
-
-    mesh.buffer->vertices()->unmap();
-    mesh.buffer->indices()->unmap();
+    mesh.unmapVertices();
+    mesh.unmapIndices();
 
     return !!file;
 }

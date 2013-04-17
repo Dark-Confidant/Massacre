@@ -5,15 +5,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MassacreProto", "MassacrePr
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug Stress|Win32 = Debug Stress|Win32
+		Debug DLL|Win32 = Debug DLL|Win32
 		Debug|Win32 = Debug|Win32
+		Release DLL|Win32 = Release DLL|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{773A84D3-FF33-4E88-800A-BBEB30875280}.Debug Stress|Win32.ActiveCfg = Debug Stress|Win32
-		{773A84D3-FF33-4E88-800A-BBEB30875280}.Debug Stress|Win32.Build.0 = Debug Stress|Win32
+		{773A84D3-FF33-4E88-800A-BBEB30875280}.Debug DLL|Win32.ActiveCfg = Debug DLL|Win32
+		{773A84D3-FF33-4E88-800A-BBEB30875280}.Debug DLL|Win32.Build.0 = Debug DLL|Win32
 		{773A84D3-FF33-4E88-800A-BBEB30875280}.Debug|Win32.ActiveCfg = Debug|Win32
 		{773A84D3-FF33-4E88-800A-BBEB30875280}.Debug|Win32.Build.0 = Debug|Win32
+		{773A84D3-FF33-4E88-800A-BBEB30875280}.Release DLL|Win32.ActiveCfg = Release DLL|Win32
+		{773A84D3-FF33-4E88-800A-BBEB30875280}.Release DLL|Win32.Build.0 = Release DLL|Win32
 		{773A84D3-FF33-4E88-800A-BBEB30875280}.Release|Win32.ActiveCfg = Release|Win32
 		{773A84D3-FF33-4E88-800A-BBEB30875280}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

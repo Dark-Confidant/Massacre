@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MassacreBuildConfig.h"
+
 namespace mcr {
 
 typedef signed char sbyte;

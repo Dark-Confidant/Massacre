@@ -7,14 +7,14 @@ namespace mcr          {
 namespace gfx          {
 namespace experimental {
 
-class IMeshSaver: public RefCounted
+class IMeshExporter: public RefCounted
 {
 public:
-    virtual ~IMeshSaver() {}
-    virtual bool save(const Mesh& mesh, const char* filename) const = 0;
+    virtual ~IMeshExporter() {}
+    virtual bool export_(const Mesh& mesh, const char* filename) const = 0;
 };
 
-rcptr<IMeshSaver> createSimpleMeshSaver();
+rcptr<IMeshExporter> createSimpleMeshExporter();
 
 } // ns experimental
 } // ns gfx
