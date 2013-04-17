@@ -8,7 +8,7 @@
 namespace mcr {
 namespace gfx {
 
-uint VertexFormat::typeSize(uint type)
+MCR_EXTERN uint VertexFormat::typeSize(uint type)
 {
     switch (type)
     {
@@ -32,7 +32,7 @@ uint VertexFormat::typeSize(uint type)
 }
 
 
-VertexFormat::VertexFormat(const char* fmt):
+MCR_EXTERN VertexFormat::VertexFormat(const char* fmt):
     m_stride(0)
 {
     enum { WantLengthOrSemantic, WantType } mode = WantLengthOrSemantic;
@@ -98,7 +98,7 @@ VertexFormat::VertexFormat(const char* fmt):
 }
 
 
-std::string VertexFormat::toString() const
+MCR_EXTERN std::string VertexFormat::toString() const
 {
     std::string result;
 
