@@ -3,47 +3,17 @@
 
 #include "Debug.h"
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 namespace {
-
 uint ShaderTypes[] =
 {
     GL_VERTEX_SHADER,
     GL_GEOMETRY_SHADER,
     GL_FRAGMENT_SHADER
 };
-
 } // ns
-
-
-rcptr<Shader> Shader::create(Type type)
-{ return new Shader(type); }
-
-rcptr<Shader> Shader::createFromFile(IFile* file)
-{
-    Type type;
-    
-    switch (Path::ext(file->filename())[0])
-    {
-    case 'v': type = Vertex;   break;
-    case 'g': type = Geometry; break;
-    case 'f': type = Fragment; break;
-    default: return nullptr;
-    }
-
-    return createFromFile(type, file);
-}
-
-rcptr<Shader> Shader::createFromFile(Type type, IFile* file)
-{
-    auto result = new Shader(type);
-
-    result->setSourceFromFile(file);
-    return result;
-}
-
 
 Shader::Shader(Type type):
     m_type(type),
@@ -58,40 +28,6 @@ Shader::~Shader()
     glDeleteShader(m_handle);
 }
 
-
-void Shader::setSource(const char* source, bool recompile /*= true*/)
-{
-    m_sources.clear();
-
-    _preprocessSource(source);
-
-    m_sourcePtrs   .resize(m_sources.size());
-    m_sourceLengths.resize(m_sources.size());
-
-    for (uint i = 0; i < m_sources.size(); ++i)
-    {
-        m_sourcePtrs   [i] =       m_sources[i].c_str();
-        m_sourceLengths[i] = (int) m_sources[i].size();
-    }
-
-    _feedSource();
-
-    if (recompile)
-        compile();
-}
-
-void Shader::setSourceFromFile(IFile* file, bool recompile /*= true*/)
-{
-    auto length = (size_t) file->size();
-    auto contents = new char[length + 1];
-
-    file->read(contents, length);
-    contents[length] = 0;
-
-    setSource(contents, recompile);
-
-    delete [] contents;
-}
 
 bool Shader::compile()
 {
@@ -119,14 +55,34 @@ std::string Shader::log() const
     return buf;
 }
 
-int Shader::findConstant(const char* name) const
-{
-    for (int i = 0; i < (int) m_constants.size(); ++i)
-        if (m_constants[i].name == name)
-            return i;
 
-    return -1;
+//////////////////////////////////////////////////////////////////////////
+// Source stuff
+
+void Shader::setSource(const char* source, bool recompile /*= true*/)
+{
+    m_sources.clear();
+
+    _preprocessSource(source);
+
+    m_sourcePtrs   .resize(m_sources.size());
+    m_sourceLengths.resize(m_sources.size());
+
+    for (uint i = 0; i < m_sources.size(); ++i)
+    {
+        m_sourcePtrs   [i] =       m_sources[i].c_str();
+        m_sourceLengths[i] = (int) m_sources[i].size();
+    }
+
+    _feedSource();
+
+    if (recompile)
+        compile();
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Constant stuff
 
 void Shader::replaceConstant(int idx, const std::string& value)
 {
@@ -149,7 +105,6 @@ void Shader::replaceConstant(int idx, const std::string& value)
 // Preprocessing stuff
 
 namespace {
-
 const char* nextline(const char* str)
 {
     while (*str != '\r' && *str != '\n')
@@ -160,7 +115,6 @@ const char* nextline(const char* str)
 
     return ++str;
 }
-
 } // ns 
 
 void Shader::_feedSource()
@@ -255,3 +209,6 @@ void Shader::_parseType(const char* str, GlslType& type)
     default:  type.length = 1;
     }
 }
+
+} // ns gfx
+} // ns mcr

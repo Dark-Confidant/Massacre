@@ -53,20 +53,20 @@ public:
     const std::vector<std::string>& sources() const { return m_sources; }
 
     //! Set shader source and optionally recompile OpenGL binary
-    void setSource(const char* source, bool recompile = true);
+    MCR_EXTERN void setSource(const char* source, bool recompile = true);
 
     //! Set shader source from contents of file and optionally recompile
     void setSourceFromFile(IFile* reader, bool recompile = true);
 
 
     //! Compile shader
-    bool compile();
+    MCR_EXTERN bool compile();
 
     //! Whether shader was compiled successfully
     bool isValid() const { return m_valid; }
 
     //! Query shader compilation log
-    std::string log() const;
+    MCR_EXTERN std::string log() const;
 
 
     // TODO: document
@@ -78,7 +78,7 @@ public:
     const std::string& constantValue(int idx) const;
     const std::string& constantValue(const char* name) const;
 
-    void replaceConstant(int idx, const std::string& value);
+    MCR_EXTERN void replaceConstant(int idx, const std::string& value);
 
     template <typename T>
     void replaceConstant(int idx, const T& val);
@@ -87,14 +87,14 @@ public:
     void replaceConstant(const char* name, T val);
 
 protected:
-    Shader(Type type);
-    ~Shader();
+    MCR_EXTERN Shader(Type type);
+    MCR_EXTERN ~Shader();
 
-    void _feedSource();
-    void _preprocessSource(const char* source);
-    void _addSourceString(const char* first, const char* last);
-    bool _parseCommand(const char* str, const char*& cmdfirst, const char*& cmdlast, ConstantInfo& info);
-    void _parseType(const char* str, GlslType& type);
+    MCR_INTERN void _feedSource();
+    MCR_INTERN void _preprocessSource(const char* source);
+    MCR_INTERN void _addSourceString(const char* first, const char* last);
+    MCR_INTERN bool _parseCommand(const char* str, const char*& cmdfirst, const char*& cmdlast, ConstantInfo& info);
+    MCR_INTERN void _parseType(const char* str, GlslType& type);
 
     Type m_type;
     uint m_handle, m_htype;
