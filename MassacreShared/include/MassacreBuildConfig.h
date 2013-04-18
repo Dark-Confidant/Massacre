@@ -9,12 +9,17 @@
 #endif
 
 #if defined(_MSC_VER)
-#   if defined(MCR_DLL)
-#       define MCR_EXTERN __declspec(dllexport)
+#   if defined(MCR_STATIC)
+#       define MCR_EXTERN 
+#       define MCR_PLUGIN_EXTERN 
 #   else
-#       define MCR_EXTERN __declspec(dllimport) 
+#       if defined(MCR_DLL)
+#           define MCR_EXTERN __declspec(dllexport)
+#       else
+#           define MCR_EXTERN __declspec(dllimport) 
+#       endif
+#       define MCR_PLUGIN_EXTERN __declspec(dllexport)
 #   endif
-#   define MCR_PLUGIN_EXTERN __declspec(dllexport)
 #   define MCR_INTERN 
 #elif defined(__GNUC__) && (__GNUC__ >= 4)
 #   define MCR_EXTERN __attribute__ ((visibility ("default")))
