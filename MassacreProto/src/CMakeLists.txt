@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/include)
-include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/src)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreProto/extras/SimpleMesh)
 include_directories(${PROJECT_SOURCE_DIR}/MassacreShared/include)
@@ -27,6 +26,7 @@ set(GFX_SRC
   ${GFX_PATH}/VertexFormat.cpp
   ${GFX_PATH}/Context.cpp
   ${GFX_PATH}/GBuffer.cpp
+  ${GFX_PATH}/GType.cpp
   ${GFX_PATH}/ImageFormat.cpp
   ${GFX_PATH}/MaterialManager.cpp
   ${GFX_PATH}/RenderState.cpp
@@ -52,12 +52,21 @@ link_libraries(
   png
   yaml-cpp)
 
-add_executable(massacre
+add_executable(massacre-demo
   ${MASSACRE_SRC}
   ${GFX_SRC}
   ${GFX_RENDERABLES_SRC}
   ${GFX_EXPERIMENTAL_SRC}
   main.cpp)
 
-INSTALL(TARGETS massacre
+add_library(massacre SHARED
+  ${MASSACRE_SRC}
+  ${GFX_SRC}
+  ${GFX_RENDERABLES_SRC}
+  ${GFX_EXPERIMENTAL_SRC})
+
+install(TARGETS massacre-demo
         DESTINATION bin)
+
+install(TARGETS massacre
+        DESTINATION lib)
