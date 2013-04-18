@@ -61,17 +61,7 @@ void Mesh::load(IFile* file)
     file->read(attribs, header.numAttributes);
 
     for (uint i = 0; i < header.numAttributes; ++i)
-    {
-        static const GLenum glTypes[] =
-        {
-            GL_BYTE,  GL_UNSIGNED_BYTE,
-            GL_SHORT, GL_UNSIGNED_SHORT,
-            GL_INT,   GL_UNSIGNED_INT,
-            GL_FLOAT, GL_DOUBLE
-        };
-
-        fmt.addAttrib(glTypes[attribs[i].type], attribs[i].length);
-    }
+        fmt.addAttrib(GType::GType(attribs[i].type), attribs[i].length);
 
     delete [] attribs;
 

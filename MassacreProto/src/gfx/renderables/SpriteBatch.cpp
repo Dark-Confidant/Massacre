@@ -65,7 +65,7 @@ public:
         auto& attrib = m_batch->m_format->attrib(i);
         memcpy(
             &m_data->userData[attrib.offset], data,
-            attrib.length * VertexFormat::typeSize(attrib.type));
+            attrib.length * attrib.type.size());
     }
 
     void invalidate()
@@ -98,8 +98,8 @@ SpriteBatch::SpriteBatch(uint maxSprites, const VertexFormat& fmt):
     auto& posAttrib = *fmt.attribBySemantic(PositionSemantic);
     auto& tcAttrib  = *fmt.attribBySemantic(TexcoordSemantic);
 
-    assert(&posAttrib && posAttrib.length == 3 && posAttrib.type == GL_FLOAT);
-    assert(&tcAttrib  && tcAttrib .length == 2 && tcAttrib .type == GL_FLOAT);
+    assert(&posAttrib && posAttrib.length == 3 && posAttrib.type == GType::Float);
+    assert(&tcAttrib  && tcAttrib .length == 2 && tcAttrib .type == GType::Float);
 
 
     m_vertexSize = fmt.stride();

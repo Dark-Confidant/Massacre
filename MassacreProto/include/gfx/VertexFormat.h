@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "MassacreTypes.h"
+#include <gfx/GType.h>
 
 namespace mcr {
 namespace gfx {
@@ -12,16 +12,16 @@ class VertexFormat
 public:
     struct Attrib
     {
-        uint location, type, length, offset;
+        uint location;
+        GType type;
+        uint length, offset;
         char semantic;
     };
 
     MCR_EXTERN VertexFormat(const char* fmt = "");
 
-    MCR_EXTERN static uint typeSize(uint type);
-
-    uint addAttrib(uint type, uint length, char semantic, uint offset);
-    uint addAttrib(uint type, uint length, char semantic = '\0');
+    uint addAttrib(GType type, uint length, char semantic, uint offset);
+    uint addAttrib(GType type, uint length, char semantic = '\0');
 
     uint numAttribs() const;
 

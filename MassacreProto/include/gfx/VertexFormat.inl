@@ -1,14 +1,9 @@
 namespace mcr {
 namespace gfx {
 
-inline uint VertexFormat::addAttrib(uint type, uint length, char semantic, uint offset)
+inline uint VertexFormat::addAttrib(GType type, uint length, char semantic, uint offset)
 {
-    auto size = typeSize(type);
-
-    if (!size)
-        return -1;
-
-    auto stride = offset + length * size;
+    auto stride = offset + length * type.size();
 
     if (m_stride < stride)
         m_stride = stride;
@@ -21,7 +16,7 @@ inline uint VertexFormat::addAttrib(uint type, uint length, char semantic, uint 
     return loc;
 }
 
-inline uint VertexFormat::addAttrib(uint type, uint length, char semantic /*= '\0'*/)
+inline uint VertexFormat::addAttrib(GType type, uint length, char semantic /*= '\0'*/)
 {
     return addAttrib(type, length, semantic, m_stride);
 }

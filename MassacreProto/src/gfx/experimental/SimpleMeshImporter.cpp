@@ -5,16 +5,6 @@ namespace mcr          {
 namespace gfx          {
 namespace experimental {
 
-namespace {
-const GLenum g_attribTypesTr[] =
-{
-    GL_BYTE,  GL_UNSIGNED_BYTE,
-    GL_SHORT, GL_UNSIGNED_SHORT,
-    GL_INT,   GL_UNSIGNED_INT,
-    GL_FLOAT, GL_DOUBLE
-};
-} // ns
-
 rcptr<IMeshImporter> createSimpleMeshLoader()
 {
     return new SimpleMeshImporter;
@@ -34,7 +24,7 @@ bool SimpleMeshImportTask::estimate(MeshInfo& infoOut)
     m_file->read(attribs, m_header.numAttributes);
 
     for (uint i = 0; i < m_header.numAttributes; ++i)
-        m_info.vertexFormat.addAttrib(g_attribTypesTr[attribs[i].type], attribs[i].length);
+        m_info.vertexFormat.addAttrib(GType::GType(attribs[i].type), attribs[i].length); // sic!
 
     delete [] attribs;
 
@@ -62,7 +52,7 @@ bool SimpleMeshImportTask::import(const VertexFormat& bufferFormat, Mesh& mesh)
 
     size_t written = 0;
 
-    auto vertices = mesh.mapVertices(GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+    auto vertices = mesh.mapVertices(GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT); // TODO: access enum
     auto indices  = mesh.mapIndices (GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
 
     m_file->seek(m_header.vertexDataOffset);

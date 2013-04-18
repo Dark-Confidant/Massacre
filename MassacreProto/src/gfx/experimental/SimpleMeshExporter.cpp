@@ -64,7 +64,7 @@ bool SimpleMeshExporter::export_(const Mesh& mesh, const char* filename) const
 
     for (uint i = 0; i < header.numAttributes; ++i)
     {
-        attribs[i].type   = fmt.attrib(i).type;
+        attribs[i].type   = fmt.attrib(i).type.type;
         attribs[i].length = fmt.attrib(i).length;
     }
 

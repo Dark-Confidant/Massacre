@@ -68,7 +68,7 @@ void VertexArray::setFormat(const VertexFormat& fmt)
 
         glEnableVertexAttribArray(i);
         glVertexAttribPointer(i,
-            attrib.length, attrib.type, GL_FALSE,
+            attrib.length, attrib.type.toGLType(), GL_FALSE,
             fmt.stride(), reinterpret_cast<const GLvoid*>(attrib.offset));
     }
 }

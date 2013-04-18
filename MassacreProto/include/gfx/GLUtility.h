@@ -1,8 +1,8 @@
 #pragma once
 
-#include "math/Matrix.h"
 #include <string>
 #include <type_traits>
+#include "math/Matrix.h"
 
 namespace mcr {
 
