@@ -221,7 +221,6 @@
     <ClInclude Include="include\gfx\VertexFormat.h" />
     <ClInclude Include="include\Io.h" />
     <ClInclude Include="include\IPlugin.h" />
-    <ClInclude Include="include\SmallObject.h" />
     <ClInclude Include="include\Timer.h" />
     <ClInclude Include="src\gfx\experimental\SimpleMeshImporter.h" />
     <ClInclude Include="src\gfx\experimental\SimpleMeshExporter.h" />
@@ -255,7 +254,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release DLL|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\SmallObject.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Universe.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
