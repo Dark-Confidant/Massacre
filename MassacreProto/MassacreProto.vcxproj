@@ -87,7 +87,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MCR_STATIC;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(SdlDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);$(FreetypeDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Universe.h</PrecompiledHeaderFile>
       <StructMemberAlignment>Default</StructMemberAlignment>
@@ -126,7 +126,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MCR_STATIC;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(SdlDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);$(FreetypeDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Universe.h</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -196,7 +196,6 @@
     <ClInclude Include="include\Debug.h" />
     <ClInclude Include="include\ExternalSingleton.h" />
     <ClInclude Include="include\FileSystem.h" />
-    <ClInclude Include="include\FnTraits.h" />
     <ClInclude Include="include\gfx\Context.h" />
     <ClInclude Include="include\gfx\experimental\IMeshImporter.h" />
     <ClInclude Include="include\gfx\experimental\IMeshExporter.h" />
@@ -204,6 +203,7 @@
     <ClInclude Include="include\gfx\experimental\MeshStorage.h" />
     <ClInclude Include="include\gfx\GBuffer.h" />
     <ClInclude Include="include\gfx\GLUtility.h" />
+    <ClInclude Include="include\gfx\GType.h" />
     <ClInclude Include="include\gfx\Image.h" />
     <ClInclude Include="include\gfx\ImageFormat.h" />
     <ClInclude Include="include\gfx\ISprite.h" />
@@ -237,6 +237,7 @@
     <ClCompile Include="src\gfx\experimental\SimpleMeshExporter.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
     <ClCompile Include="src\gfx\GLUtility.cpp" />
+    <ClCompile Include="src\gfx\GType.cpp" />
     <ClCompile Include="src\gfx\Image.cpp" />
     <ClCompile Include="src\gfx\ImageFormat.cpp" />
     <ClCompile Include="src\gfx\Material.cpp" />
@@ -250,7 +251,10 @@
     <ClCompile Include="src\gfx\Texture.cpp" />
     <ClCompile Include="src\gfx\VertexArray.cpp" />
     <ClCompile Include="src\gfx\VertexFormat.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release DLL|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\SmallObject.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Universe.cpp">

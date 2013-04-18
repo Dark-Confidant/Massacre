@@ -135,9 +135,6 @@
     <ClInclude Include="include\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\FnTraits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -179,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="src\gfx\experimental\SimpleMeshExporter.h">
       <Filter>Source Files\gfx\experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gfx\GType.h">
+      <Filter>Header Files\gfx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="src\gfx\experimental\SimpleMeshExporter.cpp">
       <Filter>Source Files\gfx\experimental</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\GType.cpp">
+      <Filter>Source Files\gfx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
