@@ -17,8 +17,8 @@ set(HEADERS_MATH
   include/math/Matrix.h)
 
 install(FILES ${HEADERS} 
-        DESTINATION include/massacre)
+        DESTINATION include/mcr)
 install(FILES ${HEADERS_BB} 
-        DESTINATION include/massacre/bb)
+        DESTINATION include/mcr/bb)
 install(FILES ${HEADERS_MATH} 
-        DESTINATION include/massacre/math)
+        DESTINATION include/mcr/math)
