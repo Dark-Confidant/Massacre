@@ -8,7 +8,6 @@ set(HEADERS
     FileSystem.h
     Io.h
     IPlugin.h
-    SmallObject.h
     Timer.h
     Timer.inl)
 set(HEADERS_GFX

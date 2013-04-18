@@ -37,7 +37,6 @@ set(MASSACRE_SRC
   Camera.cpp
   Debug.cpp
   FileSystem.cpp
-  SmallObject.cpp
   Timer.cpp
   Config.cpp
   Universe.cpp)
