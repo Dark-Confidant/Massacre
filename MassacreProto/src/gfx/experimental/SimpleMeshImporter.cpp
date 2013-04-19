@@ -24,7 +24,7 @@ bool SimpleMeshImportTask::estimate(MeshInfo& infoOut)
     m_file->read(attribs, m_header.numAttributes);
 
     for (uint i = 0; i < m_header.numAttributes; ++i)
-        m_info.vertexFormat.addAttrib(GType::GType(attribs[i].type), attribs[i].length); // sic!
+        m_info.vertexFormat.addAttrib(GType(attribs[i].type), attribs[i].length); // sic!
 
     delete [] attribs;
 
