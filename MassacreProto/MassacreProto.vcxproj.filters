@@ -271,5 +271,8 @@
     <None Include="include\gfx\VertexFormat.inl">
       <Filter>Header Files\gfx</Filter>
     </None>
+    <None Include="include\gfx\GBuffer.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -264,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\gfx\Context.inl" />
+    <None Include="include\gfx\GBuffer.inl" />
     <None Include="include\gfx\Shader.inl" />
     <None Include="include\gfx\VertexFormat.inl" />
     <None Include="include\Timer.inl" />
