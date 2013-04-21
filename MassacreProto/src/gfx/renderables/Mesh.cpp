@@ -61,7 +61,7 @@ void Mesh::load(IFile* file)
     file->read(attribs, header.numAttributes);
 
     for (uint i = 0; i < header.numAttributes; ++i)
-        fmt.addAttrib(GType(attribs[i].type), attribs[i].length);
+        fmt.addAttrib(GType(GType::SByte + attribs[i].type), attribs[i].length); // sic!
 
     delete [] attribs;
 
