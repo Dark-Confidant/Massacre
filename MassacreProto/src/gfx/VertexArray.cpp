@@ -15,8 +15,8 @@ rcptr<VertexArray> VertexArray::create(uint vertexDataSize, uint indexDataSize)
 {
     auto va = new VertexArray;
 
-    va->m_vertices->init(vertexDataSize, GL_STATIC_DRAW);
-    va->m_indices->init(indexDataSize, GL_STATIC_DRAW);
+    va->m_vertices->init(vertexDataSize, GBuffer::StaticDraw);
+    va->m_indices->init(indexDataSize, GBuffer::StaticDraw);
 
     return va;
 }
@@ -27,8 +27,8 @@ rcptr<VertexArray> VertexArray::create(
 {
     auto va = new VertexArray;
 
-    va->m_vertices->init(vertexData, vertexDataSize, GL_STATIC_DRAW);
-    va->m_indices->init(indexData, indexDataSize, GL_STATIC_DRAW);
+    va->m_vertices->init(vertexData, vertexDataSize, GBuffer::StaticDraw);
+    va->m_indices->init(indexData, indexDataSize, GBuffer::StaticDraw);
 
     return va;
 }
@@ -39,8 +39,8 @@ VertexArray::VertexArray()
     glGenVertexArrays(1, &m_handle);
     glBindVertexArray(m_handle);
 
-    m_vertices = GBuffer::create(GL_ARRAY_BUFFER);
-    m_indices = GBuffer::create(GL_ELEMENT_ARRAY_BUFFER);
+    m_vertices = GBuffer::create(GBuffer::ArrayBuffer);
+    m_indices = GBuffer::create(GBuffer::ElementArrayBuffer);
 }
 
 VertexArray::~VertexArray()
@@ -92,7 +92,7 @@ void VertexArray::transformAttribs(uint attribIdx, const mat4& tf, uint startVer
     auto v = (byte*) m_vertices->map(
         startVertex * vertexSize,
         numVertices * vertexSize,
-        GL_MAP_READ_BIT | GL_MAP_WRITE_BIT) + attrib.offset;
+        GBuffer::Read | GBuffer::Write) + attrib.offset;
 
     vec4 ref(0, 0, 0, 1);
 
@@ -135,9 +135,9 @@ void VertexArray::transformAttribsIndexed(uint attribIdx, const mat4& tf, uint s
     auto ind = (const uint*) m_indices->map(
         startIndex * sizeof(uint),
         numIndices * sizeof(uint),
-        GL_MAP_READ_BIT);
+        GBuffer::Read);
 
-    auto vert = (byte*) m_vertices->map(GL_MAP_WRITE_BIT)
+    auto vert = (byte*) m_vertices->map(GBuffer::Write)
               + attrib.offset;
 
     std::set<uint> transformed;

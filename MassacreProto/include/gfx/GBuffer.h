@@ -8,24 +8,52 @@ namespace gfx {
 class GBuffer: public RefCounted
 {
 public:
-    static rcptr<GBuffer> create(uint type)
+    enum Type
     {
-        return new GBuffer(type);
-    }
+        ArrayBuffer,
+        ElementArrayBuffer,
+        UniformBuffer,
+        TextureBuffer,
+        TransformFeedbackBuffer
+        //AtomicCounterBuffer,
+        //CopyReadBuffer,
+        //CopyWriteBuffer,
+        //DrawIndirectBuffer,
+        //DispatchIndirectBuffer,
+        //PixelPackBuffer,
+        //PixelUnpackBuffer,
+        //ShaderStorageBuffer,
+    };
 
-    static rcptr<GBuffer> create(uint type, uint size, uint usage)
+    enum Usage
     {
-        auto buffer = new GBuffer(type);
-        buffer->init(size, usage);
-        return buffer;
-    }
+        StreamDraw,  StreamRead,  StreamCopy,
+        StaticDraw,  StaticRead,  StaticCopy,
+        DynamicDraw, DynamicRead, DynamicCopy
+    };
 
+    enum Access: ushort
+    {
+        Read             = 1 << 0,
+        Write            = 1 << 1,
+        InvalidateRange  = 1 << 2,
+        InvalidateBuffer = 1 << 3,
+        FlushExplicit    = 1 << 4,
+        Unsynchronized   = 1 << 5,
 
-    void init(uint size, uint usage);
-    void init(const void* data, uint size, uint usage);
+        ReplaceSome = Write | InvalidateRange,
+        ReplaceAll  = Write | InvalidateBuffer
+    };
 
-    uint type() const { return m_type; }
-    uint handle() const { return m_handle; }
+    static rcptr<GBuffer> create(Type type);
+    static rcptr<GBuffer> create(Type type, uint size, Usage usage);
+
+    void init(uint size, Usage usage);
+    void init(const void* data, uint size, Usage usage);
+
+    Type type() const;
+    uint target() const;
+    uint handle() const;
 
     uint capacity() const;
 
@@ -38,11 +66,14 @@ public:
     void unmap() const;
 
 protected:
-    GBuffer(uint type);
+    GBuffer(Type type);
     ~GBuffer();
 
-    uint m_type, m_handle;
+    Type m_type;
+    uint m_target, m_handle;
 };
 
 } // ns gfx
 } // ns mcr
+
+#include "GBuffer.inl"

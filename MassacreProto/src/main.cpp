@@ -101,8 +101,8 @@ public:
         if (!fail)
         {
             m_buffer->setFormat(total.vertexFormat);
-            m_buffer->vertices()->init(total.numVertices * total.vertexFormat.stride(), GL_STATIC_DRAW);
-            m_buffer->indices()->init(total.numIndices * sizeof(uint), GL_STATIC_DRAW);
+            m_buffer->vertices()->init(total.numVertices * total.vertexFormat.stride(), gfx::GBuffer::StaticDraw);
+            m_buffer->indices()->init(total.numIndices * sizeof(uint), gfx::GBuffer::StaticDraw);
 
             for (uint i = 0; i < tasks.size(); ++i)
             {
@@ -183,7 +183,7 @@ public:
         auto transparentAtlas = m_mm.parseAtlasTMP("Models/Arena/trans.json");
 
         MeshManager mgr(m_mm.fs());
-        mgr.load("foo", "bar", "baz", nullptr);
+        //mgr.load("foo", "bar", "baz", nullptr);
 
         auto mesh     = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Arena/arena.mesh"));
         m_arenaBuffer = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack

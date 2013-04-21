@@ -242,12 +242,12 @@ void Context::bindBuffer(GBuffer* buffer)
     if (!buffer)
         return;
 
-    auto& slot = m_buffers[bufferTargetByEnum(buffer->type())];
+    auto& slot = m_buffers[bufferTargetByEnum(buffer->target())];
 
     if (slot == buffer)
         return;
 
-    glBindBuffer(buffer->type(), buffer->handle());
+    glBindBuffer(buffer->target(), buffer->handle());
     slot = buffer;
 }
 

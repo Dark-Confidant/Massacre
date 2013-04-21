@@ -72,10 +72,10 @@ void Mesh::load(IFile* file)
 
     const uint vertexDataSize = header.vertexSize * header.numVertices;
 
-    m_buffer->vertices()->init(vertexDataSize, GL_STATIC_DRAW);
+    m_buffer->vertices()->init(vertexDataSize, GBuffer::StaticDraw);
     
     file->seek(header.vertexDataOffset);
-    file->read(m_buffer->vertices()->map(GL_MAP_WRITE_BIT), vertexDataSize);
+    file->read(m_buffer->vertices()->map(GBuffer::ReplaceAll), vertexDataSize);
 
     m_buffer->vertices()->unmap();
 
@@ -84,10 +84,10 @@ void Mesh::load(IFile* file)
 
     const uint indexDataSize = sizeof(uint) * header.numIndices;
 
-    m_buffer->indices()->init(indexDataSize, GL_STATIC_DRAW);
+    m_buffer->indices()->init(indexDataSize, GBuffer::StaticDraw);
 
     file->seek(header.indexDataOffset);
-    file->read(m_buffer->indices()->map(GL_MAP_WRITE_BIT), indexDataSize);
+    file->read(m_buffer->indices()->map(GBuffer::ReplaceAll), indexDataSize);
 
     m_buffer->indices()->unmap();
 

@@ -52,8 +52,8 @@ bool SimpleMeshImportTask::import(const VertexFormat& bufferFormat, Mesh& mesh)
 
     size_t written = 0;
 
-    auto vertices = mesh.mapVertices(GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT); // TODO: access enum
-    auto indices  = mesh.mapIndices (GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+    auto vertices = mesh.mapVertices(GBuffer::ReplaceSome);
+    auto indices  = mesh.mapIndices (GBuffer::ReplaceSome);
 
     m_file->seek(m_header.vertexDataOffset);
     written += m_file->read(vertices, m_header.numVertices * m_header.vertexSize);
