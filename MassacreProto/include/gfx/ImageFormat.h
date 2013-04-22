@@ -1,6 +1,8 @@
 #pragma once
 
-#include "MassacreTypes.h"
+#include <MassacreTypes.h>
+
+// TODO: own enums
 
 namespace mcr {
 namespace gfx {
@@ -9,12 +11,12 @@ class ImageFormat
 {
 public:
     ImageFormat();
-    ~ImageFormat() {}
+    ~ImageFormat() {} // inherit not
 
-    static ImageFormat byEnum(uint openGLEnum);
+    static ImageFormat byGLEnum(uint glEnum);
     static ImageFormat byComponents(uint components, bool allowCompression = true);
 
-    uint openGLEnum() const { return m_enum; }
+    uint toGLEnum() const { return m_enum; }
     uint components() const { return m_components; }
 
 protected:

@@ -1,30 +1,28 @@
 #include "Universe.h"
 #include "gfx/ImageFormat.h"
 
-#include <stdexcept>
-
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 ImageFormat::ImageFormat(): m_enum(GL_NONE), m_components(0) {}
-ImageFormat::ImageFormat(uint openGLenum, uint components): m_enum(openGLenum), m_components(components) {}
+ImageFormat::ImageFormat(uint glEnum, uint components): m_enum(glEnum), m_components(components) {}
 
-ImageFormat ImageFormat::byEnum(uint openGLEnum)
+ImageFormat ImageFormat::byGLEnum(uint glEnum)
 {
-    switch (openGLEnum)
+    switch (glEnum)
     {
     case GL_RED: case GL_GREEN: case GL_BLUE: case GL_ALPHA:
     case GL_LUMINANCE: case GL_LUMINANCE_ALPHA:
-        return ImageFormat(openGLEnum, 1);
+        return ImageFormat(glEnum, 1);
 
     case GL_RGB:
-        return ImageFormat(openGLEnum, 3);
+        return ImageFormat(glEnum, 3);
 
     case GL_RGBA:
-        return ImageFormat(openGLEnum, 4);
+        return ImageFormat(glEnum, 4);
 
     default:
-        return ImageFormat(openGLEnum, 0);
+        return ImageFormat(glEnum, 0);
     }
 }
 
@@ -38,3 +36,6 @@ ImageFormat ImageFormat::byComponents(uint components, bool allowCompression)
     default: return ImageFormat(GL_NONE, components);
     }
 }
+
+} // ns gfx
+} // ns mcr
