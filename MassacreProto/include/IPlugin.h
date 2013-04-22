@@ -1,5 +1,6 @@
 #pragma once
 
+#include <gfx/experimental/IImageImporter.h>
 #include <gfx/experimental/IMeshImporter.h>
 #include <gfx/experimental/IMeshExporter.h>
 
@@ -41,13 +42,25 @@ class IPlugin
 public:
     virtual ~IPlugin() {}
 
+    //! Number of implemented image importers.
+    virtual uint numImageImporters() const
+    {
+        return 0;
+    }
+
+    //! Create an instance of the ith image importer, where 0 <= i < numImageImporters().
+    virtual rcptr<gfx::experimental::IImageImporter> createImageImporter()
+    {
+        return nullptr;
+    }
+
     //! Number of implemented mesh importers.
     virtual uint numMeshImporters() const
     {
         return 0;
     }
 
-    //! Create ith mesh importer, where 0 <= i < numMeshImporters().
+    //! Create an instance of the ith mesh importer, where 0 <= i < numMeshImporters().
     virtual rcptr<gfx::experimental::IMeshImporter> createMeshImporter(uint i) const
     {
         return nullptr;
@@ -59,7 +72,7 @@ public:
         return 0;
     }
 
-    //! Create ith mesh exporter, where 0 <= i < numMeshExporters().
+    //! Create an instance of the ith mesh exporter, where 0 <= i < numMeshExporters().
     virtual rcptr<gfx::experimental::IMeshExporter> createMeshExporter(uint i) const
     {
         return nullptr;
