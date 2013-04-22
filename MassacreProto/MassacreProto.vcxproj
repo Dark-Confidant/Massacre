@@ -197,6 +197,7 @@
     <ClInclude Include="include\ExternalSingleton.h" />
     <ClInclude Include="include\FileSystem.h" />
     <ClInclude Include="include\gfx\Context.h" />
+    <ClInclude Include="include\gfx\experimental\IImageImporter.h" />
     <ClInclude Include="include\gfx\experimental\IMeshImporter.h" />
     <ClInclude Include="include\gfx\experimental\IMeshExporter.h" />
     <ClInclude Include="include\gfx\experimental\Mesh.h" />
@@ -265,6 +266,7 @@
   <ItemGroup>
     <None Include="include\gfx\Context.inl" />
     <None Include="include\gfx\GBuffer.inl" />
+    <None Include="include\gfx\Image.inl" />
     <None Include="include\gfx\Shader.inl" />
     <None Include="include\gfx\VertexFormat.inl" />
     <None Include="include\Timer.inl" />

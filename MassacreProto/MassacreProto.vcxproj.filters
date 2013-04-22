@@ -177,6 +177,9 @@
     <ClInclude Include="include\gfx\GType.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
+    <ClInclude Include="include\gfx\experimental\IImageImporter.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\renderables\Mesh.cpp">
@@ -272,6 +275,9 @@
       <Filter>Header Files\gfx</Filter>
     </None>
     <None Include="include\gfx\GBuffer.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\gfx\Image.inl">
       <Filter>Header Files\gfx</Filter>
     </None>
   </ItemGroup>

@@ -12,10 +12,12 @@ set(HEADERS
     Timer.inl)
 set(HEADERS_GFX
     gfx/Context.h
+    gfx/Context.inl
     gfx/GBuffer.h
     gfx/GLUtility.h
     gfx/GType.h
     gfx/Image.h
+    gfx/Image.inl
     gfx/ImageFormat.h
     gfx/ISprite.h
     gfx/Material.h
@@ -23,14 +25,14 @@ set(HEADERS_GFX
     gfx/RenderAtom.h
     gfx/RenderState.h
     gfx/Shader.h
+    gfx/Shader.inl
     gfx/ShaderProgram.h
     gfx/Texture.h
     gfx/VertexArray.h
     gfx/VertexFormat.h
-    gfx/Context.inl
-    gfx/Shader.inl
     gfx/VertexFormat.inl)
 set(HEADERS_GFXE
+    gfx/experimental/IImageImporter.h
     gfx/experimental/IMeshExporter.h
     gfx/experimental/IMeshImporter.h
     gfx/experimental/Mesh.h
