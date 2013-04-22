@@ -19,7 +19,7 @@ public:
 
 
     //! Load image data of signature-derived format from the specified file
-    bool load(IFile* file);
+    MCR_EXTERN bool load(IFile* file);
 
 
     //! Image file name (if any)
@@ -50,3 +50,5 @@ protected:
 
 } // ns gfx
 } // ns mcr
+
+#include "Image.inl"

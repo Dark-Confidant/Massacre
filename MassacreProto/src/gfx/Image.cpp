@@ -1,6 +1,8 @@
 #include "Universe.h"
 #include "gfx/Image.h"
 
+// TODO: move to pluggable loaders
+
 #include <png.h>
 
 // libjpeg-turbo redefines FAR
@@ -9,36 +11,8 @@
 #endif
 #include <jpeglib.h>
 
-using namespace mcr;
-using namespace gfx;
-
-rcptr<Image> Image::create(const ivec2& size, const ImageFormat& fmt)
-{
-    auto img = new Image;
-
-    img->m_size = size;
-    img->m_format = fmt;
-    img->m_data = new byte[fmt.components() * size.x() * size.y()];
-
-    return img;
-}
-
-rcptr<Image> Image::createFromFile(IFile* file)
-{
-    auto img = new Image;
-
-    img->load(file);
-
-    return img;
-}
-
-Image::Image(): m_data() {}
-
-Image::~Image()
-{
-    if (m_data)
-        delete [] m_data;
-}
+namespace mcr {
+namespace gfx {
 
 bool Image::load(IFile* file)
 {
@@ -63,7 +37,7 @@ bool Image::load(IFile* file)
         file->read(header);
 
         m_size = ivec2(header.w, header.h);
-        m_format = ImageFormat::byEnum(header.fmt);
+        m_format = ImageFormat::byGLEnum(header.fmt);
 
         m_data = new byte[header.size];
 
@@ -241,3 +215,6 @@ bool Image::load(IFile* file)
 
     return false; // unrecognized format
 }
+
+} // ns gfx
+} // ns mcr
