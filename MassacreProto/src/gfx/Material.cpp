@@ -1,8 +1,8 @@
 #include "Universe.h"
 #include <mcr/gfx/Material.h>
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 rcptr<Material> Material::create(byte numTex)
 {
@@ -14,3 +14,6 @@ rcptr<Material> Material::create(byte numTex)
 
 Material::Material(): m_passHint(0) { m_renderStateHash = m_renderState.hash(); }
 Material::~Material() {}
+
+} // ns gfx
+} // ns mcr

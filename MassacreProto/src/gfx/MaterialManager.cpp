@@ -14,8 +14,8 @@
 #   include <yaml-cpp/yaml.h>
 #endif
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 Texture* MaterialManager::getTexture(const char* filename)
 {
@@ -314,3 +314,6 @@ void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
         mtl->setRenderState(rs);
     }
 }
+
+} // ns gfx
+} // ns mcr

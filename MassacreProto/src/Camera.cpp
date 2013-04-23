@@ -3,7 +3,7 @@
 
 #include <ctime>
 
-using namespace mcr;
+namespace mcr {
 
 Camera::Camera():
     m_fov(65.f * math::deg2rad),
@@ -32,3 +32,5 @@ void Camera::dumpMatrices()
     //m_ubo->init(nullptr, 0, gfx::GBuffer::DynamicDraw);
     m_ubo->init(&m, sizeof(m), gfx::GBuffer::DynamicDraw);
 }
+
+} // ns mcr

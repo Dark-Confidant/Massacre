@@ -5,12 +5,12 @@
 #include <fstream>
 #include <SimpleMesh3.h>
 
-using namespace mcr;
-using namespace gfx;
 using namespace SimpleMesh;
 
-namespace {
+namespace mcr {
+namespace gfx {
 
+namespace {
 Texture* getCachedTexture(FileSystem* fs, const std::string& name)
 {
     static std::map<std::string, rcptr<Texture>> cache;
@@ -21,7 +21,6 @@ Texture* getCachedTexture(FileSystem* fs, const std::string& name)
 
     return tex;
 }
-
 } // ns
 
 
@@ -177,3 +176,6 @@ void Mesh::optimizeAtomsTMP()
             m_parts.push_back(atom);
     }
 }
+
+} // ns gfx
+} // ns mcr

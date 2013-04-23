@@ -1,8 +1,8 @@
 #include "Universe.h"
 #include <mcr/gfx/renderables/SpriteBatch.h>
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 //////////////////////////////////////////////////////////////////////////
 // Internal sprite class
@@ -210,3 +210,6 @@ void SpriteBatch::applyChanges()
 
     m_buffer->vertices()->unmap();
 }
+
+} // ns gfx
+} // ns mcr

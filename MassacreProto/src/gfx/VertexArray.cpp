@@ -3,8 +3,8 @@
 
 #include <set>
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 rcptr<VertexArray> VertexArray::create()
 {
@@ -165,3 +165,6 @@ void VertexArray::transformAttribsIndexed(uint attribIdx, const mat4& tf, uint s
     m_vertices->unmap();
     m_indices->unmap();
 }
+
+} // ns gfx
+} // ns mcr

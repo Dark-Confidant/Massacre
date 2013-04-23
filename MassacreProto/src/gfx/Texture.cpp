@@ -3,8 +3,8 @@
 
 #include <algorithm>
 
-using namespace mcr;
-using namespace gfx;
+namespace mcr {
+namespace gfx {
 
 rcptr<Texture> Texture::createFromFile(IFile* file, rcptr<Image>* imgOut)
 {
@@ -92,3 +92,6 @@ rcptr<Image> Texture::download()
 
     return img;
 }
+
+} // ns gfx
+} // ns mcr

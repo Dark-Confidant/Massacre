@@ -9,7 +9,7 @@
 #   include <dirent.h>
 #endif
 
-using namespace mcr;
+namespace mcr {
 
 //////////////////////////////////////////////////////////////////////////
 // path functions
@@ -193,3 +193,4 @@ rcptr<IFile> FileSystem::openFile(const char* filename, std::string* pathOut)
     return file;
 }
 
+} // ns mcr
