@@ -13,7 +13,6 @@ set(GFX_EXPERIMENTAL_SRC
 set(GFXR_PATH gfx/renderables)
 set(GFX_RENDERABLES_SRC
   ${GFXR_PATH}/Mesh.cpp
-  ${GFXR_PATH}/Renderable.cpp
   ${GFXR_PATH}/SpriteBatch.cpp)
 
 set(GFX_PATH gfx)
