@@ -180,6 +180,9 @@
     <ClInclude Include="include\gfx\experimental\IImageImporter.h">
       <Filter>Header Files\gfx\experimental</Filter>
     </ClInclude>
+    <ClInclude Include="src\gfx\GLEnums.inl">
+      <Filter>Source Files\gfx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\renderables\Mesh.cpp">
@@ -190,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="src\gfx\renderables\SpriteBatch.cpp">
       <Filter>Source Files\gfx\renderables</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\RenderState.cpp">
-      <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\Shader.cpp">
       <Filter>Source Files\gfx</Filter>
@@ -278,6 +278,9 @@
       <Filter>Header Files\gfx</Filter>
     </None>
     <None Include="include\gfx\Image.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\gfx\RenderState.inl">
       <Filter>Header Files\gfx</Filter>
     </None>
   </ItemGroup>

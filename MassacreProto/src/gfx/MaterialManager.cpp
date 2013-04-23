@@ -196,28 +196,28 @@ ShaderProgram* MaterialManager::_getShaderProgram(const std::set<std::string>& f
 
 void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
 {
-    static const std::pair<std::string, int> literalArray[] =
+    static const std::pair<std::string, uint> literalArray[] =
     {
-        std::make_pair("never",    GL_NEVER),
-        std::make_pair("less",     GL_LESS),
-        std::make_pair("equal",    GL_EQUAL),
-        std::make_pair("lequal",   GL_LEQUAL),
-        std::make_pair("greater",  GL_GREATER),
-        std::make_pair("notequal", GL_NOTEQUAL),
-        std::make_pair("gequal",   GL_GEQUAL),
-        std::make_pair("always",   GL_ALWAYS),
-        std::make_pair("one",      GL_ONE),
-        std::make_pair("zero",     GL_ZERO),
+        std::make_pair("never",    DepthFn::Never),
+        std::make_pair("less",     DepthFn::Less),
+        std::make_pair("equal",    DepthFn::Equal),
+        std::make_pair("lequal",   DepthFn::LEqual),
+        std::make_pair("greater",  DepthFn::Greater),
+        std::make_pair("notequal", DepthFn::NotEqual),
+        std::make_pair("gequal",   DepthFn::GEqual),
+        std::make_pair("always",   DepthFn::Always),
 
-        std::make_pair("srccolor",         GL_SRC_COLOR),
-        std::make_pair("oneminussrccolor", GL_ONE_MINUS_SRC_COLOR),
-        std::make_pair("srcalpha",         GL_SRC_ALPHA),
-        std::make_pair("oneminussrcalpha", GL_ONE_MINUS_SRC_ALPHA),
-        std::make_pair("dstalpha",         GL_DST_ALPHA),
-        std::make_pair("oneminusdstalpha", GL_ONE_MINUS_DST_ALPHA),
-        std::make_pair("dstcolor",         GL_DST_COLOR),
-        std::make_pair("oneminusdstcolor", GL_ONE_MINUS_DST_COLOR),
-        std::make_pair("srcalphasaturate", GL_SRC_ALPHA_SATURATE),
+        std::make_pair("one",               BlendFn::One),
+        std::make_pair("zero",              BlendFn::Zero),
+        std::make_pair("srccolor",          BlendFn::SrcColor),
+        std::make_pair("oneminussrccolor",  BlendFn::OneMinusSrcColor),
+        std::make_pair("srcalpha",          BlendFn::SrcAlpha),
+        std::make_pair("oneminussrcalpha",  BlendFn::OneMinusSrcAlpha),
+        std::make_pair("dstalpha",          BlendFn::DstAlpha),
+        std::make_pair("oneminusdstalpha",  BlendFn::OneMinusDstAlpha),
+        std::make_pair("dstcolor",          BlendFn::DstColor),
+        std::make_pair("oneminusdstcolor",  BlendFn::OneMinusDstColor),
+        std::make_pair("srcalphasaturate",  BlendFn::SrcAlphaSaturate),
     };
 
     static const std::map<std::string, int> literals(
@@ -257,7 +257,7 @@ void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
 
                 auto lit = literals.find(fn);
                 if (lit != literals.end())
-                    rs.depthFunc = lit->second;
+                    rs.depthFunc = DepthFn(lit->second);
             }
             else if (key == "blendfunc")
             {
@@ -271,15 +271,11 @@ void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
 
                 auto lit = literals.find(fn[0]);
                 if (lit != literals.end())
-                    rs.blendFunc[0] = lit->second;
-                else
-                    it.second()[0] >> rs.blendFunc[0];
+                    rs.blendFunc.srcFactor = BlendFn::Factor(lit->second);
 
                 lit = literals.find(fn[1]);
                 if (lit != literals.end())
-                    rs.blendFunc[1] = lit->second;
-                else
-                    it.second()[1] >> rs.blendFunc[1];
+                    rs.blendFunc.dstFactor = BlendFn::Factor(lit->second);
             }
             else if (key == "passhint")
             {

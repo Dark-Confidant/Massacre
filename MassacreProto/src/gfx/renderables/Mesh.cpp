@@ -123,9 +123,9 @@ void Mesh::load(IFile* file)
         rs.blend      = params.getState(Blend);
         rs.cullFace   = params.getState(CullFace);
 
-        rs.depthFunc  = params.depthFunc + GL_NEVER;
-        rs.blendFunc  = ivec2(params.blendSrcFunc, params.blendDstFunc)
-                      + ivec2(GL_SRC_COLOR);
+        rs.depthFunc = DepthFn(params.depthFunc); // this one matches, so just cast it
+        rs.blendFunc = BlendFn(BlendFn::SrcColor + params.blendSrcFunc,
+                               BlendFn::SrcColor + params.blendDstFunc);
 
         mtl->setRenderState(rs);
 

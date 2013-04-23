@@ -1,8 +1,9 @@
 #pragma once
 
-#include "math/Rect.h"
-#include "RenderState.h"
 #include <vector>
+#include <math/Rect.h>
+#include <gfx/RenderState.h>
+#include <gfx/GBuffer.h>
 
 namespace mcr {
 namespace gfx {
@@ -10,7 +11,6 @@ namespace gfx {
 class ShaderProgram;
 class Texture;
 class Material;
-class GBuffer;
 class VertexArray;
 
 namespace experimental {
@@ -35,61 +35,52 @@ struct TextureUnit
     uint refs;
 };
 
-enum BufferTarget
-{
-    VertexBuffer,
-    IndexBuffer,
-    UniformBuffer,
-    NumBufferTargets
-};
-
 class Context
 {
 public:
     Context();
-    ~Context(); // no inheritance
+    ~Context(); // inherit not
 
-    static Context& active();
+    static Context&     active();
+    bool                activate();
 
-    bool activate();
+    const irect&        viewport() const;
+    void                setViewport(const irect& viewport);
+                        
+    const RenderState&  renderState() const;
+    void                setRenderState(const RenderState& rs);
+                        
+    ShaderProgram*      activeProgram() const;
+    void                setActiveProgram(ShaderProgram* program);
+                        
+    uint                activeTextureUnit() const;
+    void                setActiveTextureUnit(uint texUnit);
+                        
+    Texture*            activeTexture(TexTarget target, uint texUnit);
+    void                bindTexture(TexTarget target, Texture* tex);
+                        
+    uint                allocTextureUnit(uint* refs = nullptr);
+    void                freeTextureUnit(uint texUnit);
+                        
+    Material*           activeMaterial() const;
+    void                setActiveMaterial(Material* mtl);
+                        
+    GBuffer*            activeBuffer(GBuffer::Type type);
+    GBuffer*            activeBuffer(GBuffer::Type type, uint bufUnit);
 
-    const irect& viewport() const;
-    void setViewport(const irect& viewport);
+    void                bindBuffer(GBuffer* buffer);
+    void                bindBufferBase(uint bufUnit, GBuffer* buffer, uint offset);
+    void                bindBufferRange(uint bufUnit, GBuffer* buffer, uint offset, uint count);
 
-    const RenderState& renderState() const;
-    void setRenderState(const RenderState& rs);
+    VertexArray*        activeVertexArray() const;
+    void                setActiveVertexArray(VertexArray* va);
 
-    ShaderProgram* activeProgram() const;
-    void setActiveProgram(ShaderProgram* program);
+    void                clear();
 
-    uint activeTextureUnit() const;
-    void setActiveTextureUnit(uint texUnit);
+    experimental::MeshStorage*  activeMeshStorage() const;
+    void                        setActiveMeshStorage(experimental::MeshStorage* storage);
 
-    Texture* activeTexture(TexTarget target, uint texUnit);
-    void bindTexture(TexTarget target, Texture* tex);
-
-    uint allocTextureUnit(uint* refs = nullptr);
-    void freeTextureUnit(uint texUnit);
-
-    Material* activeMaterial() const;
-    void setActiveMaterial(Material* mtl);
-
-    GBuffer* activeBuffer(BufferTarget target);
-    GBuffer* activeBuffer(BufferTarget target, uint bufUnit);
-
-    void bindBuffer(GBuffer* buffer);
-    void bindBufferBase(uint bufUnit, GBuffer* buffer, uint offset);
-    void bindBufferRange(uint bufUnit, GBuffer* buffer, uint offset, uint count);
-
-    VertexArray* activeVertexArray() const;
-    void setActiveVertexArray(VertexArray* va);
-
-    void clear();
-
-    experimental::MeshStorage* activeMeshStorage() const;
-    void setActiveMeshStorage(experimental::MeshStorage* storage);
-
-    void drawMesh(const experimental::Mesh& mesh);
+    void                drawMesh(const experimental::Mesh& mesh);
 
 protected:
     static Context* s_active;
@@ -105,8 +96,8 @@ protected:
 
     Material* m_activeMaterial;
 
-    GBuffer*              m_buffers[NumBufferTargets];
-    std::vector<GBuffer*> m_bufferUnits[NumBufferTargets];
+    GBuffer*              m_buffers[GBuffer::NumTypes];
+    std::vector<GBuffer*> m_bufferUnits[GBuffer::NumTypes];
     uint                  m_nextFreeBufferUnit;
 
     VertexArray* m_activeVertexArray;

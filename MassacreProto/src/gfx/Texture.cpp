@@ -59,8 +59,8 @@ void Texture::upload(Image* img)
 
     glBindTexture(GL_TEXTURE_2D, m_handle);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, m_format.openGLEnum(),
-        m_size.x(), m_size.y(), 0, m_format.openGLEnum(),
+    glTexImage2D(GL_TEXTURE_2D, 0, m_format.toGLEnum(),
+        m_size.x(), m_size.y(), 0, m_format.toGLEnum(),
         GL_UNSIGNED_BYTE, img->data());
 
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -72,8 +72,8 @@ void Texture::clear()
 {
     glBindTexture(GL_TEXTURE_2D, m_handle);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, m_format.openGLEnum(),
-        0, 0, 0, m_format.openGLEnum(),
+    glTexImage2D(GL_TEXTURE_2D, 0, m_format.toGLEnum(),
+        0, 0, 0, m_format.toGLEnum(),
         GL_UNSIGNED_BYTE, nullptr);
 
     m_uploaded = false;
@@ -88,7 +88,7 @@ rcptr<Image> Texture::download()
 
     auto img = Image::create(m_size, m_format);
 
-    glGetTexImage(GL_TEXTURE_2D, 0, m_format.openGLEnum(), GL_UNSIGNED_BYTE, img->data());
+    glGetTexImage(GL_TEXTURE_2D, 0, m_format.toGLEnum(), GL_UNSIGNED_BYTE, img->data());
 
     return img;
 }

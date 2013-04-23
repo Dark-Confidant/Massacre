@@ -14,7 +14,7 @@ public:
         ElementArrayBuffer,
         UniformBuffer,
         TextureBuffer,
-        TransformFeedbackBuffer
+        TransformFeedbackBuffer,
         //AtomicCounterBuffer,
         //CopyReadBuffer,
         //CopyWriteBuffer,
@@ -23,6 +23,7 @@ public:
         //PixelPackBuffer,
         //PixelUnpackBuffer,
         //ShaderStorageBuffer,
+        NumTypes
     };
 
     enum Usage
@@ -52,7 +53,6 @@ public:
     void init(const void* data, uint size, Usage usage);
 
     Type type() const;
-    uint target() const;
     uint handle() const;
 
     uint capacity() const;
@@ -70,7 +70,7 @@ protected:
     ~GBuffer();
 
     Type m_type;
-    uint m_target, m_handle;
+    uint m_handle;
 };
 
 } // ns gfx

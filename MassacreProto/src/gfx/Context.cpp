@@ -15,32 +15,12 @@
 #include "gfx/experimental/Mesh.h"
 #include "gfx/experimental/MeshStorage.h"
 
+#include "GLEnums.inl"
+
 namespace mcr {
 namespace gfx {
 
 Context* Context::s_active;
-
-namespace {
-
-static const GLenum bufferTargetEnumTable[NumBufferTargets] =
-{
-    GL_ARRAY_BUFFER,
-    GL_ELEMENT_ARRAY_BUFFER,
-    GL_UNIFORM_BUFFER,
-};
-
-inline BufferTarget bufferTargetByEnum(GLenum target)
-{
-    switch (target)
-    {
-    case GL_ARRAY_BUFFER:         return VertexBuffer;
-    case GL_ELEMENT_ARRAY_BUFFER: return IndexBuffer;
-    case GL_UNIFORM_BUFFER:       return UniformBuffer;
-    default:                      return NumBufferTargets;
-    }
-}
-
-} // ns 
 
 Context::Context():
     m_activeProgram(),
@@ -60,13 +40,13 @@ Context::Context():
 
     memset(m_buffers, 0, sizeof(m_buffers));
 
-    for (int i = 0; i < NumBufferTargets; ++i)
+    for (int i = 0; i < GBuffer::NumTypes; ++i)
     {
         GLint maxUnits = 0;
 
         switch (i)
         {
-        case UniformBuffer:
+        case GBuffer::UniformBuffer:
             glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &maxUnits);
             break;
         }
@@ -87,9 +67,28 @@ Context::Context():
     m_renderState.cullFace      = GL_TRUE == glIsEnabled(GL_CULL_FACE);
     m_renderState.polygonOffset = GL_TRUE == glIsEnabled(GL_POLYGON_OFFSET_FILL);
 
-    glGetIntegerv(GL_DEPTH_FUNC, &m_renderState.depthFunc);
-    glGetIntegerv(GL_BLEND_SRC,  &m_renderState.blendFunc[0]);
-    glGetIntegerv(GL_BLEND_DST,  &m_renderState.blendFunc[1]);
+    GLint depthFn, blendFnSrc, blendFnDst;
+    glGetIntegerv(GL_DEPTH_FUNC, &depthFn);
+    glGetIntegerv(GL_BLEND_SRC,  &blendFnSrc);
+    glGetIntegerv(GL_BLEND_DST,  &blendFnDst);
+
+    for (uint i = 0; i < DepthFn::NumFns; ++i)
+    {
+        if (g_depthFnTable[i] == depthFn)
+        {
+            m_renderState.depthFunc = DepthFn(i);
+            break;
+        }
+    }
+
+    for (uint i = 0; i < BlendFn::NumFactors; ++i)
+    {
+        if (g_blendFnTable[i] == blendFnSrc)
+            m_renderState.blendFunc.srcFactor = BlendFn::Factor(i);
+
+        if (g_blendFnTable[i] == blendFnDst)
+            m_renderState.blendFunc.dstFactor = BlendFn::Factor(i);
+    }
 
     m_renderStateHash = m_renderState.hash();
 
@@ -128,7 +127,7 @@ void Context::setRenderState(const RenderState& rs)
     if (rs.depthTest)
     {
         if (m_renderState.depthFunc != rs.depthFunc)
-            glDepthFunc(rs.depthFunc);
+            glDepthFunc(g_depthFnTable[rs.depthFunc.fn]);
 
         if (m_renderState.depthWrite != rs.depthWrite)
             glDepthMask(rs.depthWrite);
@@ -137,10 +136,10 @@ void Context::setRenderState(const RenderState& rs)
     if (m_renderState.blend != rs.blend)
         (rs.depthTest ? glEnable : glDisable)(GL_BLEND);
 
-    if (rs.blend)
+    if (rs.blend && m_renderState.blendFunc != rs.blendFunc)
     {
-        if (m_renderState.blendFunc != rs.blendFunc)
-            glBlendFunc(rs.blendFunc[0], rs.blendFunc[1]);
+        glBlendFunc(g_blendFnTable[rs.blendFunc.srcFactor],
+                    g_blendFnTable[rs.blendFunc.dstFactor]);
     }
 
     if (m_renderState.alphaTest != rs.alphaTest)
@@ -242,12 +241,12 @@ void Context::bindBuffer(GBuffer* buffer)
     if (!buffer)
         return;
 
-    auto& slot = m_buffers[bufferTargetByEnum(buffer->target())];
+    auto& slot = m_buffers[buffer->type()];
 
     if (slot == buffer)
         return;
 
-    glBindBuffer(buffer->target(), buffer->handle());
+    glBindBuffer(g_bufferTypeTable[buffer->type()], buffer->handle());
     slot = buffer;
 }
 

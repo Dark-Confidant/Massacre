@@ -180,7 +180,7 @@ bool Image::load(IFile* file)
 
         m_data = nullptr;
 
-        if (m_format.openGLEnum() == GL_RGB)
+        if (m_format.toGLEnum() == GL_RGB)
         {
             auto stride = cinfo.output_components * cinfo.output_width;
             auto length = stride * cinfo.output_height;

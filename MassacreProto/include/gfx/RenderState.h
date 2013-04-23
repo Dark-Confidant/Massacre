@@ -1,38 +1,71 @@
 #pragma once
 
-#include "math/Vector.h"
+#include <MassacreTypes.h>
 
 namespace mcr {
 namespace gfx {
 
+struct DepthFn
+{
+    enum Fn: uint
+    {
+        Never,
+        Less,
+        Equal,
+        LEqual,
+        Greater,
+        NotEqual,
+        GEqual,
+        Always,
+        NumFns
+    }
+    fn;
+
+    DepthFn(): fn(Less) {}
+    DepthFn(Fn func): fn(func) {}
+    DepthFn(uint func): fn(Fn(func)) {}
+};
+
+struct BlendFn
+{
+    enum Factor: uint
+    {
+        Zero, One,
+        SrcColor, OneMinusSrcColor,
+        SrcAlpha, OneMinusSrcAlpha,
+        DstAlpha, OneMinusDstAlpha,
+        DstColor, OneMinusDstColor,
+        SrcAlphaSaturate,
+        NumFactors
+    }
+    srcFactor, dstFactor;
+
+    BlendFn(): srcFactor(One), dstFactor(Zero) {}
+    BlendFn(Factor src, Factor dst): srcFactor(src), dstFactor(dst) {}
+    BlendFn(uint src, uint dst): srcFactor(Factor(src)), dstFactor(Factor(dst)) {}
+};
+
 struct RenderState
 {
-    RenderState();
-
     bool depthTest, depthWrite;
-    int depthFunc;
+    DepthFn depthFunc;
 
     bool alphaTest;
 
     bool blend;
-    ivec2 blendFunc;
+    BlendFn blendFunc;
 
     bool cullFace;
     bool polygonOffset;
 
-    uint hash() const
-    {
-        return uint(depthTest)
-            | (uint(depthWrite) << 2)
-            | (uint(alphaTest) << 3)
-            | (uint(blend) << 4)
-            | (uint(cullFace) << 5)
-            | (uint(polygonOffset) << 6)
-            | (uint(depthFunc & 0x7) << 7)
-            | (uint(blendFunc[0] & 0xF) << 10)
-            | (uint(blendFunc[1] & 0xF) << 14);
-    }
+    RenderState();
+    explicit RenderState(uint hash);
+    ~RenderState() {}
+
+    uint hash() const;
 };
 
 } // ns gfx
 } // ns mcr
+
+#include "RenderState.inl"

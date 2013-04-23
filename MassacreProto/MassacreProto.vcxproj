@@ -225,6 +225,7 @@
     <ClInclude Include="include\Timer.h" />
     <ClInclude Include="src\gfx\experimental\SimpleMeshImporter.h" />
     <ClInclude Include="src\gfx\experimental\SimpleMeshExporter.h" />
+    <ClInclude Include="src\gfx\GLEnums.inl" />
     <ClInclude Include="src\Universe.h" />
   </ItemGroup>
   <ItemGroup>
@@ -245,7 +246,6 @@
     <ClCompile Include="src\gfx\renderables\Mesh.cpp" />
     <ClCompile Include="src\gfx\renderables\Renderable.cpp" />
     <ClCompile Include="src\gfx\renderables\SpriteBatch.cpp" />
-    <ClCompile Include="src\gfx\RenderState.cpp" />
     <ClCompile Include="src\gfx\Shader.cpp" />
     <ClCompile Include="src\gfx\ShaderProgram.cpp" />
     <ClCompile Include="src\gfx\Texture.cpp" />
@@ -267,6 +267,7 @@
     <None Include="include\gfx\Context.inl" />
     <None Include="include\gfx\GBuffer.inl" />
     <None Include="include\gfx\Image.inl" />
+    <None Include="include\gfx\RenderState.inl" />
     <None Include="include\gfx\Shader.inl" />
     <None Include="include\gfx\VertexFormat.inl" />
     <None Include="include\Timer.inl" />

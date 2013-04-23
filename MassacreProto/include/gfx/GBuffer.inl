@@ -24,11 +24,6 @@ inline GBuffer::Type GBuffer::type() const
     return m_type;
 }
 
-inline uint GBuffer::target() const
-{
-    return m_target;
-}
-
 inline uint GBuffer::handle() const
 {
     return m_handle;
