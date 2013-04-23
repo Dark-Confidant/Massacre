@@ -24,6 +24,7 @@ set(HEADERS_GFX
     gfx/MaterialManager.h
     gfx/RenderAtom.h
     gfx/RenderState.h
+    gfx/RenderState.inl
     gfx/Shader.h
     gfx/Shader.inl
     gfx/ShaderProgram.h

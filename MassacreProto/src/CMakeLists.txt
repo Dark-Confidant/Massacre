@@ -29,7 +29,6 @@ set(GFX_SRC
   ${GFX_PATH}/GType.cpp
   ${GFX_PATH}/ImageFormat.cpp
   ${GFX_PATH}/MaterialManager.cpp
-  ${GFX_PATH}/RenderState.cpp
   ${GFX_PATH}/ShaderProgram.cpp
   ${GFX_PATH}/VertexArray.cpp)
 
