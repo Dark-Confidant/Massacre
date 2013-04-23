@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "Config.h"
+#include <mcr/Config.h>
 
 #include <yaml-cpp/parser.h>
 #include <yaml-cpp/node.h>

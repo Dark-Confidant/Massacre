@@ -1,7 +1,7 @@
 #include "Universe.h"
-#include "gfx/GLUtility.h"
+#include <mcr/gfx/GLUtility.h>
 
-#include "MassacreTypes.h"
+#include <mcr/MassacreTypes.h>
 
 namespace mcr {
 

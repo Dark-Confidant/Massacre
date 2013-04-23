@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/ImageFormat.h"
+#include <mcr/gfx/ImageFormat.h>
 
 namespace mcr {
 namespace gfx {

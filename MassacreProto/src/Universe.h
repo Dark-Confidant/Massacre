@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MassacreBuildConfig.h"
+#include <mcr/MassacreBuildConfig.h>
 
 #if defined(MCR_PLATFORM_WINDOWS)
 #   define WIN32_LEAN_AND_MEAN

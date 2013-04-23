@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/MaterialManager.h"
+#include <mcr/gfx/MaterialManager.h>
 
 #include <set>
 #include <istream>

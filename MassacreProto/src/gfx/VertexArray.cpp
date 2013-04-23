@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/VertexArray.h"
+#include <mcr/gfx/VertexArray.h>
 
 #include <set>
 

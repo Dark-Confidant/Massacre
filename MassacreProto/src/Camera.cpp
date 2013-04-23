@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "Camera.h"
+#include <mcr/Camera.h>
 
 #include <ctime>
 

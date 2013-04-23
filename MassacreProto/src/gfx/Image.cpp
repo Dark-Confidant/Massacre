@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/Image.h"
+#include <mcr/gfx/Image.h>
 
 // TODO: move to pluggable loaders
 

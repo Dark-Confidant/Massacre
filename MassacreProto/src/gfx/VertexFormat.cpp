@@ -1,9 +1,9 @@
 #include "Universe.h"
-#include "gfx/VertexFormat.h"
+#include <mcr/gfx/VertexFormat.h>
 
 #include <stdexcept>
 #include <boost/lexical_cast.hpp>
-#include "Debug.h"
+#include <mcr/Debug.h>
 
 namespace mcr {
 namespace gfx {

@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/Context.h"
+#include <mcr/gfx/Context.h>
 
 #if defined(MCR_PLATFORM_WINDOWS)
 #   include <GL/wglew.h>
@@ -7,13 +7,13 @@
 #   include <GL/glxew.h>
 #endif
 
-#include "gfx/ShaderProgram.h"
-#include "gfx/Texture.h"
-#include "gfx/Material.h"
-#include "gfx/GBuffer.h"
+#include <mcr/gfx/ShaderProgram.h>
+#include <mcr/gfx/Texture.h>
+#include <mcr/gfx/Material.h>
+#include <mcr/gfx/GBuffer.h>
 
-#include "gfx/experimental/Mesh.h"
-#include "gfx/experimental/MeshStorage.h"
+#include <mcr/gfx/experimental/Mesh.h>
+#include <mcr/gfx/experimental/MeshStorage.h>
 
 #include "GLEnums.inl"
 

@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/Material.h"
+#include <mcr/gfx/Material.h>
 
 using namespace mcr;
 using namespace gfx;

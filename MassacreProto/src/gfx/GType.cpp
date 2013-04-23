@@ -1,5 +1,5 @@
 #include <Universe.h>
-#include <gfx/GType.h>
+#include <mcr/gfx/GType.h>
 
 namespace mcr   {
 namespace gfx   {

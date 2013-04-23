@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/renderables/Mesh.h"
+#include <mcr/gfx/renderables/Mesh.h>
 
 #include <map>
 #include <fstream>

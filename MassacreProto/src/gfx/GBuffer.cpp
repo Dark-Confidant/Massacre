@@ -1,7 +1,7 @@
 #include "Universe.h"
-#include <gfx/GBuffer.h>
+#include <mcr/gfx/GBuffer.h>
 
-#include <gfx/Context.h>
+#include <mcr/gfx/Context.h>
 #include "GLEnums.inl"
 
 namespace mcr {

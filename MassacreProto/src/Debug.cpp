@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "Debug.h"
+#include <mcr/Debug.h>
 
 #include <string>
 #include <cstdarg>

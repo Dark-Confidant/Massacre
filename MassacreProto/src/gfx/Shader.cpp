@@ -1,7 +1,7 @@
 #include "Universe.h"
-#include "gfx/Shader.h"
+#include <mcr/gfx/Shader.h>
 
-#include "Debug.h"
+#include <mcr/Debug.h>
 
 namespace mcr {
 namespace gfx {

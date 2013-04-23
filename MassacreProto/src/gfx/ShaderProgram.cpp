@@ -1,8 +1,8 @@
 #include "Universe.h"
-#include "gfx/ShaderProgram.h"
+#include <mcr/gfx/ShaderProgram.h>
 
-#include "gfx/Context.h"
-#include "Debug.h"
+#include <mcr/Debug.h>
+#include <mcr/gfx/Context.h>
 
 namespace mcr {
 namespace gfx {

@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "Timer.h"
+#include <mcr/Timer.h>
 
 #ifdef MCR_PLATFORM_LINUX
 #   include <ctime>

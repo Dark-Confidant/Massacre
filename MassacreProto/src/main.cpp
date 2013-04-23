@@ -1,14 +1,14 @@
 #include "Universe.h"
 
-#include "Config.h"
-#include "Timer.h"
+#include <mcr/Config.h>
+#include <mcr/Timer.h>
 
-#include "Camera.h"
-#include "gfx/Context.h"
-#include "gfx/renderables/Mesh.h"
-#include "gfx/MaterialManager.h"
+#include <mcr/Camera.h>
+#include <mcr/gfx/Context.h>
+#include <mcr/gfx/renderables/Mesh.h>
+#include <mcr/gfx/MaterialManager.h>
 
-#include <gfx/experimental/IMeshImporter.h>
+#include <mcr/gfx/experimental/IMeshImporter.h>
 
 using namespace mcr;
 

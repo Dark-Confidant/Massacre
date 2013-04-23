@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include "gfx/Texture.h"
+#include <mcr/gfx/Texture.h>
 
 #include <algorithm>
 
