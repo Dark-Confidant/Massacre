@@ -74,7 +74,7 @@ Context::Context():
 
     for (uint i = 0; i < DepthFn::NumFns; ++i)
     {
-        if (g_depthFnTable[i] == depthFn)
+        if (g_depthFnTable[i] == (GLenum) depthFn)
         {
             m_renderState.depthFunc = DepthFn(i);
             break;
@@ -83,10 +83,10 @@ Context::Context():
 
     for (uint i = 0; i < BlendFn::NumFactors; ++i)
     {
-        if (g_blendFnTable[i] == blendFnSrc)
+        if (g_blendFnTable[i] == (GLenum) blendFnSrc)
             m_renderState.blendFunc.srcFactor = BlendFn::Factor(i);
 
-        if (g_blendFnTable[i] == blendFnDst)
+        if (g_blendFnTable[i] == (GLenum) blendFnDst)
             m_renderState.blendFunc.dstFactor = BlendFn::Factor(i);
     }
 
