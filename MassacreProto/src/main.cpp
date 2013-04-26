@@ -1,11 +1,14 @@
 #include "Universe.h"
 
+#include <SDL/SDL.h>
+
 #include <mcr/Config.h>
 #include <mcr/Timer.h>
 
 #include <mcr/Camera.h>
 #include <mcr/gfx/Context.h>
 #include <mcr/gfx/renderables/Mesh.h>
+#include <mcr/gfx/renderables/SpriteBatch.h>
 #include <mcr/gfx/MaterialManager.h>
 
 #include <mcr/gfx/experimental/IMeshImporter.h>
@@ -171,6 +174,18 @@ public:
 
         loadArena();
         loadSky();
+
+        m_quasicrystal = m_mm.getMaterial("quasicrystal.mtl");
+
+        m_gateBatch = gfx::SpriteBatch::create(2);
+
+        m_gateBatch->addSprite(rect(-.5f, 0, .5f, 1), rect(1, 2),
+            math::buildTransform(vec3(957, -1.f, 5), vec3(0, 90, 0), vec3(125, 250, 1)));
+
+        m_gateBatch->addSprite(rect(-.5f, 0, .5f, 1), rect(1, 2),
+            math::buildTransform(vec3(-837, -1.f, 22), vec3(0, -90, 0), vec3(125, 250, 1)));
+
+        m_gateBatch->applyChanges();
     }
 
     void loadArena()
@@ -355,6 +370,10 @@ public:
             renderAtom(m_otherAtoms[i]);
         }
 
+        ctx.setActiveVertexArray(const_cast<gfx::VertexArray*>(m_gateBatch->buffer()));
+        ctx.setActiveMaterial(m_quasicrystal);
+        renderAtom(m_gateBatch->atom(0));
+
         SDL_GL_SwapBuffers();
     }
 
@@ -435,10 +454,11 @@ private:
 
     std::set<rcptr<gfx::Mesh>> m_meshes;
 
-    rcptr<gfx::Material> m_opaque, m_transparent, m_translucent;
+    rcptr<gfx::Material> m_opaque, m_transparent, m_translucent, m_quasicrystal;
     std::vector<rcptr<gfx::Material>> m_other, m_sky;
 
     rcptr<gfx::VertexArray> m_arenaBuffer, m_skyBuffer;
+    rcptr<gfx::SpriteBatch> m_gateBatch;
 
     std::vector<const gfx::RenderAtom*>
         m_opaqueAtoms,
@@ -496,6 +516,11 @@ void Game::initGL()
 
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+
+#if SDL_VERSION_ATLEAST(1,3,0)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
 
     SDL_SetVideoMode(1024, 768, 32, SDL_OPENGL | SDL_RESIZABLE);
     
