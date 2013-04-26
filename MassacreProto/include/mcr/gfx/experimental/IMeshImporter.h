@@ -35,8 +35,6 @@ public:
 class IMeshImporter: public RefCounted
 {
 public:
-    virtual ~IMeshImporter() {}
-
     //! Create an import task
     virtual rcptr<IMeshImportTask> createTask(IFile* file) const = 0;
 };

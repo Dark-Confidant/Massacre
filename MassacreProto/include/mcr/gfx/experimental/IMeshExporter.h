@@ -10,7 +10,6 @@ namespace experimental {
 class IMeshExporter: public RefCounted
 {
 public:
-    virtual ~IMeshExporter() {}
     virtual bool export_(const Mesh& mesh, const char* filename) const = 0;
 };
 
