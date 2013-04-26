@@ -132,10 +132,10 @@ SpriteBatch::SpriteBatch(uint maxSprites, const VertexFormat& fmt):
 
 SpriteBatch::~SpriteBatch()
 {
-    BOOST_FOREACH (auto& sprite, m_sprites)
+    while (m_sprites.size())
     {
-        delete [] sprite.userData;
-        delete sprite.shortcut;
+        delete [] m_sprites.back().userData;
+        delete m_sprites.back().shortcut;
     }
 }
 
@@ -162,12 +162,14 @@ ISprite* SpriteBatch::addSprite(const rect& baseRect, const rect& texRect, const
 
 void SpriteBatch::applyChanges()
 {
-    if (!m_dirtySprites || !m_atom.material)
+    if (!m_dirtySprites)
         return;
 
-    auto vertices = (byte*) m_buffer->vertices()->map(GL_MAP_WRITE_BIT);
+    auto vertices = (byte*) m_buffer->vertices()->map(GBuffer::ReplaceAll);
 
-    const vec2 texSize = m_atom.material->texture(0)->size();
+    const vec2 texSize = m_atom.material && m_atom.material->numTextures()
+                       ? m_atom.material->texture(0)->size()
+                       : ivec2(1);
 
     for (uint i = 0; i < m_sprites.size(); ++i)
     {

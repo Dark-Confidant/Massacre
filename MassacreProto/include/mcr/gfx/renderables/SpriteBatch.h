@@ -45,6 +45,11 @@ public:
         m_atom.material = mtl;
     }
 
+    const VertexArray* buffer() const
+    {
+        return m_buffer;
+    }
+
     uint numAtoms() const { return 1; }
     const RenderAtom* atom(uint) const { return &m_atom; }
 
