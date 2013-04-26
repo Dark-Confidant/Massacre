@@ -77,9 +77,6 @@ public:
 
     void                clear();
 
-    experimental::MeshStorage*  activeMeshStorage() const;
-    void                        setActiveMeshStorage(experimental::MeshStorage* storage);
-
     void                drawMesh(const experimental::Mesh& mesh);
 
 protected:

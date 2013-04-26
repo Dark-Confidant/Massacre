@@ -13,11 +13,11 @@ namespace experimental {
     - Draw meshes
 */
 
-//class MeshStorage;
-
 struct Mesh: public RefCounted
 {
-    //MeshStorage* storage;
+    using RefCounted::operator new;
+    using RefCounted::operator delete;
+
     rcptr<VertexArray> buffer;
     uint startVertex, numVertices;
     uint startIndex, numIndices;
