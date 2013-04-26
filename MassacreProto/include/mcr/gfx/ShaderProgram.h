@@ -45,7 +45,7 @@ public:
 
 
     //! OpenGL object handle
-    uint handle() const { return m_handle; }
+    uint handle() const;
 
 
     /*! Add shader to program
@@ -62,17 +62,17 @@ public:
 
 
     //! Number of shaders attached
-    byte numShaders() const { return (byte) m_shaders.size(); }
+    byte numShaders() const;
 
     //! Shader by attachment index
-    Shader* shader(byte idx) { return m_shaders[idx]; }
+    Shader* shader(byte idx);
 
 
     //! Try to link program
     bool link();
 
     //! Whether link succeeded
-    bool isValid() const { return m_valid; }
+    bool isValid() const;
 
     //! Query link log
     std::string log() const;
@@ -80,8 +80,8 @@ public:
 
     // sampler management - FIXME
 
-    int             numSamplers()        const { return (int) m_samplers.size(); }
-    const SamplerInfo& sampler (int idx) const { return       m_samplers[idx];   }
+    int                 numSamplers() const;
+    const SamplerInfo&  sampler(int idx) const;
 
 
     //! Find uniform by name
@@ -108,6 +108,37 @@ protected:
 
     std::vector<UniformBlockInfo> m_blocks;
 };
+
+
+inline byte ShaderProgram::numShaders() const
+{
+    return (byte) m_shaders.size();
+}
+
+inline Shader* ShaderProgram::shader(byte idx)
+{
+    return m_shaders[idx];
+}
+
+inline uint ShaderProgram::handle() const
+{
+    return m_handle;
+}
+
+inline bool ShaderProgram::isValid() const
+{
+    return m_valid;
+}
+
+inline int ShaderProgram::numSamplers() const
+{
+    return (int) m_samplers.size();
+}
+
+inline const ShaderProgram::SamplerInfo& ShaderProgram::sampler(int idx) const
+{
+    return m_samplers[idx];
+}
 
 } // ns gfx
 } // ns mcr
