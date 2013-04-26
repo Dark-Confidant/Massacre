@@ -10,10 +10,9 @@
 #include <mcr/gfx/ShaderProgram.h>
 #include <mcr/gfx/Texture.h>
 #include <mcr/gfx/Material.h>
-#include <mcr/gfx/GBuffer.h>
+#include <mcr/gfx/VertexArray.h>
 
 #include <mcr/gfx/experimental/Mesh.h>
-#include <mcr/gfx/experimental/MeshStorage.h>
 
 #include "GLEnums.inl"
 
@@ -284,20 +283,8 @@ void Context::clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-experimental::MeshStorage* Context::activeMeshStorage() const
-{
-    throw 1;
-    return nullptr;
-}
-
-void Context::setActiveMeshStorage(experimental::MeshStorage* storage)
-{
-    throw 1;
-}
-
 void Context::drawMesh(const experimental::Mesh& mesh)
 {
-    //setActiveMeshStorage(mesh.storage);
     setActiveVertexArray(mesh.buffer);
 
     glDrawElements(mesh.primitiveType, mesh.numIndices, GL_UNSIGNED_INT,
