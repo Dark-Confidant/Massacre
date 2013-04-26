@@ -1,44 +1,17 @@
 #pragma once
 
+#include <new>
 #include <mcr/MassacreTypes.h>
 
 namespace mcr {
-
-class RefCounted
-{
-public:
-    RefCounted(uint numRefs = 0u):
-        m_numRefs(numRefs) {}
-
-    virtual ~RefCounted() {}
-
-
-    void grab()
-    { ++m_numRefs; }
-
-    bool drop()
-    {
-        if (m_numRefs && --m_numRefs)
-            return false;
-
-        delete this;
-        return true;
-    }
-
-protected:
-    uint m_numRefs;
-};
-
 
 template <typename T>
 class rcptr
 {
 public:
-    rcptr():
-        m_ptr(nullptr) {}
+    rcptr(): m_ptr(nullptr) {}
 
-    rcptr(T* ptr):
-        m_ptr(ptr)
+    rcptr(T* ptr): m_ptr(ptr)
     {
         if (m_ptr)
             m_ptr->grab();
@@ -51,7 +24,7 @@ public:
             m_ptr->grab();
     }
 
-    ~rcptr()
+    ~rcptr() // inherit not
     {
         if (m_ptr)
             m_ptr->drop();
@@ -60,21 +33,31 @@ public:
 
     template <typename R>
     operator rcptr<R>() const
-    { return rcptr<R>(static_cast<R*>(m_ptr)); }
+    {
+        return rcptr<R>(static_cast<R*>(m_ptr));
+    }
 
     template <typename R>
     operator rcptr<R>()
-    { return rcptr<R>(static_cast<R*>(m_ptr)); }
+    {
+        return rcptr<R>(static_cast<R*>(m_ptr));
+    }
 
     operator T*() const
-    { return m_ptr; }
+    {
+        return m_ptr;
+    }
 
     T* operator->() const
-    { return m_ptr; }
+    {
+        return m_ptr;
+    }
 
 
     rcptr<T>& operator=(const rcptr<T>& rhs)
-    { return *this = static_cast<T*>(rhs); }
+    {
+        return *this = static_cast<T*>(rhs);
+    }
 
     rcptr<T>& operator=(T* rhs)
     {
@@ -87,31 +70,61 @@ public:
         return *this;
     }
 
-protected:
+private:
     T* m_ptr;
 };
 
-template <typename T>
-class rcproxy
+class RefCounted
 {
 public:
-    rcproxy(T* ptr):
-        m_ptr(ptr) {}
+    RefCounted(uint numRefs = 0u): m_numRefs(numRefs) {}
+    virtual ~RefCounted() {}
 
-    ~rcproxy() {}
+    void grab()
+    {
+        ++m_numRefs;
+    }
 
+    bool drop()
+    {
+        if (m_numRefs && --m_numRefs)
+            return false;
 
-    rcptr<T> ptr() const
-    { return m_ptr; }
-
-    operator rcptr<T>() const
-    { return m_ptr; }
-
-    T* operator->() const
-    { return m_ptr; }
+        delete this;
+        return true;
+    }
 
 protected:
-    T* m_ptr;
+    template <typename T> friend class rcptr;
+
+    void* operator new(std::size_t size);
+    void* operator new(std::size_t size, const std::nothrow_t& nothrowValue) throw();
+
+    void operator delete(void* ptr) throw();
+    void operator delete(void* ptr, const std::nothrow_t& nothrowValue) throw();
+
+    uint m_numRefs;
 };
+
+
+inline void* RefCounted::operator new(std::size_t size)
+{
+    return ::operator new(size);
+}
+
+inline void* RefCounted::operator new(std::size_t size, const std::nothrow_t& nothrowValue) throw()
+{
+    return ::operator new(size, nothrowValue);
+}
+
+inline void RefCounted::operator delete(void* ptr) throw()
+{
+    ::operator delete(ptr);
+}
+
+inline void RefCounted::operator delete(void* ptr, const std::nothrow_t& nothrowValue) throw()
+{
+    ::operator delete(ptr, nothrowValue);
+}
 
 } // ns mcr

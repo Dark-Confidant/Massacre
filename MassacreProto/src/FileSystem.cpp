@@ -107,6 +107,9 @@ namespace
     class StdStreamFile: public IFile
     {
     public:
+        using RefCounted::operator new;
+        using RefCounted::operator delete;
+
         StdStreamFile(FileSystem* fs, const char* filename):
             m_fs(fs),
             m_filename(filename),

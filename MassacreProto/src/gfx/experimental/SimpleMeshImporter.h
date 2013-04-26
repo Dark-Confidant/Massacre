@@ -28,6 +28,9 @@ public:
     {
         return new SimpleMeshImportTask(file);
     }
+
+    using RefCounted::operator new;
+    using RefCounted::operator delete;
 };
 
 } // ns experimental
