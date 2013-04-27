@@ -15,7 +15,7 @@ public:
 
     MCR_INTERN SimpleMeshImportTask(IFile* file): m_file(file) {}
 
-    MCR_INTERN bool SimpleMeshImportTask::estimate(MeshInfo& infoOut)
+    MCR_INTERN bool estimate(MeshInfo& infoOut)
     {
         if (m_file->read(m_header) != sizeof(m_header))
             return false;
