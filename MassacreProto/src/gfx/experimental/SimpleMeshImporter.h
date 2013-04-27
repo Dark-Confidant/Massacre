@@ -10,6 +10,9 @@ namespace experimental {
 class SimpleMeshImportTask: public IMeshImportTask
 {
 public:
+    using RefCounted::operator new;
+    using RefCounted::operator delete;
+
     SimpleMeshImportTask(IFile* file): m_file(file) {}
 
     bool estimate(MeshInfo& infoOut);
@@ -24,13 +27,13 @@ private:
 class SimpleMeshImporter: public IMeshImporter
 {
 public:
+    using RefCounted::operator new;
+    using RefCounted::operator delete;
+
     rcptr<IMeshImportTask> createTask(IFile* file) const
     {
         return new SimpleMeshImportTask(file);
     }
-
-    using RefCounted::operator new;
-    using RefCounted::operator delete;
 };
 
 } // ns experimental

@@ -9,10 +9,10 @@ namespace experimental {
 class SimpleMeshExporter: public IMeshExporter
 {
 public:
-    bool export_(const Mesh& mesh, const char* filename) const;
-
     using RefCounted::operator new;
     using RefCounted::operator delete;
+
+    bool export_(const Mesh& mesh, const char* filename) const;
 };
 
 } // ns experimental
