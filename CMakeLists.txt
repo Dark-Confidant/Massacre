@@ -11,6 +11,11 @@ find_package(JPEG REQUIRED)
 find_package(YamlCpp REQUIRED)
 find_package(ZLIB REQUIRED)
 
+include_directories(${GLFW_INCLUDE_DIRS}
+                    ${GLEW_INCLUDE_PATH})
+
+link_directories(${GLFW_LIBRARY_DIRS})
+
 set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -O3")
 
 add_subdirectory(MassacreProto)

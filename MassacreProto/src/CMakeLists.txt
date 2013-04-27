@@ -41,11 +41,9 @@ set(MASSACRE_SRC
   Universe.cpp)
 
 link_libraries(
-  ${SDL_LIBRARY}
-  ${SDLIMAGE_LIBRARY}
-  SDLmain
-  GLEW
   GL
+  ${GLEW_LIBRARY}
+  ${GLFW_LIBRARIES}
   jpeg
   png
   yaml-cpp)
