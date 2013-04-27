@@ -36,8 +36,10 @@ set(HEADERS_GFXE
     mcr/gfx/experimental/IImageImporter.h
     mcr/gfx/experimental/IMeshExporter.h
     mcr/gfx/experimental/IMeshImporter.h
-    mcr/gfx/experimental/Mesh.h
-    mcr/gfx/experimental/MeshStorage.h)
+    mcr/gfx/experimental/MaterialParameter.h
+    mcr/gfx/experimental/MaterialParameter.inl
+    mcr/gfx/experimental/GeometryBuffer.h
+    mcr/gfx/experimental/Mesh.h)
 set(HEADERS_GFXR
     mcr/gfx/renderables/Mesh.h
     mcr/gfx/renderables/Renderable.h

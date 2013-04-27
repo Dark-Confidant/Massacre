@@ -202,8 +202,8 @@
     <ClInclude Include="include\mcr\gfx\experimental\IImageImporter.h" />
     <ClInclude Include="include\mcr\gfx\experimental\IMeshExporter.h" />
     <ClInclude Include="include\mcr\gfx\experimental\IMeshImporter.h" />
+    <ClInclude Include="include\mcr\gfx\experimental\MaterialParameter.h" />
     <ClInclude Include="include\mcr\gfx\experimental\Mesh.h" />
-    <ClInclude Include="include\mcr\gfx\experimental\MeshStorage.h" />
     <ClInclude Include="include\mcr\gfx\GBuffer.h" />
     <ClInclude Include="include\mcr\gfx\GLUtility.h" />
     <ClInclude Include="include\mcr\gfx\GType.h" />
@@ -236,6 +236,7 @@
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\FileSystem.cpp" />
     <ClCompile Include="src\gfx\Context.cpp" />
+    <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp" />
     <ClCompile Include="src\gfx\experimental\SimpleMeshImporter.cpp" />
     <ClCompile Include="src\gfx\experimental\SimpleMeshExporter.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
@@ -266,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\mcr\gfx\Context.inl" />
+    <None Include="include\mcr\gfx\experimental\MaterialParameter.inl" />
     <None Include="include\mcr\gfx\GBuffer.inl" />
     <None Include="include\mcr\gfx\Image.inl" />
     <None Include="include\mcr\gfx\RenderState.inl" />

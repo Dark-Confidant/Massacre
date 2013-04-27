@@ -69,9 +69,6 @@
     <ClInclude Include="include\mcr\gfx\experimental\Mesh.h">
       <Filter>Header Files\gfx\experimental</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\experimental\MeshStorage.h">
-      <Filter>Header Files\gfx\experimental</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\gfx\renderables\Mesh.h">
       <Filter>Header Files\gfx\renderables</Filter>
     </ClInclude>
@@ -189,6 +186,9 @@
     <ClInclude Include="..\MassacreShared\include\mcr\MassacreBuildConfig.h">
       <Filter>Header Files\shared</Filter>
     </ClInclude>
+    <ClInclude Include="include\mcr\gfx\experimental\MaterialParameter.h">
+      <Filter>Header Files\gfx\experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\renderables\Mesh.cpp">
@@ -263,6 +263,9 @@
     <ClCompile Include="src\gfx\GType.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
+    <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp">
+      <Filter>Source Files\gfx\experimental</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\mcr\gfx\GBuffer.inl">
@@ -285,6 +288,9 @@
     </None>
     <None Include="include\mcr\Timer.inl">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="include\mcr\gfx\experimental\MaterialParameter.inl">
+      <Filter>Header Files\gfx\experimental</Filter>
     </None>
   </ItemGroup>
 </Project>
