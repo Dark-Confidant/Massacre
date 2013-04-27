@@ -5,10 +5,9 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <YamlDir></YamlDir>
     <GlewDir></GlewDir>
-    <SdlDir></SdlDir>
+    <GlfwDir></GlfwDir>
     <ZlibDir></ZlibDir>
     <PngDir></PngDir>
     <JpegDir></JpegDir>
-    <FreetypeDir></FreetypeDir>
   </PropertyGroup>
 </Project>

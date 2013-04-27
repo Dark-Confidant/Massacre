@@ -1,6 +1,7 @@
 #include "Universe.h"
 
-#include <SDL/SDL.h>
+#define GLFW_NO_GLU
+#include <GL/glfw.h>
 
 #include <mcr/Config.h>
 #include <mcr/Timer.h>
@@ -31,6 +32,7 @@ public:
     virtual void onDeactivate() = 0;
 
     virtual bool onRun() = 0;
+    virtual void onResize(const ivec2& newSize) = 0;
 
 protected:
     Game* m_game;
@@ -48,6 +50,12 @@ public:
 
 protected:
     GameLayer* m_layer;
+
+private:
+    static void onWindowSize(int w, int h);
+
+    static bool s_windowResized;
+    static ivec2 s_newWindowSize;
 };
 
 class MeshManager
@@ -136,11 +144,7 @@ private:
 class BattleScreen: public GameLayer
 {
 public:
-    BattleScreen(Game* game):
-    GameLayer(game)
-    {
-        memset(m_keyStates, 0, sizeof(m_keyStates));
-    }
+    BattleScreen(Game* game): GameLayer(game ){}
 
     void onLoad()
     {
@@ -326,6 +330,13 @@ public:
         return handleEvents();
     }
 
+    void onResize(const ivec2& size)
+    {
+        gfx::Context::active().setViewport(size);
+        m_camera.setAspectRatio((float) size.x() / size.y());
+        m_camera.update();
+    }
+
     void renderAtom(const gfx::RenderAtom* atom)
     {
         glDrawElements(GL_TRIANGLES, atom->size, GL_UNSIGNED_INT,
@@ -374,14 +385,14 @@ public:
         ctx.setActiveMaterial(m_quasicrystal);
         renderAtom(m_gateBatch->atom(0));
 
-        SDL_GL_SwapBuffers();
+        glfwSwapBuffers();
     }
 
     void handleKeys()
     {
         auto mv = math::normalize(vec3(
-                0.f + m_keyStates[SDLK_e] - m_keyStates[SDLK_q], 0,
-                0.f + m_keyStates[SDLK_s] - m_keyStates[SDLK_w]));
+                0.f + glfwGetKey('E') - glfwGetKey('Q'), 0,
+                0.f + glfwGetKey('S') - glfwGetKey('W')));
 
         auto yAngle = math::deg2rad * m_rot.y();
         auto ySine = sin(yAngle), yCosine = cos(yAngle);
@@ -402,7 +413,7 @@ public:
         m_pos += (float) m_timer.dseconds() * velocity * dir;
 
         auto turnStep = (float) m_timer.dseconds() * -m_turnSpeed;
-        m_rot += vec3(0, turnStep * (m_keyStates[SDLK_d] - m_keyStates[SDLK_a]), 0);
+        m_rot += vec3(0, turnStep * (glfwGetKey('D') - glfwGetKey('A')), 0);
 
 
         static const vec3 camOffset(0, 35, 0);
@@ -416,33 +427,10 @@ public:
     // [Esc] and window resize
     bool handleEvents()
     {
-        for (SDL_Event e; SDL_PollEvent(&e);)
-        {
-            switch (e.type)
-            {
-            case SDL_KEYDOWN:
-                m_keyStates[e.key.keysym.sym] = true;
-                break;
+        if (glfwGetKey(GLFW_KEY_ESC))
+            glfwCloseWindow();
 
-            case SDL_KEYUP:
-                if (e.key.keysym.sym == SDLK_ESCAPE)
-                    return false;
-
-                m_keyStates[e.key.keysym.sym] = false;
-                break;
-
-            case SDL_VIDEORESIZE:
-                SDL_SetVideoMode(e.resize.w, e.resize.h, 32, SDL_OPENGL | SDL_RESIZABLE);
-                gfx::Context::active().setViewport(irect(e.resize.w, e.resize.h));
-                m_camera.setAspectRatio((float) e.resize.w / e.resize.h);
-                m_camera.update();
-                break;
-
-            case SDL_QUIT:
-                return false;
-            }
-        }
-        return true;
+        return !!glfwGetWindowParam(GLFW_OPENED);
     }
 
 private:
@@ -467,15 +455,17 @@ private:
         m_otherAtoms,
         m_skyAtoms;
 
-    bool m_keyStates[SDLK_LAST];
-
     vec3 m_pos, m_rot;
     uint m_moveFlags;
     float m_turnSpeed, m_velocity, m_reach;
 };
 
+
 //////////////////////////////////////////////////////////////////////////
 // Game stuff
+
+bool Game::s_windowResized = false;
+ivec2 Game::s_newWindowSize;
 
 Game::Game()
 {
@@ -494,35 +484,21 @@ Game::~Game()
 
 void Game::initGL()
 {
-    auto sdlErr = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
-    if (sdlErr == -1)
-        debug("SDL_Init failed: %s", SDL_GetError());
+    if (!glfwInit())
+        debug("glfwInit failed");
 
-    SDL_WM_SetCaption("MassacreProto", nullptr);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);
+    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 3);
 
-    char sdlEnv[] = "SDL_VIDEO_CENTERED=1";
-    SDL_putenv(sdlEnv); // fuck you, putenv(char*)
+    glfwOpenWindow(1024, 768, 8, 8, 8, 8, 24, 8, GLFW_WINDOW);
+    glfwSetWindowTitle("MassacreProto");
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    glfwSetWindowSizeCallback(&Game::onWindowSize);
 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
-
-#if SDL_VERSION_ATLEAST(1,3,0)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#endif
-
-    SDL_SetVideoMode(1024, 768, 32, SDL_OPENGL | SDL_RESIZABLE);
+    GLFWvidmode desktop;
+    glfwGetDesktopMode(&desktop);
+    glfwSetWindowPos((desktop.Width - 1024) / 2, (desktop.Height - 768) / 2 - 30); // slightly above the center
     
     auto glewErr = glewInit();
     if (glewErr != GLEW_OK)
@@ -591,8 +567,17 @@ void Game::run()
     const int64 fpsDisplayInterval = 500; // num frames between updates
     Timer timer;
 
-    for (int64 frames = 0; m_layer->onRun(); ++frames)
+    for (int64 frames = 0;; ++frames)
     {
+        if (!m_layer->onRun())
+            break;
+
+        if (s_windowResized)
+        {
+            m_layer->onResize(s_newWindowSize);
+            s_windowResized = false;
+        }
+
         if (frames == fpsDisplayInterval)
         {
             frames = 0;
@@ -602,9 +587,15 @@ void Game::run()
 
             char caption[32];
             sprintf(caption, "%.2f FPS", fps);
-            SDL_WM_SetCaption(caption, nullptr);
+            glfwSetWindowTitle(caption);
         }
     }
+}
+
+void Game::onWindowSize(int w, int h)
+{
+    s_windowResized = true;
+    s_newWindowSize.set(w, h);
 }
 
 // 8008135

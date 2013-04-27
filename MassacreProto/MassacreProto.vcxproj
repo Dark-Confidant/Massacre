@@ -88,15 +88,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>MCR_STATIC;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(SdlDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);$(FreetypeDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(GlfwDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Universe.h</PrecompiledHeaderFile>
       <StructMemberAlignment>Default</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(SdlDir)\lib;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib;$(FreetypeDir)\objs\win32\vc2010</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;dxguid.lib;libyaml-cppmdd.lib;opengl32.lib;glew32sd.lib;SDLstaticd.lib;zlibstatic.lib;libpng15_static.lib;jpeg-staticd.lib;freetype2410_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(GlfwDir)\lib-msvc100;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;libyaml-cppmdd.lib;opengl32.lib;glew32sd.lib;GLFW.lib;zlibstatic.lib;libpng15_static.lib;jpeg-staticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt;libcmtd;msvcrt</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -106,15 +106,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>MCR_DLL;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(SdlDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);$(FreetypeDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(GlfwDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Universe.h</PrecompiledHeaderFile>
       <StructMemberAlignment>Default</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(SdlDir)\lib;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib;$(FreetypeDir)\objs\win32\vc2010</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;dxguid.lib;libyaml-cppmdd.lib;opengl32.lib;glew32sd.lib;SDLstaticd.lib;zlibstatic.lib;libpng15_static.lib;jpeg-staticd.lib;freetype2410_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(GlfwDir)\lib-msvc100;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;libyaml-cppmdd.lib;opengl32.lib;glew32sd.lib;GLFW.lib;zlibstatic.lib;libpng15_static.lib;jpeg-staticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt;libcmtd;msvcrt</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -127,7 +127,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>MCR_STATIC;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(SdlDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);$(FreetypeDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(GlfwDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Universe.h</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -142,8 +142,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(SdlDir)\lib;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib;$(FreetypeDir)\objs\win32\vc2010</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;dxguid.lib;libyaml-cppmd.lib;opengl32.lib;glew32s.lib;SDLstatic.lib;zlibstatic.lib;libpng15_static.lib;jpeg-static.lib;freetype2410.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(GlfwDir)\lib-msvc100;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;libyaml-cppmd.lib;opengl32.lib;glew32s.lib;GLFW.lib;zlibstatic.lib;libpng15_static.lib;jpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt;libcmtd</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>$(TargetName).pdb</ProgramDatabaseFile>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -157,7 +157,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>MCR_DLL;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(SdlDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);$(FreetypeDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;src;..\MassacreShared\include;extras\SimpleMesh;$(BOOST_ROOT);$(YamlDir)\include;$(GlewDir)\include;$(GlfwDir)\include;$(ZlibDir);$(PngDir)\include;$(JpegDir)\include;$(SmDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>Universe.h</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -172,8 +172,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(SdlDir)\lib;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib;$(FreetypeDir)\objs\win32\vc2010</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;dxguid.lib;libyaml-cppmd.lib;opengl32.lib;glew32s.lib;SDLstatic.lib;zlibstatic.lib;libpng15_static.lib;jpeg-static.lib;freetype2410.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(YamlDir)\lib;$(GlewDir)\lib;$(GlfwDir)\lib-msvc100;$(ZlibDir)\lib;$(PngDir)\lib;$(JpegDir)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;libyaml-cppmd.lib;opengl32.lib;glew32s.lib;GLFW.lib;zlibstatic.lib;libpng15_static.lib;jpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt;libcmtd</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>$(TargetName).pdb</ProgramDatabaseFile>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
