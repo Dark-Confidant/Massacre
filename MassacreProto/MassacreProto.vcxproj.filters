@@ -45,12 +45,6 @@
     <ClInclude Include="src\Universe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gfx\experimental\SimpleMeshImporter.h">
-      <Filter>Source Files\gfx\experimental</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gfx\experimental\SimpleMeshExporter.h">
-      <Filter>Source Files\gfx\experimental</Filter>
-    </ClInclude>
     <ClInclude Include="src\gfx\GLEnums.inl">
       <Filter>Source Files\gfx</Filter>
     </ClInclude>

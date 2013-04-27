@@ -225,8 +225,6 @@
     <ClInclude Include="include\mcr\Io.h" />
     <ClInclude Include="include\mcr\IPlugin.h" />
     <ClInclude Include="include\mcr\Timer.h" />
-    <ClInclude Include="src\gfx\experimental\SimpleMeshImporter.h" />
-    <ClInclude Include="src\gfx\experimental\SimpleMeshExporter.h" />
     <ClInclude Include="src\gfx\GLEnums.inl" />
     <ClInclude Include="src\Universe.h" />
   </ItemGroup>
