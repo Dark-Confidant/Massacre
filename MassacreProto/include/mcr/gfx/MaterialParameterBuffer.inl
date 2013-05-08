@@ -4,7 +4,7 @@ namespace gfx {
 //////////////////////////////////////////////////////////////////////////
 // Parameter
 
-inline MaterialParameterBuffer::Parameter::Parameter(MaterialParameterType type, void* mem, bool& dirty):
+inline MaterialParameterBuffer::Parameter::Parameter(MaterialParameterType type, void* mem, bool* dirty):
 IMaterialParameter(type),
     m_mem(mem), m_dirty(dirty) {}
 
@@ -20,7 +20,7 @@ inline void* MaterialParameterBuffer::Parameter::mem()
 
 inline void MaterialParameterBuffer::Parameter::invalidate()
 {
-    m_dirty = true;
+    *m_dirty = true;
 }
 
 
@@ -63,7 +63,7 @@ inline MaterialParameterBuffer::MaterialParameterBuffer(
 
     for (std::size_t i = 0; i < params.size(); ++i)
     {
-        Parameter param(params[i].first, &m_buffer[offset], m_dirty);
+        Parameter param(params[i].first, &m_buffer[offset], &m_dirty);
 
         m_parameters.push_back(std::move(param));
         m_parametersByName[params[i].second] = i;
@@ -108,7 +108,7 @@ inline IMaterialParameter& MaterialParameterBuffer::parameter(const std::string&
 inline IMaterialParameter& MaterialParameterBuffer::parameter(int index)
 {
     static bool fakeDirty = false;
-    static Parameter badParameter(MaterialParameterType::Int, nullptr, fakeDirty);
+    static Parameter badParameter(MaterialParameterType::Int, nullptr, &fakeDirty);
 
     return index >= 0 ? m_parameters[(std::size_t) index] : badParameter;
 }

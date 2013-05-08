@@ -66,7 +66,7 @@ private:
     class Parameter: public IMaterialParameter
     {
     public:
-        Parameter(MaterialParameterType type, void* mem, bool& dirty);
+        Parameter(MaterialParameterType type, void* mem, bool* dirty);
 
     private:
         const void* mem() const;
@@ -74,7 +74,7 @@ private:
         void        invalidate();
 
         void* m_mem;
-        bool& m_dirty;
+        bool* m_dirty;
     };
 
     const std::string m_name;
