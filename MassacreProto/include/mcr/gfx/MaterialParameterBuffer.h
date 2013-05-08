@@ -56,8 +56,6 @@ public:
     MCR_EXTERN void                         init();
     MCR_EXTERN void                         sync();
 
-    const std::string&                      glslDefinition() const;
-
 protected:
     MaterialParameterBuffer(const char* name, const MaterialParameterBufferLayout& layout, Usage usage);
     ~MaterialParameterBuffer();
@@ -79,7 +77,6 @@ private:
 
     const std::string m_name;
     const MaterialParameterBufferLayout m_layout;
-    std::string m_glslDef;
 
     std::vector<Parameter> m_parameters;
     std::map<std::string, std::size_t> m_parametersByName;

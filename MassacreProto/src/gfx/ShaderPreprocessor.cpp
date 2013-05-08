@@ -33,6 +33,8 @@ namespace directives {
 struct Version
 {
     int version;
+    std::string profile;
+
     Version(): version(0) {}
 };
 
@@ -79,7 +81,8 @@ struct Directive
 
 BOOST_FUSION_ADAPT_STRUCT(
     directives::Version,
-    (int, version));
+    (int, version)
+    (std::string, profile));
 
 BOOST_FUSION_ADAPT_STRUCT(
     directives::Extension,
@@ -152,7 +155,7 @@ struct Grammar: public qi::grammar<It, std::vector<directives::Directive>(), Ski
             ("warn",    directives::Extension::Warn)
             ("disable", directives::Extension::Disable);
 
-        version    = "version" > qi::int_;
+        version    = "version" > qi::int_ > -+qi::char_("a-z");
         use        = "use" > bufferName;
         extension  = "extension" > extName > ':' > extBehavior;
         directive  = pos >> '#' >> -(version | extension | use) >> qi::no_skip[eol >> pos];
@@ -183,6 +186,38 @@ namespace gfx {
 ShaderPreprocessor::ShaderPreprocessor(MaterialManager* mgr): m_mm(mgr) {}
 ShaderPreprocessor::~ShaderPreprocessor() {}
 
+inline std::string buildBlockDef(const MaterialParameterBuffer* buffer)
+{
+    static const std::string s_paramTypeLiterals[] =
+    {
+        "float", "double", "int",   "uint",
+        "vec2",  "dvec2",  "ivec2", "uvec2",
+        "vec3",  "dvec3",  "ivec3", "uvec3",
+        "vec4",  "dvec4",  "ivec4", "uvec4",
+        "mat4",  "dmat4"
+    };
+
+    auto& params = buffer->layout().parameters;
+    auto& name   = buffer->name();
+
+    std::stringstream def;
+
+    def << "uniform " << name << "Layout\n{\n";
+
+    for (std::size_t i = 0; i < params.size(); ++i)
+    {
+        def
+            << "    " << s_paramTypeLiterals[params[i].first]
+            << ' ' << name
+            << '_' << params[i].second
+            << ";\n";
+    }
+
+    def << "};\n";
+
+    return def.str();
+}
+
 bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>& sourceStringsOut)
 {
     namespace charset = boost::spirit::standard;
@@ -190,8 +225,10 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     static DebugStream debugstream;
     static Grammar<const char*, charset::space_type> grammar(debugstream);
 
-    auto it  = source;
-    auto end = it + strlen(source);
+    std::string mutableSource = source;
+
+    auto it  = mutableSource.c_str();
+    auto end = it + mutableSource.size();
 
     std::vector<directives::Directive> directives;
 
@@ -205,7 +242,9 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     }
 
     bool usesBuffers = false, supportsBuffers = false;
-    auto first = source, last = source;
+    auto
+        first = mutableSource.c_str(),
+        last  = mutableSource.c_str() + mutableSource.size();
 
     BOOST_FOREACH (auto& def, directives)
     {
@@ -235,7 +274,10 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
                 sourceStringsOut.push_back(std::string(first, def.first));
 
             if (auto buffer = m_mm->parameterBuffer(use->bufferName))
-                sourceStringsOut.push_back(buffer->glslDefinition());
+            {
+                sourceStringsOut.push_back(buildBlockDef(buffer));
+                boost::replace_all(mutableSource, buffer->name() + '.', buffer->name() + '_');
+            }
 
             first = last = def.last;
         }

@@ -38,24 +38,9 @@ inline MaterialParameterBuffer::MaterialParameterBuffer(
     auto& params = layout.parameters;
 
     m_bufferSize = 0;
-    m_glslDef = "uniform " + m_name + "Layout\n{\n";
 
     for (std::size_t i = 0; i < params.size(); ++i)
-    {
         m_bufferSize += params[i].first.size();
-
-        static const std::string s_paramTypeLiterals[] =
-        {
-            "float ", "double ", "int ",   "uint ",
-            "vec2 ",  "dvec2 ",  "ivec2 ", "uvec2 ",
-            "vec3 ",  "dvec3 ",  "ivec3 ", "uvec3 ",
-            "vec4 ",  "dvec4 ",  "ivec4 ", "uvec4 ",
-            "mat4 ",  "dmat4 "
-        };
-        m_glslDef += "    " + s_paramTypeLiterals[params[i].first] + params[i].second + ";\n";
-    }
-
-    m_glslDef += "}\n" + m_name + ";\n";
 
     m_buffer = new byte[m_bufferSize];
 
@@ -164,11 +149,6 @@ inline void MaterialParameterBuffer::setUsage(Usage usage)
 inline uint MaterialParameterBuffer::handle() const
 {
     return m_handle;
-}
-
-inline const std::string& MaterialParameterBuffer::glslDefinition() const
-{
-    return m_glslDef;
 }
 
 } // ns gfx
