@@ -27,7 +27,8 @@ public:
     double  dseconds() const;
 
 private:
-    MCR_INTERN void  _initFrequency();
+    MCR_INTERN void  _init();
+    MCR_INTERN void  _destroy();
     MCR_EXTERN void  _start();
     MCR_EXTERN int64 _ticksSinceStart() const;
 
