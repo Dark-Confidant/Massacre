@@ -7,7 +7,7 @@ inline void Timer::start()
     m_msec  = m_dmsec  = 0;
     m_sec   = m_dsec   = 0;
 
-    implStart();
+    _start();
 }
 
 inline void Timer::stop()
@@ -17,7 +17,7 @@ inline void Timer::stop()
 
 inline void Timer::refresh()
 {
-    int64  curTicks = implTicksSinceStart();
+    int64  curTicks = _ticksSinceStart();
     double curSec   = double(curTicks) / m_frequency;
     int64  curMsec  = int64(1000.0 * curSec);
     int64  curMcsec = int64(1000000.0 * curSec);

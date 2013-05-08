@@ -7,29 +7,29 @@ namespace mcr {
 class Timer
 {
 public:
-    Timer();
-    ~Timer(); // not intended to be inhertied
+    MCR_EXTERN Timer();
+    MCR_EXTERN ~Timer(); // not intended to be inhertied
 
-    void start();
-    void stop();
-    void refresh();
+    void    start();
+    void    stop();
+    void    refresh();
 
-    int64 ticks() const;
-    int64 dticks() const;
+    int64   ticks() const;
+    int64   dticks() const;
 
-    int64 microseconds() const;
-    int64 dmicroseconds() const;
+    int64   microseconds() const;
+    int64   dmicroseconds() const;
 
-    int64 milliseconds() const;
-    int64 dmilliseconds() const;
+    int64   milliseconds() const;
+    int64   dmilliseconds() const;
 
-    double seconds() const;
-    double dseconds() const;
+    double  seconds() const;
+    double  dseconds() const;
 
 private:
-    void implInitFrequency();
-    void implStart();
-    int64 implTicksSinceStart() const;
+    MCR_INTERN void  _initFrequency();
+    MCR_EXTERN void  _start();
+    MCR_EXTERN int64 _ticksSinceStart() const;
 
     struct Impl;
     Impl& m_impl;
