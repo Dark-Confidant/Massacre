@@ -7,12 +7,9 @@
 #   include <GL/glxew.h>
 #endif
 
-#include <mcr/gfx/ShaderProgram.h>
 #include <mcr/gfx/Texture.h>
 #include <mcr/gfx/Material.h>
-#include <mcr/gfx/VertexArray.h>
-
-#include <mcr/gfx/experimental/Mesh.h>
+#include <mcr/gfx/Mesh.h>
 
 #include "GLEnums.inl"
 
@@ -22,10 +19,8 @@ namespace gfx {
 Context* Context::s_active;
 
 Context::Context():
-    m_activeProgram(),
     m_activeTextureUnit(0),
     m_nextFreeTextureUnit(0),
-    m_nextFreeBufferUnit(0),
     m_activeVertexArray()
 {
     if (!s_active)
@@ -34,25 +29,9 @@ Context::Context():
     GLint maxTexUnits;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTexUnits);
 
-    TextureUnit refUnit = {};
-    m_textureUnits.resize((size_t) maxTexUnits, refUnit);
+    m_textureUnits.resize((size_t) maxTexUnits, nullptr);
 
     memset(m_buffers, 0, sizeof(m_buffers));
-
-    for (int i = 0; i < GBuffer::NumTypes; ++i)
-    {
-        GLint maxUnits = 0;
-
-        switch (i)
-        {
-        case GBuffer::UniformBuffer:
-            glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &maxUnits);
-            break;
-        }
-
-        if (maxUnits)
-            m_bufferUnits[i].resize((size_t) maxUnits);
-    }
 
     // HACK!
     glGetIntegerv(GL_VIEWPORT, &m_viewport[0][0]);
@@ -104,7 +83,6 @@ Context::~Context()
 
 bool Context::activate()
 {
-    //wglMakeCurrent()
     s_active = this;
     return true;
 }
@@ -154,15 +132,6 @@ void Context::setRenderState(const RenderState& rs)
     m_renderStateHash = rs.hash();
 }
 
-void Context::setActiveProgram(ShaderProgram* program)
-{
-    if (m_activeProgram == program)
-        return;
-
-    glUseProgram(program->handle());
-    m_activeProgram = program;
-}
-
 void Context::setActiveTextureUnit(uint texUnit)
 {
     if (m_activeTextureUnit == texUnit)
@@ -172,39 +141,14 @@ void Context::setActiveTextureUnit(uint texUnit)
     m_activeTextureUnit = texUnit;
 }
 
-void Context::bindTexture(TexTarget target, Texture* tex)
+void Context::bindTexture(Texture* tex)
 {
-    if (m_textureUnits[m_activeTextureUnit].textures[target] == tex)
+    if (m_textureUnits[m_activeTextureUnit] == tex)
         return;
 
-    static const GLenum targetTr[NumTexTargets] =
-    {
-        GL_TEXTURE_1D,
-        GL_TEXTURE_2D,
-        GL_TEXTURE_3D,
-        GL_TEXTURE_CUBE_MAP
-    };
-
-    glBindTexture(targetTr[target], tex ? tex->handle() : 0);
-    m_textureUnits[m_activeTextureUnit].textures[target] = tex;
+    glBindTexture(GL_TEXTURE_2D, tex ? tex->handle() : 0);
+    m_textureUnits[m_activeTextureUnit] = tex;
 }
-
-uint Context::allocTextureUnit(uint* refs)
-{
-    auto& unit = m_textureUnits[m_nextFreeTextureUnit];
-
-    ++unit.refs;
-
-    if (refs)
-        *refs = unit.refs;
-
-    auto result = m_nextFreeTextureUnit;
-    m_nextFreeTextureUnit = (m_nextFreeTextureUnit + 1) % (int) m_textureUnits.size();
-
-    return result;
-}
-
-void Context::freeTextureUnit(uint texUnit) {}
 
 void Context::setActiveMaterial(Material* mtl)
 {
@@ -214,21 +158,18 @@ void Context::setActiveMaterial(Material* mtl)
     if (m_renderStateHash != mtl->renderStateHash())
         setRenderState(mtl->renderState());
 
-    setActiveProgram(mtl->program());
+    glUseProgram(mtl->programTMP());
+    mtl->syncParameters();
 
-    auto numBoundTextures = std::min<int>(
-            m_activeProgram->numSamplers(),
-            mtl->numTextures());
-
-    for (int i = 0; i < numBoundTextures; ++i)
+    for (int i = 0; i < mtl->numTextures(); ++i)
     {
-        auto& sampler = m_activeProgram->sampler(i);
-        auto  tex     = mtl->texture(i);
+        auto unit = mtl->samplerTMP(i);
+        auto tex  = mtl->texture(i);
 
-        if (activeTexture(TexTarget(sampler.target), sampler.unit) != tex)
+        if (activeTexture(unit) != tex)
         {
-            setActiveTextureUnit(sampler.unit);
-            bindTexture(TexTarget(sampler.target), tex);
+            setActiveTextureUnit(unit);
+            bindTexture(tex);
         }
     }
 
@@ -247,20 +188,6 @@ void Context::bindBuffer(GBuffer* buffer)
 
     glBindBuffer(g_bufferTypeTable[buffer->type()], buffer->handle());
     slot = buffer;
-}
-
-
-void Context::bindBufferBase(uint bufUnit, GBuffer* buffer, uint offset)
-{
-    /*if (m_bufferUnits[target][bufUnit] == buffer)
-        return bindBuffer;*/
-
-    throw 1;
-}
-
-void Context::bindBufferRange(uint bufUnit, GBuffer* buffer, uint offset, uint count)
-{
-    throw 1;
 }
 
 void Context::setActiveVertexArray(VertexArray* va)
@@ -283,12 +210,12 @@ void Context::clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Context::drawMesh(const experimental::Mesh& mesh)
+void Context::drawMesh(const Mesh& mesh)
 {
     setActiveVertexArray(mesh.buffer);
 
-    glDrawElements(mesh.primitiveType, mesh.numIndices, GL_UNSIGNED_INT,
-        reinterpret_cast<const GLvoid*>(mesh.startIndex));
+    glDrawElements(g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices,
+        GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(mesh.startIndex << 2));
 }
 
 } // ns gfx

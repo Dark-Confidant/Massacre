@@ -3,6 +3,7 @@
 #include <stack>
 #include <mcr/math/Matrix.h>
 #include <mcr/gfx/GBuffer.h>
+#include <mcr/gfx/MaterialParameterBuffer.h>
 
 namespace mcr {
 
@@ -176,6 +177,11 @@ public:
 
     void dumpMatrices();
 
+    gfx::MaterialParameterBuffer* parameterBuffer() const
+    {
+        return m_parameterBuffer;
+    }
+
 protected:
     std::pair<mat4, bool> m_projection, m_mv, m_mvp;
     mat4 m_model, m_view;
@@ -183,7 +189,7 @@ protected:
     float m_fov;
     vec2 m_zRange;
     float m_aspectRatio;
-    rcptr<gfx::GBuffer> m_ubo;
+    rcptr<gfx::MaterialParameterBuffer> m_parameterBuffer;
 };
 
 } // ns mcr

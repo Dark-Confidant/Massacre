@@ -5,6 +5,8 @@
 #include <istream>
 #include <boost/algorithm/string/case_conv.hpp>
 
+#include "ShaderPreprocessor.h"
+
 #ifdef _MSC_VER
 #   pragma warning(push)
 #   pragma warning(disable: 4146)
@@ -17,6 +19,38 @@
 namespace mcr {
 namespace gfx {
 
+//////////////////////////////////////////////////////////////////////////
+// Init
+
+void MaterialManager::_init()
+{
+    m_preprocessor = new ShaderPreprocessor(this);
+}
+
+void MaterialManager::_destroy()
+{
+    delete m_preprocessor;
+}
+
+MaterialManager::ParamBufferData::ParamBufferData():
+    nextFreeBinding(0)
+{
+    glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, (GLint*) &numBindings);
+}
+
+MaterialManager::TextureData::TextureData():
+    nextFreeUnit(0)
+{
+    GLint numUnits;
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &numUnits);
+
+    units.resize((std::size_t) numUnits);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Cached getters
+
 Texture* MaterialManager::getTexture(const char* filename)
 {
     std::string path;
@@ -25,7 +59,7 @@ Texture* MaterialManager::getTexture(const char* filename)
     if (path.empty())
         return nullptr;
 
-    auto& tex = m_textures[path];
+    auto& tex = m_tex.textures[path];
     if (!tex)
         tex = Texture::createFromFile(file);
 
@@ -49,55 +83,38 @@ Material* MaterialManager::getMaterial(const char* filename)
     auto& mtl = m_materials[path];
     if (!mtl)
     {
-        mtl = Material::create(0);
+        mtl = Material::create(this);
         _parseMaterial(mtl, file);
     }
 
     return mtl;
 }
 
-ShaderProgram* MaterialManager::getShaderProgram(const char* vsFilename, const char* fsFilename)
-{
-    std::set<std::string> filenames;
 
-    filenames.insert(vsFilename);
-    filenames.insert(fsFilename);
-
-    return _getShaderProgram(filenames);
-}
-
-ShaderProgram* MaterialManager::getShaderProgram(
-    const char* vsFilename, const char* gsFilename, const char* fsFilename)
-{
-    std::set<std::string> filenames;
-
-    filenames.insert(vsFilename);
-    filenames.insert(gsFilename);
-    filenames.insert(fsFilename);
-
-    return _getShaderProgram(filenames);
-}
+//////////////////////////////////////////////////////////////////////////
+// Cleanup interface
 
 void MaterialManager::clear()
 {
     m_materials.clear();
-    m_programs.clear();
     m_shaders.clear();
-    m_textures.clear();
+    m_tex.textures.clear();
 }
 
 void MaterialManager::removeUnused()
 {
     _dropAll(m_materials);
-    _dropAll(m_programs);
     _dropAll(m_shaders);
-    _dropAll(m_textures);
+    _dropAll(m_tex.textures);
 
-    _grabAll(m_textures);
+    _grabAll(m_tex.textures);
     _grabAll(m_shaders);
-    _grabAll(m_programs);
     _grabAll(m_materials);
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Atlas stuff, to be removed
 
 std::map<std::string, rect> MaterialManager::parseAtlasTMP(const char* filename)
 {
@@ -143,6 +160,10 @@ std::map<std::string, rect> MaterialManager::parseAtlasTMP(const char* filename)
     return result;
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// Internals
+
 Shader* MaterialManager::_getShader(const char* filename, std::string& path)
 {
     auto file = m_fs->openFile(filename, &path);
@@ -152,46 +173,22 @@ Shader* MaterialManager::_getShader(const char* filename, std::string& path)
 
     auto& shdr = m_shaders[path];
     if (!shdr)
-        shdr = Shader::createFromFile(file);
+    {
+        Shader::Type type = Shader::Vertex;
+    
+        switch (Path::ext(file->filename())[0])
+        {
+        case 'g': type = Shader::Geometry; break;
+        case 'f': type = Shader::Fragment;
+        }
+
+        shdr = Shader::create(type);
+
+        shdr->setPreprocessor(m_preprocessor);
+        shdr->setSourceFromFile(file);
+    }
 
     return shdr;
-}
-
-ShaderProgram* MaterialManager::_getShaderProgram(const std::set<std::string>& filenames)
-{
-    std::vector<Shader*> shaders;
-    std::string name;
-
-    shaders.reserve(filenames.size());
-
-    BOOST_FOREACH (auto& filename, filenames)
-    {
-        std::string path;
-
-        auto shader = _getShader(filename.c_str(), path);
-        if (!shader)
-            return nullptr;
-
-        shaders.push_back(shader);
-
-        if (name.size())
-            name += '|';
-
-        name += path;
-    }
-
-    auto& prog = m_programs[name];
-    if (!prog)
-    {
-        prog = ShaderProgram::create();
-
-        BOOST_FOREACH (auto shader, shaders)
-            prog->attach(shader);
-
-        prog->link();
-    }
-
-    return prog;
 }
 
 void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
@@ -285,22 +282,18 @@ void MaterialManager::_parseMaterial(Material* mtl, IFile* file)
             }
             else if (key == "shaders")
             {
-                std::set<std::string> filenames;
+                gfx::MaterialShaderSet shaders;
 
                 for (auto nodeIt = it.second().begin(); nodeIt != it.second().end(); ++nodeIt)
-                    filenames.insert(nodeIt->to<std::string>());
+                    shaders(getShader(nodeIt->to<std::string>().c_str()));
 
-                //mtl->setShader(_getShaderProgram(filenames));
-                mtl->initProgram(getShader((*filenames.begin()).c_str()),
-                                 getShader((*++filenames.begin()).c_str()));  // HACK
+                mtl->setShaders(shaders);
             }
             else if (key == "textures")
             {
                 auto& textures = it.second();
 
                 assert(textures.size() < 256);
-
-                mtl->setNumTextures((byte) textures.size());
 
                 std::string tex;
                 for (byte i = 0; i < textures.size(); ++i)

@@ -16,19 +16,14 @@ inline const RenderState& Context::renderState() const
     return m_renderState;
 }
 
-inline ShaderProgram* Context::activeProgram() const
-{
-    return m_activeProgram;
-}
-
 inline uint Context::activeTextureUnit() const
 {
     return m_activeTextureUnit;
 }
 
-inline Texture* Context::activeTexture(TexTarget target, uint texUnit)
+inline Texture* Context::activeTexture(uint texUnit)
 {
-    return m_textureUnits[texUnit].textures[target];
+    return m_textureUnits[texUnit];
 }
 
 inline Material* Context::activeMaterial() const

@@ -3,6 +3,7 @@
 #include <mcr/NonCopyable.h>
 #include <mcr/math/Rect.h>
 #include <mcr/gfx/Material.h>
+#include <mcr/gfx/MaterialParameterBuffer.h>
 
 namespace mcr {
 namespace gfx {
@@ -10,58 +11,88 @@ namespace gfx {
 class MaterialManager: NonCopyable
 {
 public:
-    MaterialManager(): m_fs(new FileSystem), m_ownFs(true) {}
-    MaterialManager(FileSystem* fs): m_fs(fs), m_ownFs(false) {}
+    MaterialManager();
+    MaterialManager(FileSystem* fs);
 
-    ~MaterialManager()
-    {
-        if (m_ownFs)
-            delete m_fs;
-    }
+    ~MaterialManager(); // inherit not
 
-    Texture*       getTexture(const char* filename);
-    Shader*        getShader(const char* filename);
-    ShaderProgram* getShaderProgram(const char* vsFilename, const char* fsFilename);
-    ShaderProgram* getShaderProgram(const char* vsFilename, const char* gsFilename, const char* fsFilename);
-    Material*      getMaterial(const char* filename);
 
-    void clear();
-    void removeUnused();
+    // Parameter buffer management
 
-    FileSystem* fs() const { return m_fs; }
-    bool hasOwnFs()  const { return m_ownFs; }
+    uint requestParameterBufferBinding();
+
+    bool addParameterBuffer(MaterialParameterBuffer* buffer);
+    bool addParameterBuffer(const std::string& name, MaterialParameterBuffer* buffer);
+
+    void removeParameterBuffer(MaterialParameterBuffer* buffer);
+    void removeParameterBuffer(const std::string& name);
+
+    MaterialParameterBuffer* parameterBuffer(const std::string& name) const;
+
+
+    // Texture units management
+
+    uint requestTexUnit();
+
+
+    // Resource management
+
+    Texture*    getTexture(const char* filename);
+    Shader*     getShader(const char* filename);
+    Material*   getMaterial(const char* filename);
+
+    void        clear();
+    void        removeUnused();
+
+    FileSystem* fs() const;
+    bool        hasOwnFs()  const;
 
     std::map<std::string, rect> parseAtlasTMP(const char* filename);
 
-protected:
-    Shader* _getShader(const char* filename, std::string& path);
-    ShaderProgram* _getShaderProgram(const std::set<std::string>& filenames);
+private:
+    MCR_EXTERN void     _init();
+    MCR_EXTERN void     _destroy();
 
-    void _parseMaterial(Material* mtl, IFile* file);
+    MCR_INTERN Shader*  _getShader(const char* filename, std::string& path);
+    MCR_INTERN void     _parseMaterial(Material* mtl, IFile* file);
 
-    template <typename M>
-    void _dropAll(M& map)
-    {
-        for (auto it = map.begin(); it != map.end(); ++it)
-            if (it->second->drop())
-                it = map.erase(it);
-    }
-
-    template <typename M>
-    void _grabAll(M& map)
-    {
-        for (auto it = map.begin(); it != map.end(); ++it)
-            it->second->grab();
-    }
+    template <typename M> void _dropAll(M& map);
+    template <typename M> void _grabAll(M& map);
 
     FileSystem* m_fs;
     bool m_ownFs;
 
-    std::map<std::string, rcptr<Texture>> m_textures;
+    IShaderPreprocessor* m_preprocessor;
+
+    struct TextureData
+    {
+        struct Unit
+        {
+            Texture* tex;
+        };
+
+        std::map<std::string, rcptr<Texture>> textures;
+        std::vector<Unit> units;
+        std::size_t nextFreeUnit;
+
+        MCR_EXTERN TextureData();
+    }
+    m_tex;
+
+    struct ParamBufferData
+    {
+        std::map<std::string, rcptr<MaterialParameterBuffer>> buffers;
+        uint numBindings, nextFreeBinding;
+
+        MCR_EXTERN ParamBufferData();
+    }
+    m_pb;
+
     std::map<std::string, rcptr<Shader>> m_shaders;
-    std::map<std::string, rcptr<ShaderProgram>> m_programs;
     std::map<std::string, rcptr<Material>> m_materials;
 };
 
 } // ns gfx
 } // ns mcr
+
+#include "MaterialManager.inl"

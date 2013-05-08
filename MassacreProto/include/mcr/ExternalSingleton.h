@@ -22,7 +22,7 @@ protected:
     ~ExternalSingleton<Super>() {}
 
 private:
-    static Super* m_instance; // to be defined
+    MCR_EXTERN static Super* m_instance; // to be defined
 };
 
 } // ns mcr

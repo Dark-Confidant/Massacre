@@ -19,12 +19,6 @@
     <Filter Include="Source Files\gfx">
       <UniqueIdentifier>{4cab3aa0-5ed1-47f5-bd1b-eeced0b49fa4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\gfx\renderables">
-      <UniqueIdentifier>{3cc59c58-0014-4d00-a59e-c60e5bd91681}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\gfx\renderables">
-      <UniqueIdentifier>{42a8684c-871c-41eb-94fc-1c3af36c7b41}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\shared">
       <UniqueIdentifier>{c3718cdb-8104-4571-919e-236d54839e82}</UniqueIdentifier>
     </Filter>
@@ -51,30 +45,6 @@
     <ClInclude Include="include\mcr\gfx\experimental\GeometryBuffer.h">
       <Filter>Header Files\gfx\experimental</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\experimental\IImageImporter.h">
-      <Filter>Header Files\gfx\experimental</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\experimental\IMeshExporter.h">
-      <Filter>Header Files\gfx\experimental</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\experimental\IMeshImporter.h">
-      <Filter>Header Files\gfx\experimental</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\experimental\Mesh.h">
-      <Filter>Header Files\gfx\experimental</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\renderables\Mesh.h">
-      <Filter>Header Files\gfx\renderables</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\renderables\Renderable.h">
-      <Filter>Header Files\gfx\renderables</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\renderables\SpriteBatch.h">
-      <Filter>Header Files\gfx\renderables</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\GLUtility.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\gfx\GType.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
@@ -84,25 +54,16 @@
     <ClInclude Include="include\mcr\gfx\ImageFormat.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\ISprite.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\gfx\Material.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\mcr\gfx\MaterialManager.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\RenderAtom.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\gfx\RenderState.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\mcr\gfx\Shader.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mcr\gfx\ShaderProgram.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="include\mcr\gfx\Texture.h">
@@ -180,21 +141,36 @@
     <ClInclude Include="..\MassacreShared\include\mcr\MassacreBuildConfig.h">
       <Filter>Header Files\shared</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\experimental\MaterialParameter.h">
-      <Filter>Header Files\gfx\experimental</Filter>
+    <ClInclude Include="include\mcr\gfx\MaterialParameterBuffer.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\MaterialParameter.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\IShaderPreprocessor.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gfx\ShaderPreprocessor.h">
+      <Filter>Source Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\OldMeshes.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\Mesh.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\IMeshExporter.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\IMeshImporter.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\IImageImporter.h">
+      <Filter>Header Files\gfx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\gfx\renderables\Mesh.cpp">
-      <Filter>Source Files\gfx\renderables</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\renderables\SpriteBatch.cpp">
-      <Filter>Source Files\gfx\renderables</Filter>
-    </ClCompile>
     <ClCompile Include="src\gfx\Shader.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\ShaderProgram.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\Texture.cpp">
@@ -210,9 +186,6 @@
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\GBuffer.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\GLUtility.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\Image.cpp">
@@ -248,17 +221,26 @@
     <ClCompile Include="src\Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gfx\experimental\SimpleMeshImporter.cpp">
-      <Filter>Source Files\gfx\experimental</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\experimental\SimpleMeshExporter.cpp">
-      <Filter>Source Files\gfx\experimental</Filter>
-    </ClCompile>
     <ClCompile Include="src\gfx\GType.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp">
       <Filter>Source Files\gfx\experimental</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\MaterialParameterBuffer.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\ShaderPreprocessor.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\OldMeshes.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\SimpleMeshImporter.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\SimpleMeshExporter.cpp">
+      <Filter>Source Files\gfx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -283,8 +265,20 @@
     <None Include="include\mcr\Timer.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="include\mcr\gfx\experimental\MaterialParameter.inl">
-      <Filter>Header Files\gfx\experimental</Filter>
+    <None Include="include\mcr\gfx\Material.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\mcr\gfx\MaterialManager.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\mcr\gfx\MaterialParameter.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\mcr\gfx\MaterialParameterBuffer.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="src\gfx\MaterialParameterUploadFn.h">
+      <Filter>Source Files\gfx</Filter>
     </None>
   </ItemGroup>
 </Project>

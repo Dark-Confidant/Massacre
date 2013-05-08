@@ -1,12 +1,11 @@
 #pragma once
 
 #include <mcr/FileSystem.h>
-#include <mcr/gfx/experimental/Mesh.h>
+#include <mcr/gfx/Mesh.h>
 #include <mcr/gfx/VertexFormat.h>
 
-namespace mcr          {
-namespace gfx          {
-namespace experimental {
+namespace mcr {
+namespace gfx {
 
 class IMeshImportTask: public RefCounted
 {
@@ -14,8 +13,8 @@ public:
     struct MeshInfo
     {
         VertexFormat vertexFormat;
-        uint numVertices;  //< Number of mesh vertices
-        uint numIndices;   //< Number of mesh indices
+        uint numVertices;
+        uint numIndices;
     };
 
     /*! Determine mesh parameters. Good point to check signature and read headers.
@@ -39,8 +38,7 @@ public:
     virtual rcptr<IMeshImportTask> createTask(IFile* file) const = 0;
 };
 
-rcptr<IMeshImporter> createSimpleMeshLoader();
+MCR_EXTERN rcptr<IMeshImporter> createSimpleMeshLoader();
 
-} // ns experimental
 } // ns gfx
 } // ns mcr

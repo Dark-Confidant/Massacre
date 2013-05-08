@@ -8,13 +8,11 @@
 
 #include <mcr/Camera.h>
 #include <mcr/gfx/Context.h>
-#include <mcr/gfx/renderables/Mesh.h>
-#include <mcr/gfx/renderables/SpriteBatch.h>
 #include <mcr/gfx/MaterialManager.h>
-
-#include <mcr/gfx/experimental/IMeshImporter.h>
+#include <mcr/gfx/OldMeshes.h>
 
 using namespace mcr;
+using namespace gfx;
 
 class Game;
 
@@ -58,110 +56,28 @@ private:
     static ivec2 s_newWindowSize;
 };
 
-class MeshManager
-{
-public:
-    MeshManager(FileSystem* fs): m_fs(fs)
-    {
-        m_buffer = gfx::VertexArray::create();
-        m_loader = gfx::experimental::createSimpleMeshLoader();
-    }
-
-    bool load(const char* filename, ...)
-    {
-        using namespace gfx::experimental;
-
-        std::vector<rcptr<IMeshImportTask>> tasks;
-
-        for (auto arg = &filename; *arg; ++arg)
-            tasks.push_back(m_loader->createTask(m_fs->openFile(*arg)));
-
-        IMeshImportTask::MeshInfo total;
-        total.numVertices = total.numIndices = 0;
-
-        bool fail = false;
-
-        BOOST_FOREACH (IMeshImportTask* task, tasks)
-        {
-            IMeshImportTask::MeshInfo info;
-
-            if (!task->estimate(info))
-            {
-                fail = true;
-                break;
-            }
-
-            rcptr<Mesh> mesh = new Mesh;
-
-            mesh->buffer = m_buffer;
-            mesh->startVertex = total.numVertices;
-            mesh->numVertices = info.numVertices;
-            mesh->startIndex = total.numIndices;
-            mesh->numIndices = info.numIndices;
-            mesh->primitiveType = GL_TRIANGLES;
-
-            m_meshes.push_back(mesh);
-
-            total.numVertices += info.numVertices;
-            total.numVertices += info.numVertices;
-
-            if (total.vertexFormat.numAttribs() == 0)
-                total.vertexFormat = info.vertexFormat;
-        }
-
-        if (!fail)
-        {
-            m_buffer->setFormat(total.vertexFormat);
-            m_buffer->vertices()->init(total.numVertices * total.vertexFormat.stride(), gfx::GBuffer::StaticDraw);
-            m_buffer->indices()->init(total.numIndices * sizeof(uint), gfx::GBuffer::StaticDraw);
-
-            for (uint i = 0; i < tasks.size(); ++i)
-            {
-                if (!tasks[i]->import(total.vertexFormat, *m_meshes[i]))
-                {
-                    fail = true;
-                    break;
-                }
-            }
-        }
-
-        if (fail)
-            m_meshes.clear();
-
-        return !fail;
-    }
-
-private:
-    FileSystem* m_fs;
-    rcptr<gfx::VertexArray> m_buffer;
-    rcptr<gfx::experimental::IMeshImporter> m_loader;
-    std::vector<rcptr<gfx::experimental::Mesh>> m_meshes;
-};
-
 //////////////////////////////////////////////////////////////////////////
 // Game layer stuff
 
 class BattleScreen: public GameLayer
 {
 public:
-    BattleScreen(Game* game): GameLayer(game ){}
+    BattleScreen(Game* game):
+    GameLayer(game),
+        m_commonParameters(
+            MaterialParameterBuffer::create("Common",
+                MaterialParameterBufferLayout()
+                    (MaterialParameterType::Float, "Time")
+                    (MaterialParameterType::Float, "DeltaTime"))) {}
 
     void onLoad()
     {
         m_camera.setZRange(vec2(1.f, 3000.f));
         m_camera.update();
 
-#if defined(MCR_PLATFORM_WINDOWS)
+        m_mm.addParameterBuffer(m_camera.parameterBuffer());
+        m_mm.addParameterBuffer(m_commonParameters);
 
-        if (!m_mm.fs()->attachResource("DataArena/"))
-        {
-            debug("Can't find data directory");
-            exit(1);
-        }
-
-#elif defined(MCR_PLATFORM_LINUX)
-
-        // We should also check system wide data repository for linux
         if (!m_mm.fs()->attachResource("DataArena/")
         &&  !m_mm.fs()->attachResource("/usr/share/massacre/"))
         {
@@ -169,7 +85,6 @@ public:
             exit(1);
         }
 
-#endif
         m_config.load(m_mm.fs()->openFile("mainconf.yaml"));
 
         m_turnSpeed = m_config["turn_speed"] || 60.f;
@@ -178,45 +93,31 @@ public:
 
         loadArena();
         loadSky();
-
-        m_quasicrystal = m_mm.getMaterial("quasicrystal.mtl");
-
-        m_gateBatch = gfx::SpriteBatch::create(2);
-
-        m_gateBatch->addSprite(rect(-.5f, 0, .5f, 1), rect(1, 2),
-            math::buildTransform(vec3(957, -1.f, 5), vec3(0, 90, 0), vec3(125, 250, 1)));
-
-        m_gateBatch->addSprite(rect(-.5f, 0, .5f, 1), rect(1, 2),
-            math::buildTransform(vec3(-837, -1.f, 22), vec3(0, -90, 0), vec3(125, 250, 1)));
-
-        m_gateBatch->applyChanges();
+        buildGates();
     }
 
     void loadArena()
     {
-        m_opaque      = m_mm.getMaterial("Models/Arena/arena.mtl");
-        m_transparent = m_mm.getMaterial("Models/Arena/branch.mtl");
-        m_translucent = m_mm.getMaterial("Models/Arena/leaves.mtl");
+        m_opaque      = m_mm.getMaterial("Materials/arena.mtl");
+        m_transparent = m_mm.getMaterial("Materials/branch.mtl");
+        m_translucent = m_mm.getMaterial("Materials/leaves.mtl");
 
-        auto opaqueAtlas      = m_mm.parseAtlasTMP("Models/Arena/arena.json");
-        auto transparentAtlas = m_mm.parseAtlasTMP("Models/Arena/trans.json");
+        auto opaqueAtlas      = m_mm.parseAtlasTMP("Textures/arena.json");
+        auto transparentAtlas = m_mm.parseAtlasTMP("Textures/trans.json");
 
-        MeshManager mgr(m_mm.fs());
-        //mgr.load("foo", "bar", "baz", nullptr);
+        std::vector<Mesh> meshes;
+        std::vector<std::string> texNames;
 
-        auto mesh     = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Arena/arena.mesh"));
-        m_arenaBuffer = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
+        m_arenaBuffer = OldMeshes::load(
+            m_mm.fs()->openFile("Meshes/arena.mesh"),
+            meshes, &texNames);
 
         // move
         m_arenaBuffer->transformAttribs(0, math::buildTransform(vec3(-600, 0, 100)));
 
-        // flip by v
-        m_arenaBuffer->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
-
-        for (uint i = 0; i < mesh->numAtoms(); ++i)
+        for (uint i = 0; i < meshes.size(); ++i)
         {
-            auto        atom = const_cast<gfx::RenderAtom*>(mesh->atom(i));
-            std::string tex  = Path::filename(atom->material->texture(0)->filename().c_str());
+            auto& tex = texNames[i];
 
             bool transformBit = false;
 
@@ -224,7 +125,7 @@ public:
             if (it != opaqueAtlas.end())
             {
                 transformBit = true;
-                atom->material = m_opaque;
+                m_opaqueMeshes.push_back(meshes[i]);
             }
             else
             {
@@ -233,10 +134,21 @@ public:
                 {
                     transformBit = true;
 
-                    if (tex.substr(0, 6) == "leaves")
-                        atom->material = m_translucent;
+                    if (boost::starts_with(tex, "leaves"))
+                        m_translucentMeshes.push_back(meshes[i]);
                     else
-                        atom->material = m_transparent;
+                        m_transparentMeshes.push_back(meshes[i]);
+                }
+                else
+                {
+                    auto mtl = Material::create(&m_mm);
+
+                    mtl->setRenderState(m_transparent->renderState());
+                    mtl->setShaders(m_transparent->shaders());
+                    mtl->setTexture(0, m_mm.getTexture(("Textures/" + tex).c_str()));
+
+                    m_other.push_back(mtl);
+                    m_otherMeshes.push_back(meshes[i]);
                 }
             }
 
@@ -247,66 +159,69 @@ public:
                     vec3(),
                     vec3(it->second.size(), 0.f));
 
-                m_arenaBuffer->transformAttribsIndexed(2, tf, atom->start, atom->size);
-                continue;
+                m_arenaBuffer->transformAttribs(2, tf, meshes[i].startVertex, meshes[i].numVertices);
             }
-
-            atom->material->initProgram(
-                m_opaque->program()->shader(0),
-                m_opaque->program()->shader(1));
         }
-
-        mesh->optimizeAtomsTMP();
-
-        for (uint i = 0; i < mesh->numAtoms(); ++i)
-        {
-            auto atom = mesh->atom(i);
-
-            if (atom->material == m_opaque)
-                m_opaqueAtoms.push_back(atom);
-
-            else if (atom->material == m_transparent)
-                m_transparentAtoms.push_back(atom);
-
-            else if (atom->material == m_translucent)
-                m_translucentAtoms.push_back(atom);
-
-            else
-            {
-                m_other.push_back(atom->material);
-                m_otherAtoms.push_back(atom);
-            }
-
-        }
-
-        m_meshes.insert(mesh);
     }
 
     void loadSky()
     {
-        auto vert = m_mm.getShader("Shaders/sky_t0.vert");
-        auto frag = m_mm.getShader("Shaders/diffuse.frag");
+        MaterialShaderSet skyShaders;
+        skyShaders
+            (m_mm.getShader("Shaders/sky_t0.vert"))
+            (m_mm.getShader("Shaders/diffuse.frag"));
 
-        auto mesh   = gfx::Mesh::createFromFile(m_mm.fs()->openFile("Models/Sky/sky.mesh"));
-        m_skyBuffer = const_cast<gfx::VertexArray*>(mesh->buffer()); // hack
+        std::vector<std::string> texNames;
 
-        // flip by v
-        m_skyBuffer->transformAttribs(2, math::buildTransform(vec3(0, 1, 0), vec3(), vec3(1, -1, 0)));
+        m_skyBuffer = OldMeshes::load(
+            m_mm.fs()->openFile("Meshes/sky.mesh"),
+            m_skyMeshes, &texNames);
 
-        for (uint i = 0; i < mesh->numAtoms(); ++i)
+        for (uint i = 0; i < m_skyMeshes.size(); ++i)
         {
-            gfx::Material* mtl = mesh->atom(i)->material;
-            
-            mtl->initProgram(vert, frag);
+            auto mtl = Material::create(&m_mm);
 
-            mtl->set(&gfx::RenderState::depthTest, false);
+            mtl->set(&RenderState::depthTest, false);
             mtl->setPassHint(-1);
+            
+            mtl->setShaders(skyShaders);
+
+            auto texName = "Textures/" + texNames[i];
+            mtl->setTexture(0, m_mm.getTexture(texName.c_str()));
 
             m_sky.push_back(mtl);
-            m_skyAtoms.push_back(mesh->atom(i));
         }
+    }
 
-        m_meshes.insert(mesh);
+    void buildGates()
+    {
+        m_quasicrystal = m_mm.getMaterial("Materials/quasicrystal.mtl");
+
+        float spriteVertices[] =
+        {
+            0,0,0,0,0, 1,0,0,1,0, 1,1,0,1,1, 0,1,0,0,1,
+            0,0,0,0,0, 1,0,0,1,0, 1,1,0,1,1, 0,1,0,0,1
+        };
+        uint spriteIndices[] = {0,1,2,0,2,3, 4,5,6,4,6,7};
+
+        m_gateBuffer = VertexArray::create(
+            spriteVertices, sizeof(spriteVertices),
+            spriteIndices, sizeof(spriteIndices));
+
+        m_gateBuffer->setFormat("p3f _ t2f");
+
+        m_gateBuffer->transformAttribs(0, math::buildTransform(vec3(-62.5f, 0, 0), vec3(), vec3(125, 250, 0)));
+        m_gateBuffer->transformAttribs(2, math::buildTransform(vec3(), vec3(), vec3(1, 2, 0)));
+
+        m_gateBuffer->transformAttribs(0, math::buildTransform(vec3(957, 0, 5), vec3(0, -90, 0)), 0, 4);
+        m_gateBuffer->transformAttribs(0, math::buildTransform(vec3(-837, 0, 22), vec3(0, 90, 0)), 4, 8);
+
+        m_gateMesh.buffer        = m_gateBuffer;
+        m_gateMesh.startVertex   = 0;
+        m_gateMesh.numVertices   = 8;
+        m_gateMesh.startIndex    = 0;
+        m_gateMesh.numIndices    = 12;
+        m_gateMesh.primitiveType = PrimitiveType::Triangles;
     }
 
     void onUnload() {}
@@ -323,6 +238,9 @@ public:
     bool onRun()
     {
         m_timer.refresh();
+        m_commonParameters->parameter("Time")      = (float) m_timer.seconds();
+        m_commonParameters->parameter("DeltaTime") = (float) m_timer.dseconds();
+        m_commonParameters->sync();
 
         handleKeys();
         render();
@@ -332,26 +250,20 @@ public:
 
     void onResize(const ivec2& size)
     {
-        gfx::Context::active().setViewport(size);
+        Context::active().setViewport(size);
         m_camera.setAspectRatio((float) size.x() / size.y());
         m_camera.update();
     }
 
-    void renderAtom(const gfx::RenderAtom* atom)
+    void drawMeshes(Context& ctx, const std::vector<Mesh>& meshes)
     {
-        glDrawElements(GL_TRIANGLES, atom->size, GL_UNSIGNED_INT,
-            reinterpret_cast<const GLvoid*>(sizeof(uint) * atom->start));
-    }
-
-    void renderAtoms(const std::vector<const gfx::RenderAtom*>& atoms)
-    {
-        for (auto i = 0u; i < atoms.size(); ++i)
-            renderAtom(atoms[i]);
+        for (std::size_t i = 0; i < meshes.size(); ++i)
+            ctx.drawMesh(meshes[i]);
     }
 
     void render()
     {
-        auto& ctx = gfx::Context::active();
+        auto& ctx = Context::active();
 
         ctx.clear();
 
@@ -361,29 +273,29 @@ public:
         for (auto i = 0u; i < m_sky.size(); ++i)
         {
             ctx.setActiveMaterial(m_sky[i]);
-            renderAtom(m_skyAtoms[i]);
+            ctx.drawMesh(m_skyMeshes[i]);
         }
 
         ctx.setActiveVertexArray(m_arenaBuffer);
 
         ctx.setActiveMaterial(m_opaque);
-        renderAtoms(m_opaqueAtoms);
+        drawMeshes(ctx, m_opaqueMeshes);
 
-        ctx.setActiveMaterial(m_transparent);
-        renderAtoms(m_transparentAtoms);
-
-        ctx.setActiveMaterial(m_translucent);
-        renderAtoms(m_translucentAtoms);
-
-        for (auto i = 0u; i < m_other.size(); ++i)
+        for (std::size_t i = 0; i < m_other.size(); ++i)
         {
             ctx.setActiveMaterial(m_other[i]);
-            renderAtom(m_otherAtoms[i]);
+            ctx.drawMesh(m_otherMeshes[i]);
         }
 
-        ctx.setActiveVertexArray(const_cast<gfx::VertexArray*>(m_gateBatch->buffer()));
+        ctx.setActiveMaterial(m_transparent);
+        drawMeshes(ctx, m_transparentMeshes);
+
+        ctx.setActiveMaterial(m_translucent);
+        drawMeshes(ctx, m_translucentMeshes);
+
+        ctx.setActiveVertexArray(m_gateBuffer);
         ctx.setActiveMaterial(m_quasicrystal);
-        renderAtom(m_gateBatch->atom(0));
+        ctx.drawMesh(m_gateMesh);
 
         glfwSwapBuffers();
     }
@@ -424,7 +336,7 @@ public:
         m_camera.setPosition(m_pos + camOffset * tf);
     }
 
-    // [Esc] and window resize
+    // [Esc]
     bool handleEvents()
     {
         if (glfwGetKey(GLFW_KEY_ESC))
@@ -437,23 +349,24 @@ private:
     Config m_config;
     Timer m_timer;
 
+
     Camera m_camera;
-    gfx::MaterialManager m_mm;
+    MaterialManager m_mm;
+    rcptr<MaterialParameterBuffer> m_commonParameters;
 
-    std::set<rcptr<gfx::Mesh>> m_meshes;
+    rcptr<Material> m_opaque, m_transparent, m_translucent, m_quasicrystal;
+    std::vector<rcptr<Material>> m_other, m_sky;
 
-    rcptr<gfx::Material> m_opaque, m_transparent, m_translucent, m_quasicrystal;
-    std::vector<rcptr<gfx::Material>> m_other, m_sky;
+    rcptr<VertexArray> m_arenaBuffer, m_skyBuffer, m_gateBuffer;
 
-    rcptr<gfx::VertexArray> m_arenaBuffer, m_skyBuffer;
-    rcptr<gfx::SpriteBatch> m_gateBatch;
+    std::vector<Mesh>
+        m_opaqueMeshes,
+        m_transparentMeshes,
+        m_translucentMeshes,
+        m_otherMeshes,
+        m_skyMeshes;
 
-    std::vector<const gfx::RenderAtom*>
-        m_opaqueAtoms,
-        m_transparentAtoms,
-        m_translucentAtoms,
-        m_otherAtoms,
-        m_skyAtoms;
+    Mesh m_gateMesh;
 
     vec3 m_pos, m_rot;
     uint m_moveFlags;
@@ -487,25 +400,32 @@ void Game::initGL()
     if (!glfwInit())
         debug("glfwInit failed");
 
+#ifdef MCR_PLATFORM_MAC
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);
-    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 3);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
+    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
+    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 
-    glfwOpenWindow(1024, 768, 8, 8, 8, 8, 24, 8, GLFW_WINDOW);
+    if (!glfwOpenWindow(1024, 768, 8, 8, 8, 8, 24, 8, GLFW_WINDOW))
+        debug("glfwOpenWindow failed");
+
     glfwSetWindowTitle("MassacreProto");
-
     glfwSetWindowSizeCallback(&Game::onWindowSize);
 
     GLFWvidmode desktop;
     glfwGetDesktopMode(&desktop);
     glfwSetWindowPos((desktop.Width - 1024) / 2, (desktop.Height - 768) / 2 - 30); // slightly above the center
     
+    glewExperimental = true;
+
     auto glewErr = glewInit();
     if (glewErr != GLEW_OK)
         debug("glewInit failed: %s", glewGetErrorString(glewErr));
 
-    new gfx::Context;
+    new Context;
     debug("OpenGL %s", glGetString(GL_VERSION));
+    debug("GLSL %s",   glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     GLint numExts;
     glGetIntegerv(GL_NUM_EXTENSIONS, &numExts);
@@ -515,8 +435,6 @@ void Game::initGL()
     for (int i = 0; i < numExts; ++i)
         debug("\t%s", glGetStringi(GL_EXTENSIONS, i));
 
-    //glClearColor(.7f, .7f, .7f, 1);
-    //glClearColor(.2f, .2f, .2f, 1);
     glClearColor(0, 0, 0, 1);
     //glPolygonOffset(-1.f, 5.f);
 

@@ -7,7 +7,7 @@ namespace mcr {
 namespace gfx {
 
 namespace {
-uint ShaderTypes[] =
+uint g_shaderTypes[] =
 {
     GL_VERTEX_SHADER,
     GL_GEOMETRY_SHADER,
@@ -15,9 +15,14 @@ uint ShaderTypes[] =
 };
 } // ns
 
+
+//////////////////////////////////////////////////////////////////////////
+// Structors
+
 Shader::Shader(Type type):
     m_type(type),
-    m_htype(ShaderTypes[type]),
+    m_htype(g_shaderTypes[type]),
+    m_preprocessor(),
     m_valid(false)
 {
     m_handle = glCreateShader(m_htype);
@@ -28,6 +33,9 @@ Shader::~Shader()
     glDeleteShader(m_handle);
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// GL interaction
 
 bool Shader::compile()
 {
@@ -55,15 +63,12 @@ std::string Shader::log() const
     return buf;
 }
 
-
-//////////////////////////////////////////////////////////////////////////
-// Source stuff
-
 void Shader::setSource(const char* source, bool recompile /*= true*/)
 {
     m_sources.clear();
 
-    _preprocessSource(source);
+    if (!m_preprocessor || !m_preprocessor->preprocess(source, m_sources))
+        m_sources.push_back(source);
 
     m_sourcePtrs   .resize(m_sources.size());
     m_sourceLengths.resize(m_sources.size());
@@ -74,140 +79,10 @@ void Shader::setSource(const char* source, bool recompile /*= true*/)
         m_sourceLengths[i] = (int) m_sources[i].size();
     }
 
-    _feedSource();
+    glShaderSource(m_handle, m_sources.size(), &m_sourcePtrs[0], &m_sourceLengths[0]);
 
     if (recompile)
         compile();
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// Constant stuff
-
-void Shader::replaceConstant(int idx, const std::string& value)
-{
-    if (idx == -1)
-        return;
-
-    auto& info   = m_constants[idx];
-    auto& source = m_sources[info.stringIdx];
-
-    source = value;
-
-    m_sourcePtrs   [info.stringIdx] = source.c_str();
-    m_sourceLengths[info.stringIdx] = source.size();
-
-    _feedSource();
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// Preprocessing stuff
-
-namespace {
-const char* nextline(const char* str)
-{
-    while (*str != '\r' && *str != '\n')
-        ++str;
-
-    if (*str == '\r' && str[1] == '\n')
-        ++str;
-
-    return ++str;
-}
-} // ns 
-
-void Shader::_feedSource()
-{
-    glShaderSource(m_handle, m_sources.size(), &m_sourcePtrs[0], &m_sourceLengths[0]);
-}
-
-void Shader::_preprocessSource(const char* source)
-{
-    const char *first = source, *last = source;
-    const char *cmdfirst, *cmdlast;
-
-    ConstantInfo info;
-
-    while (*last)
-    {
-        if (*last == '#' && _parseCommand(last, cmdfirst, cmdlast, info))
-        {
-            _addSourceString(first, cmdfirst);
-            _addSourceString(cmdfirst, cmdlast);
-            first = last = cmdlast;
-
-            info.stringIdx = m_sources.size() - 1;
-            m_constants.push_back(info);
-
-            continue;
-        }
-        ++last;
-    }
-
-    _addSourceString(first, last);
-}
-
-void Shader::_addSourceString(const char* first, const char* last)
-{
-    if (first < last)
-        m_sources.emplace_back(std::string(first, last));
-}
-
-bool Shader::_parseCommand(const char* str, const char*& cmdfirst, const char*& cmdlast, ConstantInfo& info)
-{
-    char desc[128];
-    float minv, maxv;
-
-    int parsed = sscanf(str, "#pragma%*[ \t]param%*[ \t]\"%[^\"]\"%*[ \t]%f%*[ \t]%f", desc, &minv, &maxv);
-    if (parsed == 0)
-        return false;
-
-    str = nextline(str);
-
-    char type[64], name[128], value[256];
-    int  valBegin, valEnd;
-
-    parsed = sscanf(str, " const%*[ \t\r\n]%s %s = %n%[^;]%n",
-                    type, name, &valBegin, value, &valEnd);
-
-    if (parsed != 3)
-        return false;
-
-    info.minValue     = minv;
-    info.maxValue     = maxv;
-    info.defaultValue = value;
-    info.name         = name;
-    info.description  = desc;
-
-    _parseType(type, info.type);
-
-    cmdfirst = str + valBegin;
-    cmdlast  = str + valEnd;
-    return true;
-}
-
-void Shader::_parseType(const char* str, GlslType& type)
-{
-    type.glTypeEnum = GL_NONE;
-
-    switch (*str)
-    {
-    case 'f': type.glTypeEnum = GL_FLOAT; type.length = 1;  return;
-    case 'm': type.glTypeEnum = GL_FLOAT; type.length = 16; return;
-    case 'v': type.glTypeEnum = GL_FLOAT;                   break;
-    case 'd': type.glTypeEnum = GL_DOUBLE;       ++str;     break;
-    case 'b': type.glTypeEnum = GL_BOOL;         ++str;     break;
-    case 'i': type.glTypeEnum = GL_INT;          ++str;     break;
-    case 'u': type.glTypeEnum = GL_UNSIGNED_INT; ++str;     break;
-    }
-
-    switch (*str)
-    {
-    case 'v': type.length = *(str + 3) - '0'; return;
-    case 'm': type.length = 16;               return;
-    default:  type.length = 1;
-    }
 }
 
 } // ns gfx

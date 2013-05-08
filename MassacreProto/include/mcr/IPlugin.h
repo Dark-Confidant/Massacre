@@ -1,8 +1,8 @@
 #pragma once
 
-#include <mcr/gfx/experimental/IImageImporter.h>
-#include <mcr/gfx/experimental/IMeshImporter.h>
-#include <mcr/gfx/experimental/IMeshExporter.h>
+#include <mcr/gfx/IImageImporter.h>
+#include <mcr/gfx/IMeshImporter.h>
+#include <mcr/gfx/IMeshExporter.h>
 
 namespace mcr {
 
@@ -19,7 +19,7 @@ namespace mcr {
             return 2;
         }
 
-        rcptr<gfx::experimental::IMeshImporter> createMeshImporter(uint i) const
+        rcptr<gfx::IMeshImporter> createMeshImporter(uint i) const
         {
             switch (i)
             {
@@ -49,7 +49,7 @@ public:
     }
 
     //! Create an instance of the ith image importer, where 0 <= i < numImageImporters().
-    virtual rcptr<gfx::experimental::IImageImporter> createImageImporter()
+    virtual rcptr<gfx::IImageImporter> createImageImporter()
     {
         return nullptr;
     }
@@ -61,7 +61,7 @@ public:
     }
 
     //! Create an instance of the ith mesh importer, where 0 <= i < numMeshImporters().
-    virtual rcptr<gfx::experimental::IMeshImporter> createMeshImporter(uint i) const
+    virtual rcptr<gfx::IMeshImporter> createMeshImporter(uint i) const
     {
         return nullptr;
     }
@@ -73,7 +73,7 @@ public:
     }
 
     //! Create an instance of the ith mesh exporter, where 0 <= i < numMeshExporters().
-    virtual rcptr<gfx::experimental::IMeshExporter> createMeshExporter(uint i) const
+    virtual rcptr<gfx::IMeshExporter> createMeshExporter(uint i) const
     {
         return nullptr;
     }

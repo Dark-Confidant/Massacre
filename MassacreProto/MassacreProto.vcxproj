@@ -199,26 +199,22 @@
     <ClInclude Include="include\mcr\FileSystem.h" />
     <ClInclude Include="include\mcr\gfx\Context.h" />
     <ClInclude Include="include\mcr\gfx\experimental\GeometryBuffer.h" />
-    <ClInclude Include="include\mcr\gfx\experimental\IImageImporter.h" />
-    <ClInclude Include="include\mcr\gfx\experimental\IMeshExporter.h" />
-    <ClInclude Include="include\mcr\gfx\experimental\IMeshImporter.h" />
-    <ClInclude Include="include\mcr\gfx\experimental\MaterialParameter.h" />
-    <ClInclude Include="include\mcr\gfx\experimental\Mesh.h" />
     <ClInclude Include="include\mcr\gfx\GBuffer.h" />
-    <ClInclude Include="include\mcr\gfx\GLUtility.h" />
     <ClInclude Include="include\mcr\gfx\GType.h" />
+    <ClInclude Include="include\mcr\gfx\IImageImporter.h" />
     <ClInclude Include="include\mcr\gfx\Image.h" />
     <ClInclude Include="include\mcr\gfx\ImageFormat.h" />
-    <ClInclude Include="include\mcr\gfx\ISprite.h" />
+    <ClInclude Include="include\mcr\gfx\IMeshExporter.h" />
+    <ClInclude Include="include\mcr\gfx\IMeshImporter.h" />
+    <ClInclude Include="include\mcr\gfx\IShaderPreprocessor.h" />
     <ClInclude Include="include\mcr\gfx\Material.h" />
     <ClInclude Include="include\mcr\gfx\MaterialManager.h" />
-    <ClInclude Include="include\mcr\gfx\renderables\Mesh.h" />
-    <ClInclude Include="include\mcr\gfx\renderables\Renderable.h" />
-    <ClInclude Include="include\mcr\gfx\renderables\SpriteBatch.h" />
-    <ClInclude Include="include\mcr\gfx\RenderAtom.h" />
+    <ClInclude Include="include\mcr\gfx\MaterialParameter.h" />
+    <ClInclude Include="include\mcr\gfx\MaterialParameterBuffer.h" />
+    <ClInclude Include="include\mcr\gfx\Mesh.h" />
+    <ClInclude Include="include\mcr\gfx\OldMeshes.h" />
     <ClInclude Include="include\mcr\gfx\RenderState.h" />
     <ClInclude Include="include\mcr\gfx\Shader.h" />
-    <ClInclude Include="include\mcr\gfx\ShaderProgram.h" />
     <ClInclude Include="include\mcr\gfx\Texture.h" />
     <ClInclude Include="include\mcr\gfx\VertexArray.h" />
     <ClInclude Include="include\mcr\gfx\VertexFormat.h" />
@@ -226,6 +222,7 @@
     <ClInclude Include="include\mcr\IPlugin.h" />
     <ClInclude Include="include\mcr\Timer.h" />
     <ClInclude Include="src\gfx\GLEnums.inl" />
+    <ClInclude Include="src\gfx\ShaderPreprocessor.h" />
     <ClInclude Include="src\Universe.h" />
   </ItemGroup>
   <ItemGroup>
@@ -235,19 +232,18 @@
     <ClCompile Include="src\FileSystem.cpp" />
     <ClCompile Include="src\gfx\Context.cpp" />
     <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp" />
-    <ClCompile Include="src\gfx\experimental\SimpleMeshImporter.cpp" />
-    <ClCompile Include="src\gfx\experimental\SimpleMeshExporter.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
-    <ClCompile Include="src\gfx\GLUtility.cpp" />
     <ClCompile Include="src\gfx\GType.cpp" />
     <ClCompile Include="src\gfx\Image.cpp" />
     <ClCompile Include="src\gfx\ImageFormat.cpp" />
     <ClCompile Include="src\gfx\Material.cpp" />
     <ClCompile Include="src\gfx\MaterialManager.cpp" />
-    <ClCompile Include="src\gfx\renderables\Mesh.cpp" />
-    <ClCompile Include="src\gfx\renderables\SpriteBatch.cpp" />
+    <ClCompile Include="src\gfx\MaterialParameterBuffer.cpp" />
+    <ClCompile Include="src\gfx\OldMeshes.cpp" />
     <ClCompile Include="src\gfx\Shader.cpp" />
-    <ClCompile Include="src\gfx\ShaderProgram.cpp" />
+    <ClCompile Include="src\gfx\ShaderPreprocessor.cpp" />
+    <ClCompile Include="src\gfx\SimpleMeshExporter.cpp" />
+    <ClCompile Include="src\gfx\SimpleMeshImporter.cpp" />
     <ClCompile Include="src\gfx\Texture.cpp" />
     <ClCompile Include="src\gfx\VertexArray.cpp" />
     <ClCompile Include="src\gfx\VertexFormat.cpp" />
@@ -265,13 +261,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\mcr\gfx\Context.inl" />
-    <None Include="include\mcr\gfx\experimental\MaterialParameter.inl" />
     <None Include="include\mcr\gfx\GBuffer.inl" />
     <None Include="include\mcr\gfx\Image.inl" />
+    <None Include="include\mcr\gfx\Material.inl" />
+    <None Include="include\mcr\gfx\MaterialManager.inl" />
+    <None Include="include\mcr\gfx\MaterialParameter.inl" />
+    <None Include="include\mcr\gfx\MaterialParameterBuffer.inl" />
     <None Include="include\mcr\gfx\RenderState.inl" />
     <None Include="include\mcr\gfx\Shader.inl" />
     <None Include="include\mcr\gfx\VertexFormat.inl" />
     <None Include="include\mcr\Timer.inl" />
+    <None Include="src\gfx\MaterialParameterUploadFn.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -115,6 +115,15 @@ GLenum toLegacyGLMapAccess(GLbitfield access)
     }
 }
 
+const GLenum g_primitiveTypeTable[] =
+{
+    GL_POINT,
+    GL_TRIANGLES,
+    GL_TRIANGLE_STRIP,
+    GL_TRIANGLE_FAN,
+    GL_QUADS
+};
+
 } // ns
 } // ns gfx
 } // ns mcr

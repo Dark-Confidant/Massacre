@@ -8,32 +8,10 @@
 namespace mcr {
 namespace gfx {
 
-class ShaderProgram;
 class Texture;
 class Material;
 class VertexArray;
-
-namespace experimental {
-
-class MeshStorage;
 struct Mesh;
-
-} // ns experimental
-
-enum TexTarget
-{
-    Tex1D,
-    Tex2D,
-    Tex3D,
-    TexCube,
-    NumTexTargets
-};
-
-struct TextureUnit
-{
-    Texture* textures[NumTexTargets];
-    uint refs;
-};
 
 class Context
 {
@@ -50,17 +28,11 @@ public:
     const RenderState&  renderState() const;
     void                setRenderState(const RenderState& rs);
                         
-    ShaderProgram*      activeProgram() const;
-    void                setActiveProgram(ShaderProgram* program);
-                        
     uint                activeTextureUnit() const;
     void                setActiveTextureUnit(uint texUnit);
                         
-    Texture*            activeTexture(TexTarget target, uint texUnit);
-    void                bindTexture(TexTarget target, Texture* tex);
-                        
-    uint                allocTextureUnit(uint* refs = nullptr);
-    void                freeTextureUnit(uint texUnit);
+    Texture*            activeTexture(uint texUnit);
+    void                bindTexture(Texture* tex);
                         
     Material*           activeMaterial() const;
     void                setActiveMaterial(Material* mtl);
@@ -69,15 +41,13 @@ public:
     GBuffer*            activeBuffer(GBuffer::Type type, uint bufUnit);
 
     void                bindBuffer(GBuffer* buffer);
-    void                bindBufferBase(uint bufUnit, GBuffer* buffer, uint offset);
-    void                bindBufferRange(uint bufUnit, GBuffer* buffer, uint offset, uint count);
 
     VertexArray*        activeVertexArray() const;
     void                setActiveVertexArray(VertexArray* va);
 
     void                clear();
 
-    void                drawMesh(const experimental::Mesh& mesh);
+    void                drawMesh(const Mesh& mesh);
 
 protected:
     static Context* s_active;
@@ -85,18 +55,14 @@ protected:
     irect          m_viewport;
     RenderState    m_renderState;
     uint           m_renderStateHash;
-    ShaderProgram* m_activeProgram;
 
-    uint                     m_activeTextureUnit;
-    std::vector<TextureUnit> m_textureUnits;
-    uint                     m_nextFreeTextureUnit;
+    uint                  m_activeTextureUnit;
+    std::vector<Texture*> m_textureUnits;
+    uint                  m_nextFreeTextureUnit;
 
     Material* m_activeMaterial;
 
-    GBuffer*              m_buffers[GBuffer::NumTypes];
-    std::vector<GBuffer*> m_bufferUnits[GBuffer::NumTypes];
-    uint                  m_nextFreeBufferUnit;
-
+    GBuffer*     m_buffers[GBuffer::NumTypes];
     VertexArray* m_activeVertexArray;
 };
 

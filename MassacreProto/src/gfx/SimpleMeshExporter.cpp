@@ -1,12 +1,11 @@
 #include "Universe.h"
-#include <mcr/gfx/experimental/IMeshExporter.h>
+#include <mcr/gfx/IMeshExporter.h>
 
 #include <fstream>
 #include <SimpleMesh4.h>
 
-namespace mcr          {
-namespace gfx          {
-namespace experimental {
+namespace mcr {
+namespace gfx {
 
 namespace {
 const uint g_primitiveTypeTr[] =
@@ -73,11 +72,11 @@ public:
             return false;
 
 
-        file.write((const char*) mesh.mapVertices(), header.numVertices * header.vertexSize);
-        file.write((const char*) mesh.mapIndices(), header.numIndices * sizeof(uint));
+        file.write((const char*) mesh.buffer->vertices()->map(GBuffer::Read), header.numVertices * header.vertexSize);
+        file.write((const char*) mesh.buffer->indices()->map(GBuffer::Read), header.numIndices * sizeof(uint));
 
-        mesh.unmapVertices();
-        mesh.unmapIndices();
+        mesh.buffer->vertices()->unmap();
+        mesh.buffer->indices()->unmap();
 
         return !!file;
     }
@@ -88,6 +87,5 @@ rcptr<IMeshExporter> createSimpleMeshExporter()
     return new SimpleMeshExporter;
 }
 
-} // ns experimental
 } // ns gfx
 } // ns mcr

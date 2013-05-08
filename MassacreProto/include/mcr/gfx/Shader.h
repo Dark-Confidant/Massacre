@@ -2,8 +2,7 @@
 
 #include <vector>
 #include <mcr/FileSystem.h>
-#include <mcr/math/Matrix.h>
-#include <mcr/gfx/GLUtility.h>
+#include <mcr/gfx/IShaderPreprocessor.h>
 
 namespace mcr {
 namespace gfx {
@@ -17,15 +16,6 @@ public:
         Geometry,
         Fragment,
         NumTypes
-    };
-
-    struct ConstantInfo
-    {
-        GlslType type;
-        uint stringIdx;
-        double minValue, maxValue;
-        std::string defaultValue;
-        std::string name, description;
     };
 
     //! Create empty shader of given \c type
@@ -49,6 +39,13 @@ public:
     uint handleType() const { return m_htype; }
 
 
+    //! Preprocessor, naturally
+    IShaderPreprocessor* preprocessor() const;
+
+    //! Set preprocessor before setting source
+    void setPreprocessor(IShaderPreprocessor* pp);
+
+
     //! Shader source strings
     const std::vector<std::string>& sources() const { return m_sources; }
 
@@ -68,42 +65,18 @@ public:
     //! Query shader compilation log
     MCR_EXTERN std::string log() const;
 
-
-    // TODO: document
-
-    int findConstant(const char* name) const;
-
-    const ConstantInfo& constantInfo(int idx) const;
-
-    const std::string& constantValue(int idx) const;
-    const std::string& constantValue(const char* name) const;
-
-    MCR_EXTERN void replaceConstant(int idx, const std::string& value);
-
-    template <typename T>
-    void replaceConstant(int idx, const T& val);
-
-    template <typename T>
-    void replaceConstant(const char* name, T val);
-
 protected:
     MCR_EXTERN Shader(Type type);
     MCR_EXTERN ~Shader();
 
-    MCR_INTERN void _feedSource();
-    MCR_INTERN void _preprocessSource(const char* source);
-    MCR_INTERN void _addSourceString(const char* first, const char* last);
-    MCR_INTERN bool _parseCommand(const char* str, const char*& cmdfirst, const char*& cmdlast, ConstantInfo& info);
-    MCR_INTERN void _parseType(const char* str, GlslType& type);
-
     Type m_type;
     uint m_handle, m_htype;
+
+    IShaderPreprocessor* m_preprocessor;
 
     std::vector<std::string> m_sources;
     std::vector<const char*> m_sourcePtrs;
     std::vector<int>         m_sourceLengths;
-
-    std::vector<ConstantInfo> m_constants;
 
     bool m_valid;
 };

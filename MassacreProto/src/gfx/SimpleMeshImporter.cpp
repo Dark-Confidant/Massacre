@@ -1,11 +1,10 @@
 #include "Universe.h"
-#include <mcr/gfx/experimental/IMeshImporter.h>
+#include <mcr/gfx/IMeshImporter.h>
 
 #include <SimpleMesh4.h>
 
-namespace mcr          {
-namespace gfx          {
-namespace experimental {
+namespace mcr {
+namespace gfx {
 
 class SimpleMeshImportTask: public IMeshImportTask
 {
@@ -55,10 +54,12 @@ public:
                 return false;
         }
 
+        mesh.primitiveType = PrimitiveType::Triangles;
+
         size_t written = 0;
 
-        auto vertices = mesh.mapVertices(GBuffer::ReplaceSome);
-        auto indices  = mesh.mapIndices (GBuffer::ReplaceSome);
+        auto vertices = mesh.buffer->vertices()->map(GBuffer::ReplaceSome);
+        auto indices  = mesh.buffer->indices()->map(GBuffer::ReplaceSome);
 
         m_file->seek(m_header.vertexDataOffset);
         written += m_file->read(vertices, m_header.numVertices * m_header.vertexSize);
@@ -66,8 +67,8 @@ public:
         m_file->seek(m_header.indexDataOffset);
         written += m_file->read(indices, m_header.numIndices);
 
-        mesh.unmapVertices();
-        mesh.unmapIndices();
+        mesh.buffer->vertices()->unmap();
+        mesh.buffer->indices()->unmap();
 
         return written == m_header.numVertices * m_header.vertexSize
                         + m_header.numIndices  * sizeof(uint);
@@ -97,6 +98,5 @@ rcptr<IMeshImporter> createSimpleMeshLoader()
     return new SimpleMeshImporter;
 }
 
-} // ns experimental
 } // ns gfx
 } // ns mcr
