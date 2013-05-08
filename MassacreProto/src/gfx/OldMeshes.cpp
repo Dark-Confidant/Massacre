@@ -19,9 +19,7 @@ rcptr<VertexArray> OldMeshes::load(
         return nullptr;
 
 
-    const uint
-        vertexDataSize = header.vertexSize * header.numVertices,
-        indexDataSize  = sizeof(uint)      * header.numIndices;
+    const uint vertexDataSize = header.vertexSize * header.numVertices;
 
     byte* srcVertices = new byte[vertexDataSize];
     uint* srcIndices  = new uint[header.numIndices];

@@ -163,8 +163,9 @@ struct Grammar: public qi::grammar<It, std::vector<directives::Directive>(), Ski
         (
             preprocess,
             phx::ref(dbg)
-                << "Expecting " << _4 << ':' << std::endl
-                << phx::construct<std::string>(_3, phx::if_else(_2 - _3 > 20, 20, _2 - _3)) << std::endl
+                << "Syntax error: expecting " << _4 << std::endl
+                << ",--" << std::endl
+                << phx::construct<std::string>(_3, _2)
                 << mcr::DebugStream::Flush
         );
     }
