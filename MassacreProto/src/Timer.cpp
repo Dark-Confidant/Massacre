@@ -60,7 +60,7 @@ void Timer::_start()
     clock_get_time(m_impl.service, &m_impl.start);
 }
 
-int64 Timer::_ticksSinceStart()
+int64 Timer::_ticksSinceStart() const
 {
     mach_timespec_t now;
     clock_get_time(m_impl.service, &now);
