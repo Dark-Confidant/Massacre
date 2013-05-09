@@ -11,7 +11,6 @@ set(GFX_EXPERIMENTAL_SRC
 
 set(GFX_PATH gfx)
 set(GFX_SRC
-    ${GFX_PATH}/Context.cpp
     ${GFX_PATH}/GBuffer.cpp
     ${GFX_PATH}/GLState.cpp
     ${GFX_PATH}/GType.cpp
@@ -21,6 +20,7 @@ set(GFX_SRC
     ${GFX_PATH}/MaterialManager.cpp
     ${GFX_PATH}/MaterialParameterBuffer.cpp
     ${GFX_PATH}/OldMeshes.cpp
+    ${GFX_PATH}/Renderer.cpp
     ${GFX_PATH}/Shader.cpp
     ${GFX_PATH}/ShaderPreprocessor.cpp
     ${GFX_PATH}/SimpleMeshExporter.cpp

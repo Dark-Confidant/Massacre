@@ -2,7 +2,7 @@
 #pragma once
 
 #include <vector>
-#include <mcr/Types.h>
+#include <mcr/math/Rect.h>
 
 namespace mcr {
 namespace gfx {
@@ -12,23 +12,26 @@ class GLState
 public:
     GLState();
 
-    uint    activeTexUnit() const;
-    void    setActiveTexUnit(uint unit);
-    uint    boundTexture() const;
-    uint    boundTexture(uint unit) const;
-    void    bindTexture(uint tex);
-    void    bindTexture(uint unit, uint tex);
+    const irect&    viewport() const;
+    void            setViewport(const irect& vp);
 
-    uint    activeProgram() const;
-    void    setActiveProgram(uint program);
+    uint            activeTexUnit() const;
+    void            setActiveTexUnit(uint unit);
+    uint            boundTexture() const;
+    uint            boundTexture(uint unit) const;
+    void            bindTexture(uint tex);
+    void            bindTexture(uint unit, uint tex);
 
-    uint    boundBuffer(uint target) const;
-    uint    boundBuffer(uint target, uint index) const;
-    void    bindBuffer(uint target, uint buffer);
-    void    bindBufferBase(uint target, uint index, uint buffer);
+    uint            activeProgram() const;
+    void            setActiveProgram(uint program);
 
-    uint    boundVertexArray() const;
-    void    bindVertexArray(uint va);
+    uint            boundBuffer(uint target) const;
+    uint            boundBuffer(uint target, uint index) const;
+    void            bindBuffer(uint target, uint buffer);
+    void            bindBufferBase(uint target, uint index, uint buffer);
+
+    uint            boundVertexArray() const;
+    void            bindVertexArray(uint va);
 
 private:
     enum IndexedBufferTarget
@@ -65,6 +68,8 @@ private:
     };
 
     static uint bufferTargetEnumToIndex(uint target);
+
+    irect               m_viewport;
 
     std::vector<uint>   m_texUnits;
     uint                m_activeTexUnit;

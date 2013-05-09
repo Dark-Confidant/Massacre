@@ -1,5 +1,5 @@
 #include "Universe.h"
-#include <mcr/gfx/Context.h>
+#include <mcr/gfx/Renderer.h>
 
 #include <mcr/gfx/Texture.h>
 #include <mcr/gfx/Material.h>
@@ -11,17 +11,10 @@
 namespace mcr {
 namespace gfx {
 
-Context* Context::s_active;
-
-Context::Context():
-    m_activeMaterial()
+Renderer::Renderer():
+    m_activeMaterial(),
+    m_activeVertexArray()
 {
-    if (!s_active)
-        s_active = this;
-
-    // HACK!
-    glGetIntegerv(GL_VIEWPORT, &m_viewport[0][0]);
-
     GLboolean writeMask;
     glGetBooleanv(GL_DEPTH_WRITEMASK, &writeMask);
     m_renderState.depthWrite    = GL_TRUE == writeMask;
@@ -57,28 +50,20 @@ Context::Context():
     m_renderStateHash = m_renderState.hash();
 }
 
-Context::~Context()
+Renderer::~Renderer() {}
+
+
+const irect& Renderer::viewport() const
 {
-    if (s_active == this)
-        s_active = nullptr;
+    return g_glState->viewport();
 }
 
-bool Context::activate()
+void Renderer::setViewport(const irect& vp)
 {
-    s_active = this;
-    return true;
+    g_glState->setViewport(vp);
 }
 
-void Context::setViewport(const irect& viewport)
-{
-    if (m_viewport == viewport)
-        return;
-
-    glViewport(viewport.left(), viewport.bottom(), viewport.width(), viewport.height());
-    m_viewport = viewport;
-}
-
-void Context::setRenderState(const RenderState& rs)
+void Renderer::setRenderState(const RenderState& rs)
 {
     if (m_renderState.depthTest != rs.depthTest)
         (rs.depthTest ? glEnable : glDisable)(GL_DEPTH_TEST);
@@ -114,7 +99,7 @@ void Context::setRenderState(const RenderState& rs)
     m_renderStateHash = rs.hash();
 }
 
-void Context::setActiveMaterial(Material* mtl)
+void Renderer::setActiveMaterial(Material* mtl)
 {
     if (m_activeMaterial == mtl)
         return;
@@ -126,12 +111,12 @@ void Context::setActiveMaterial(Material* mtl)
     m_activeMaterial = mtl;
 }
 
-void Context::setActiveVertexArray(VertexArray* va)
+void Renderer::setActiveVertexArray(const VertexArray* va)
 {
     g_glState->bindVertexArray(va ? va->handle() : 0);
 }
 
-void Context::drawMesh(const Mesh& mesh)
+void Renderer::drawMesh(const Mesh& mesh)
 {
     setActiveVertexArray(mesh.buffer);
 
@@ -139,7 +124,7 @@ void Context::drawMesh(const Mesh& mesh)
         GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(mesh.startIndex << 2));
 }
 
-void Context::clear()
+void Renderer::clear()
 {
     if (!m_renderState.depthWrite)
     {

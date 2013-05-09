@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <mcr/math/Rect.h>
 #include <mcr/gfx/RenderState.h>
 
@@ -11,17 +10,14 @@ class Material;
 class VertexArray;
 struct Mesh;
 
-class Context
+class Renderer
 {
 public:
-    Context();
-    ~Context(); // inherit not
-
-    static Context&     active();
-    bool                activate();
+    Renderer();
+    ~Renderer(); // inherit not
 
     const irect&        viewport() const;
-    void                setViewport(const irect& viewport);
+    void                setViewport(const irect& vp);
                         
     const RenderState&  renderState() const;
     void                setRenderState(const RenderState& rs);
@@ -29,26 +25,24 @@ public:
     Material*           activeMaterial() const;
     void                setActiveMaterial(Material* mtl);
 
-    VertexArray*        activeVertexArray() const;
-    void                setActiveVertexArray(VertexArray* va);
+    const VertexArray*  activeVertexArray() const;
+    void                setActiveVertexArray(const VertexArray* va);
 
     void                drawMesh(const Mesh& mesh);
 
     void                clear();
 
 protected:
-    static Context* s_active;
+    irect               m_viewport;
+    RenderState         m_renderState;
+    uint                m_renderStateHash;
 
-    irect           m_viewport;
-    RenderState     m_renderState;
-    uint            m_renderStateHash;
+    Material*           m_activeMaterial;
 
-    Material*       m_activeMaterial;
-
-    VertexArray*    m_activeVertexArray;
+    const VertexArray*  m_activeVertexArray;
 };
 
 } // ns gfx
 } // ns mcr
 
-#include "Context.inl"
+#include "Renderer.inl"

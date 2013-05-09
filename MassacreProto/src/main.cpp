@@ -7,7 +7,7 @@
 #include <mcr/Timer.h>
 
 #include <mcr/Camera.h>
-#include <mcr/gfx/Context.h>
+#include <mcr/gfx/Renderer.h>
 #include <mcr/gfx/MaterialManager.h>
 #include <mcr/gfx/OldMeshes.h>
 
@@ -250,12 +250,12 @@ public:
 
     void onResize(const ivec2& size)
     {
-        Context::active().setViewport(size);
+        m_renderer.setViewport(size);
         m_camera.setAspectRatio((float) size.x() / size.y());
         m_camera.update();
     }
 
-    void drawMeshes(Context& ctx, const std::vector<Mesh>& meshes)
+    void drawMeshes(Renderer& ctx, const std::vector<Mesh>& meshes)
     {
         for (std::size_t i = 0; i < meshes.size(); ++i)
             ctx.drawMesh(meshes[i]);
@@ -263,39 +263,37 @@ public:
 
     void render()
     {
-        auto& ctx = Context::active();
-
-        ctx.clear();
+        m_renderer.clear();
 
         m_camera.dumpMatrices();
 
-        ctx.setActiveVertexArray(m_skyBuffer);
+        m_renderer.setActiveVertexArray(m_skyBuffer);
         for (auto i = 0u; i < m_sky.size(); ++i)
         {
-            ctx.setActiveMaterial(m_sky[i]);
-            ctx.drawMesh(m_skyMeshes[i]);
+            m_renderer.setActiveMaterial(m_sky[i]);
+            m_renderer.drawMesh(m_skyMeshes[i]);
         }
 
-        ctx.setActiveVertexArray(m_arenaBuffer);
+        m_renderer.setActiveVertexArray(m_arenaBuffer);
 
-        ctx.setActiveMaterial(m_opaque);
-        drawMeshes(ctx, m_opaqueMeshes);
+        m_renderer.setActiveMaterial(m_opaque);
+        drawMeshes(m_renderer, m_opaqueMeshes);
 
         for (std::size_t i = 0; i < m_other.size(); ++i)
         {
-            ctx.setActiveMaterial(m_other[i]);
-            ctx.drawMesh(m_otherMeshes[i]);
+            m_renderer.setActiveMaterial(m_other[i]);
+            m_renderer.drawMesh(m_otherMeshes[i]);
         }
 
-        ctx.setActiveMaterial(m_transparent);
-        drawMeshes(ctx, m_transparentMeshes);
+        m_renderer.setActiveMaterial(m_transparent);
+        drawMeshes(m_renderer, m_transparentMeshes);
 
-        ctx.setActiveMaterial(m_translucent);
-        drawMeshes(ctx, m_translucentMeshes);
+        m_renderer.setActiveMaterial(m_translucent);
+        drawMeshes(m_renderer, m_translucentMeshes);
 
-        ctx.setActiveVertexArray(m_gateBuffer);
-        ctx.setActiveMaterial(m_quasicrystal);
-        ctx.drawMesh(m_gateMesh);
+        m_renderer.setActiveVertexArray(m_gateBuffer);
+        m_renderer.setActiveMaterial(m_quasicrystal);
+        m_renderer.drawMesh(m_gateMesh);
 
         glfwSwapBuffers();
     }
@@ -349,8 +347,9 @@ private:
     Config m_config;
     Timer m_timer;
 
-
+    Renderer m_renderer;
     Camera m_camera;
+
     MaterialManager m_mm;
     rcptr<MaterialParameterBuffer> m_commonParameters;
 
@@ -425,7 +424,7 @@ void Game::initGL()
     if (glewErr != GLEW_OK)
         debug("glewInit failed: %s", glewGetErrorString(glewErr));
 
-    new Context;
+    new Renderer;
     debug("OpenGL %s", glGetString(GL_VERSION));
     debug("GLSL %s",   glGetString(GL_SHADING_LANGUAGE_VERSION));
 

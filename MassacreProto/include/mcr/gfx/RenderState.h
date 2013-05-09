@@ -23,7 +23,9 @@ struct DepthFn
 
     DepthFn(): fn(Less) {}
     DepthFn(Fn func): fn(func) {}
-    DepthFn(uint func): fn(Fn(func)) {}
+    explicit DepthFn(uint func): fn(Fn(func)) {}
+
+    operator Fn() const { return fn; }
 };
 
 struct BlendFn
@@ -42,24 +44,22 @@ struct BlendFn
 
     BlendFn(): srcFactor(One), dstFactor(Zero) {}
     BlendFn(Factor src, Factor dst): srcFactor(src), dstFactor(dst) {}
-    BlendFn(uint src, uint dst): srcFactor(Factor(src)), dstFactor(Factor(dst)) {}
+    explicit BlendFn(uint src, uint dst): srcFactor(Factor(src)), dstFactor(Factor(dst)) {}
 };
 
 struct RenderState
 {
-    bool depthTest, depthWrite;
+    bool    depthTest, depthWrite;
     DepthFn depthFunc;
-
-    bool alphaTest;
-
-    bool blend;
+    bool    alphaTest;
+    bool    blend;
     BlendFn blendFunc;
-
-    bool cullFace;
-    bool polygonOffset;
+    bool    cullFace;
+    bool    polygonOffset;
 
     RenderState();
     explicit RenderState(uint hash);
+
     ~RenderState() {}
 
     uint hash() const;

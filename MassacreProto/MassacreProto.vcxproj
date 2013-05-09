@@ -197,7 +197,7 @@
     <ClInclude Include="include\mcr\Debug.h" />
     <ClInclude Include="include\mcr\ExternalSingleton.h" />
     <ClInclude Include="include\mcr\FileSystem.h" />
-    <ClInclude Include="include\mcr\gfx\Context.h" />
+    <ClInclude Include="include\mcr\gfx\Renderer.h" />
     <ClInclude Include="include\mcr\gfx\experimental\GeometryBuffer.h" />
     <ClInclude Include="include\mcr\gfx\GBuffer.h" />
     <ClInclude Include="include\mcr\gfx\GType.h" />
@@ -233,7 +233,7 @@
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\FileSystem.cpp" />
-    <ClCompile Include="src\gfx\Context.cpp" />
+    <ClCompile Include="src\gfx\Renderer.cpp" />
     <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
     <ClCompile Include="src\gfx\GLState.cpp" />
@@ -264,7 +264,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\mcr\gfx\Context.inl" />
+    <None Include="include\mcr\gfx\Renderer.inl" />
     <None Include="include\mcr\gfx\GBuffer.inl" />
     <None Include="include\mcr\gfx\Image.inl" />
     <None Include="include\mcr\gfx\Material.inl" />

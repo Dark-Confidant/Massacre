@@ -1,16 +1,6 @@
 namespace mcr {
 namespace gfx {
 
-inline bool operator==(const DepthFn& lhs, const DepthFn& rhs)
-{
-    return lhs.fn == rhs.fn;
-}
-
-inline bool operator!=(const DepthFn& lhs, const DepthFn& rhs)
-{
-    return !(lhs == rhs);
-}
-
 inline bool operator==(const BlendFn& lhs, const BlendFn& rhs)
 {
     return lhs.srcFactor == rhs.srcFactor && lhs.dstFactor == rhs.dstFactor;

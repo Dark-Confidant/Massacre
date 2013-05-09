@@ -11,8 +11,6 @@ set(HEADERS
     mcr/Timer.h
     mcr/Timer.inl)
 set(HEADERS_GFX
-    mcr/gfx/Context.h
-    mcr/gfx/Context.inl
     mcr/gfx/GBuffer.h
     mcr/gfx/GBuffer.inl
     mcr/gfx/GType.h
@@ -33,6 +31,8 @@ set(HEADERS_GFX
     mcr/gfx/MaterialParameterBuffer.inl
     mcr/gfx/Mesh.h
     mcr/gfx/OldMeshes.h
+    mcr/gfx/Renderer.h
+    mcr/gfx/Renderer.inl
     mcr/gfx/RenderState.h
     mcr/gfx/RenderState.inl
     mcr/gfx/Shader.h

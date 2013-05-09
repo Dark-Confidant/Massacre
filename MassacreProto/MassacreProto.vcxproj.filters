@@ -75,9 +75,6 @@
     <ClInclude Include="include\mcr\gfx\VertexFormat.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\Context.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\gfx\GBuffer.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     <ClInclude Include="..\MassacreShared\include\mcr\BuildConfig.h">
       <Filter>Header Files\shared</Filter>
     </ClInclude>
+    <ClInclude Include="include\mcr\gfx\Renderer.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\Shader.cpp">
@@ -189,9 +189,6 @@
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\VertexFormat.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gfx\Context.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\GBuffer.cpp">
@@ -254,6 +251,9 @@
     <ClCompile Include="src\gfx\GLState.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
+    <ClCompile Include="src\gfx\Renderer.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\mcr\gfx\GBuffer.inl">
@@ -269,9 +269,6 @@
       <Filter>Header Files\gfx</Filter>
     </None>
     <None Include="include\mcr\gfx\VertexFormat.inl">
-      <Filter>Header Files\gfx</Filter>
-    </None>
-    <None Include="include\mcr\gfx\Context.inl">
       <Filter>Header Files\gfx</Filter>
     </None>
     <None Include="include\mcr\Timer.inl">
@@ -291,6 +288,9 @@
     </None>
     <None Include="src\gfx\MaterialParameterUploadFn.h">
       <Filter>Source Files\gfx</Filter>
+    </None>
+    <None Include="include\mcr\gfx\Renderer.inl">
+      <Filter>Header Files\gfx</Filter>
     </None>
   </ItemGroup>
 </Project>

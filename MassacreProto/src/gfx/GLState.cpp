@@ -8,6 +8,8 @@ GLState::GLState():
     m_activeTexUnit(0),
     m_activeVertexArray(0)
 {
+    glGetIntegerv(GL_VIEWPORT, &m_viewport[0][0]);
+
     GLint numTexUnits;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &numTexUnits);
 
@@ -21,6 +23,20 @@ GLState::GLState():
 
     m_buffersIndexed[UniformBuffer].resize((std::size_t) numUBOs);
     m_buffersIndexed[TransformFeedbackBuffer].resize((std::size_t) numTFBOs);
+}
+
+const irect& GLState::viewport() const
+{
+    return m_viewport;
+}
+
+void GLState::setViewport(const irect& vp)
+{
+    if (m_viewport == vp)
+        return;
+
+    glViewport(vp.left(), vp.bottom(), vp.width(), vp.height());
+    m_viewport = vp;
 }
 
 uint GLState::activeTexUnit() const
