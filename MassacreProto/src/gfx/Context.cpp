@@ -122,13 +122,7 @@ void Context::setActiveMaterial(Material* mtl)
     if (m_renderStateHash != mtl->renderStateHash())
         setRenderState(mtl->renderState());
 
-    glUseProgram(mtl->programTMP());
     mtl->syncParameters();
-
-    for (int i = 0; i < mtl->numTextures(); ++i)
-        if (auto tex = mtl->texture(i))
-            g_glState->bindTexture(mtl->samplerTMP(i), tex->handle());
-
     m_activeMaterial = mtl;
 }
 

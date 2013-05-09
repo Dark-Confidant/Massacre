@@ -44,9 +44,6 @@ public:
     Texture*                    texture(byte idx) const;
     void                        setTexture(byte idx, Texture* tex);
 
-    uint                        programTMP() const { return m_program; }
-    uint                        samplerTMP(byte idx) const { return m_texturesTMP[idx].first; }
-
     int                         passHint() const;
     void                        setPassHint(int pass);
 
@@ -85,9 +82,10 @@ private:
     uint                        m_renderStateHash;
     MaterialShaderSet           m_shaders;
     std::vector<Parameter>      m_params;
-    std::vector<std::pair<uint, rcptr<MaterialParameterBuffer>>> m_buffersTMP;
-    std::vector<std::pair<uint, rcptr<Texture>>> m_texturesTMP;
     int                         m_passHint;
+
+    std::vector<std::pair<uint, rcptr<MaterialParameterBuffer>>> m_buffers;
+    std::vector<std::pair<uint, rcptr<Texture>>>                 m_textures;
 
     // implementation details
     uint m_program;

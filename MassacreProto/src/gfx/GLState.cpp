@@ -65,6 +65,20 @@ void GLState::bindTexture(uint unit, uint tex)
     bindTexture(tex);
 }
 
+uint GLState::activeProgram() const
+{
+    return m_activeProgram;
+}
+
+void GLState::setActiveProgram(uint program)
+{
+    if (m_activeProgram == program)
+        return;
+
+    glUseProgram(program);
+    m_activeProgram = program;
+}
+
 uint GLState::boundBuffer(uint target) const
 {
     uint tindex = bufferTargetEnumToIndex(target);

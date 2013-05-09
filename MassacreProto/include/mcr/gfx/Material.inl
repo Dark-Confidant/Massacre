@@ -77,17 +77,17 @@ inline void Material::setShaders(const MaterialShaderSet& shaders)
 
 inline byte Material::numTextures() const
 {
-    return (byte) m_texturesTMP.size();
+    return (byte) m_textures.size();
 }
 
 inline Texture* Material::texture(byte idx) const
 {
-    return m_texturesTMP[idx].second;
+    return m_textures[idx].second;
 }
 
 inline void Material::setTexture(byte idx, Texture* tex)
 {
-    m_texturesTMP[idx].second = tex;
+    m_textures[idx].second = tex;
 }
 
 inline int Material::passHint() const

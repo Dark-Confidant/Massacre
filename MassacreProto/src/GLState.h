@@ -19,6 +19,9 @@ public:
     void    bindTexture(uint tex);
     void    bindTexture(uint unit, uint tex);
 
+    uint    activeProgram() const;
+    void    setActiveProgram(uint program);
+
     uint    boundBuffer(uint target) const;
     uint    boundBuffer(uint target, uint index) const;
     void    bindBuffer(uint target, uint buffer);
@@ -65,6 +68,8 @@ private:
 
     std::vector<uint>   m_texUnits;
     uint                m_activeTexUnit;
+
+    uint                m_activeProgram;
 
     std::vector<uint>   m_buffersIndexed[NumIndexedBufferTargets];
     uint                m_buffers       [NumBufferTargets];

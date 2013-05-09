@@ -14,9 +14,7 @@ namespace gfx {
 
 void Material::Parameter::invalidate()
 {
-    bool isMaterialActive = false;
-
-    if (GLEW_EXT_direct_state_access || isMaterialActive)
+    if (GLEW_EXT_direct_state_access || m_program == g_glState->activeProgram())
         m_uploadFn(m_program, m_location, m_data);
     else
         m_dirty = true;
@@ -72,7 +70,7 @@ void Material::_link()
     }
 
     if (!GLEW_EXT_direct_state_access)
-        glUseProgram(m_program);
+        g_glState->setActiveProgram(m_program);
 
     GLint numUniforms;
     glGetProgramiv(m_program, GL_ACTIVE_UNIFORMS, &numUniforms);
@@ -141,7 +139,7 @@ void Material::_link()
                     else
                         glUniform1i(loc, unit);
 
-                    m_texturesTMP.push_back(std::make_pair(unit, nullptr));
+                    m_textures.push_back(std::make_pair(unit, nullptr));
                 }
                 break;
             }
@@ -171,7 +169,7 @@ void Material::_link()
                 auto binding = m_mgr->requestParameterBufferBinding();
 
                 glUniformBlockBinding(m_program, (uint) i, binding);
-                m_buffersTMP.push_back(std::make_pair(binding, buffer));
+                m_buffers.push_back(std::make_pair(binding, buffer));
             }
         }
     }
@@ -183,14 +181,17 @@ void Material::_link()
 
 void Material::syncParameters()
 {
+    g_glState->setActiveProgram(m_program);
+
     for (std::size_t i = 0; i < m_params.size(); ++i)
         m_params[i].sync();
 
-    for (std::size_t i = 0; i < m_buffersTMP.size(); ++i)
-        g_glState->bindBufferBase(
-            GL_UNIFORM_BUFFER,
-            m_buffersTMP[i].first,
-            m_buffersTMP[i].second->handle());
+    for (std::size_t i = 0; i < m_buffers.size(); ++i)
+        g_glState->bindBufferBase(GL_UNIFORM_BUFFER, m_buffers[i].first, m_buffers[i].second->handle());
+
+    for (std::size_t i = 0; i < m_textures.size(); ++i)
+        if (m_textures[i].second)
+            g_glState->bindTexture(m_textures[i].first, m_textures[i].second->handle());
 }
 
 } // ns gfx
