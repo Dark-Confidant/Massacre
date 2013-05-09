@@ -16,16 +16,6 @@ inline const RenderState& Context::renderState() const
     return m_renderState;
 }
 
-inline uint Context::activeTextureUnit() const
-{
-    return m_activeTextureUnit;
-}
-
-inline Texture* Context::activeTexture(uint texUnit)
-{
-    return m_textureUnits[texUnit];
-}
-
 inline Material* Context::activeMaterial() const
 {
     return m_activeMaterial;

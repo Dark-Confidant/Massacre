@@ -18,10 +18,6 @@ public:
     static rcptr<Texture> createFromFile(IFile* file, rcptr<Image>* imgOut = nullptr);
 
 
-    //! Load image from PNG or JPEG file
-    void load(IFile* file);
-
-
     //! Upload image data to GPU
     void upload(Image* img);
 

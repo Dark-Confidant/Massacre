@@ -1,6 +1,8 @@
 #include "Universe.h"
 #include <mcr/gfx/MaterialParameterBuffer.h>
 
+#include "GLState.h"
+
 namespace mcr {
 namespace gfx {
 
@@ -20,7 +22,7 @@ void MaterialParameterBuffer::sync()
         glNamedBufferDataEXT(m_handle, m_bufferSize, m_buffer, g_bufferDrawUsageTable[m_usage]);
     else
     {
-        glBindBuffer(GL_UNIFORM_BUFFER, m_handle);
+        g_glState->bindBuffer(GL_UNIFORM_BUFFER, m_handle);
         glBufferData(GL_UNIFORM_BUFFER, m_bufferSize, m_buffer, g_bufferDrawUsageTable[m_usage]);
     }
 

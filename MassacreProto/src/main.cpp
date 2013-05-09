@@ -416,6 +416,8 @@ void Game::initGL()
     GLFWvidmode desktop;
     glfwGetDesktopMode(&desktop);
     glfwSetWindowPos((desktop.Width - 1024) / 2, (desktop.Height - 768) / 2 - 30); // slightly above the center
+
+    glfwSwapInterval(0);
     
     glewExperimental = true;
 

@@ -1,7 +1,7 @@
 #include "Universe.h"
 #include <mcr/gfx/GBuffer.h>
 
-#include <mcr/gfx/Context.h>
+#include "GLState.h"
 #include "GLEnums.inl"
 
 namespace mcr {
@@ -20,7 +20,8 @@ GLvoid* GLAPIENTRY glMapBufferRange_fallback(
 } // ns
 
 GBuffer::GBuffer(Type type):
-    m_type(type)
+    m_type(type),
+    m_capacity(0)
 {
     if (!glMapBufferRange)
         glMapBufferRange = glMapBufferRange_fallback;
@@ -35,35 +36,34 @@ GBuffer::~GBuffer()
 
 void GBuffer::init(uint size, Usage usage)
 {
-    Context::active().bindBuffer(this);
+    g_glState->bindBuffer(g_bufferTypeTable[m_type], m_handle);
     glBufferData(g_bufferTypeTable[m_type], size, nullptr, g_bufferUsageTable[usage]);
+
+    m_capacity = size;
 }
 
 void GBuffer::init(const void* data, uint size, Usage usage)
 {
-    Context::active().bindBuffer(this);
+    g_glState->bindBuffer(g_bufferTypeTable[m_type], m_handle);
     glBufferData(g_bufferTypeTable[m_type], size, data, g_bufferUsageTable[usage]);
+
+    m_capacity = size;
 }
 
 uint GBuffer::capacity() const
 {
-    GLint length;
-
-    Context::active().bindBuffer(const_cast<GBuffer*>(this)); // HACK
-    glGetBufferParameteriv(g_bufferTypeTable[m_type], GL_BUFFER_SIZE, &length);
-
-    return (uint) length;
+    return m_capacity;
 }
 
 void* GBuffer::map(uint access)
 {
-    Context::active().bindBuffer(this);
+    g_glState->bindBuffer(g_bufferTypeTable[m_type], m_handle);
     return glMapBuffer(g_bufferTypeTable[m_type], toLegacyGLMapAccess(g_mapAccessTable[access]));
 }
 
 void* GBuffer::map(uint offset, uint length, uint access)
 {
-    Context::active().bindBuffer(this);
+    g_glState->bindBuffer(g_bufferTypeTable[m_type], m_handle);
     return glMapBufferRange(g_bufferTypeTable[m_type], offset, length, g_mapAccessTable[access]);
 }
 
@@ -79,6 +79,7 @@ const void* GBuffer::map(uint offset, uint length, uint access) const
 
 void GBuffer::unmap() const
 {
+    g_glState->bindBuffer(g_bufferTypeTable[m_type], m_handle);
     glUnmapBuffer(g_bufferTypeTable[m_type]);
 }
 

@@ -4,6 +4,7 @@
 #include <mcr/Debug.h>
 #include <mcr/gfx/MaterialManager.h>
 #include "MaterialParameterUploadFn.h"
+#include "GLState.h"
 
 namespace mcr {
 namespace gfx {
@@ -186,7 +187,10 @@ void Material::syncParameters()
         m_params[i].sync();
 
     for (std::size_t i = 0; i < m_buffersTMP.size(); ++i)
-        glBindBufferBase(GL_UNIFORM_BUFFER, m_buffersTMP[i].first, m_buffersTMP[i].second->handle());
+        g_glState->bindBufferBase(
+            GL_UNIFORM_BUFFER,
+            m_buffersTMP[i].first,
+            m_buffersTMP[i].second->handle());
 }
 
 } // ns gfx

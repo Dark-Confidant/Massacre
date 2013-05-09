@@ -70,6 +70,7 @@ protected:
     ~GBuffer();
 
     Type m_type;
+    uint m_capacity;
     uint m_handle;
 };
 

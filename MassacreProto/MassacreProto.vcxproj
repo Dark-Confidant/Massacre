@@ -182,8 +182,8 @@
   <ItemGroup>
     <ClInclude Include="..\MassacreShared\include\mcr\bb\ByteBuffer.h" />
     <ClInclude Include="..\MassacreShared\include\mcr\bb\Manips.h" />
-    <ClInclude Include="..\MassacreShared\include\mcr\MassacreBuildConfig.h" />
-    <ClInclude Include="..\MassacreShared\include\mcr\MassacreTypes.h" />
+    <ClInclude Include="..\MassacreShared\include\mcr\BuildConfig.h" />
+    <ClInclude Include="..\MassacreShared\include\mcr\Types.h" />
     <ClInclude Include="..\MassacreShared\include\mcr\math\Expr.h" />
     <ClInclude Include="..\MassacreShared\include\mcr\math\Grid.h" />
     <ClInclude Include="..\MassacreShared\include\mcr\math\Math.h" />
@@ -221,8 +221,11 @@
     <ClInclude Include="include\mcr\Io.h" />
     <ClInclude Include="include\mcr\IPlugin.h" />
     <ClInclude Include="include\mcr\Timer.h" />
+    <ClInclude Include="src\BeginInternal.h" />
+    <ClInclude Include="src\EndInternal.h" />
     <ClInclude Include="src\gfx\GLEnums.inl" />
     <ClInclude Include="src\gfx\ShaderPreprocessor.h" />
+    <ClInclude Include="src\GLState.h" />
     <ClInclude Include="src\Universe.h" />
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +236,7 @@
     <ClCompile Include="src\gfx\Context.cpp" />
     <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
+    <ClCompile Include="src\gfx\GLState.cpp" />
     <ClCompile Include="src\gfx\GType.cpp" />
     <ClCompile Include="src\gfx\Image.cpp" />
     <ClCompile Include="src\gfx\ImageFormat.cpp" />

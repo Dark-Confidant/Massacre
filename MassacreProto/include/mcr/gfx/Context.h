@@ -3,12 +3,10 @@
 #include <vector>
 #include <mcr/math/Rect.h>
 #include <mcr/gfx/RenderState.h>
-#include <mcr/gfx/GBuffer.h>
 
 namespace mcr {
 namespace gfx {
 
-class Texture;
 class Material;
 class VertexArray;
 struct Mesh;
@@ -27,43 +25,27 @@ public:
                         
     const RenderState&  renderState() const;
     void                setRenderState(const RenderState& rs);
-                        
-    uint                activeTextureUnit() const;
-    void                setActiveTextureUnit(uint texUnit);
-                        
-    Texture*            activeTexture(uint texUnit);
-    void                bindTexture(Texture* tex);
-                        
+
     Material*           activeMaterial() const;
     void                setActiveMaterial(Material* mtl);
-                        
-    GBuffer*            activeBuffer(GBuffer::Type type);
-    GBuffer*            activeBuffer(GBuffer::Type type, uint bufUnit);
-
-    void                bindBuffer(GBuffer* buffer);
 
     VertexArray*        activeVertexArray() const;
     void                setActiveVertexArray(VertexArray* va);
 
-    void                clear();
-
     void                drawMesh(const Mesh& mesh);
+
+    void                clear();
 
 protected:
     static Context* s_active;
 
-    irect          m_viewport;
-    RenderState    m_renderState;
-    uint           m_renderStateHash;
+    irect           m_viewport;
+    RenderState     m_renderState;
+    uint            m_renderStateHash;
 
-    uint                  m_activeTextureUnit;
-    std::vector<Texture*> m_textureUnits;
-    uint                  m_nextFreeTextureUnit;
+    Material*       m_activeMaterial;
 
-    Material* m_activeMaterial;
-
-    GBuffer*     m_buffers[GBuffer::NumTypes];
-    VertexArray* m_activeVertexArray;
+    VertexArray*    m_activeVertexArray;
 };
 
 } // ns gfx

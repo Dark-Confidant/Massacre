@@ -2,6 +2,7 @@
 #include <mcr/gfx/Texture.h>
 
 #include <algorithm>
+#include "GLState.h"
 
 namespace mcr {
 namespace gfx {
@@ -33,8 +34,8 @@ rcptr<Texture> Texture::create()
 Texture::Texture(): m_uploaded(false)
 {
     glGenTextures(1, &m_handle);
+    g_glState->bindTexture(m_handle);
 
-    glBindTexture(GL_TEXTURE_2D, m_handle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -47,17 +48,13 @@ Texture::~Texture()
     glDeleteTextures(1, &m_handle);
 }
 
-void Texture::load(IFile* file)
-{
-}
-
 void Texture::upload(Image* img)
 {
     m_filename   = img->filename();
     m_format     = img->format();
     m_size       = img->size();
 
-    glBindTexture(GL_TEXTURE_2D, m_handle);
+    g_glState->bindTexture(m_handle);
 
     glTexImage2D(GL_TEXTURE_2D, 0, m_format.toGLEnum(),
         m_size.x(), m_size.y(), 0, m_format.toGLEnum(),
@@ -70,7 +67,7 @@ void Texture::upload(Image* img)
 
 void Texture::clear()
 {
-    glBindTexture(GL_TEXTURE_2D, m_handle);
+    g_glState->bindTexture(m_handle);
 
     glTexImage2D(GL_TEXTURE_2D, 0, m_format.toGLEnum(),
         0, 0, 0, m_format.toGLEnum(),
@@ -81,7 +78,7 @@ void Texture::clear()
 
 rcptr<Image> Texture::download()
 {
-    glBindTexture(GL_TEXTURE_2D, m_handle);
+    g_glState->bindTexture(m_handle);
 
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &m_size[0]);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &m_size[1]);

@@ -13,6 +13,7 @@ set(GFX_PATH gfx)
 set(GFX_SRC
     ${GFX_PATH}/Context.cpp
     ${GFX_PATH}/GBuffer.cpp
+    ${GFX_PATH}/GLState.cpp
     ${GFX_PATH}/GType.cpp
     ${GFX_PATH}/Image.cpp
     ${GFX_PATH}/ImageFormat.cpp

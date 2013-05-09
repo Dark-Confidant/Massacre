@@ -2,6 +2,7 @@
 #include <mcr/gfx/VertexArray.h>
 
 #include <set>
+#include "GLState.h"
 
 namespace mcr {
 namespace gfx {
@@ -37,7 +38,7 @@ rcptr<VertexArray> VertexArray::create(
 VertexArray::VertexArray()
 {
     glGenVertexArrays(1, &m_handle);
-    glBindVertexArray(m_handle);
+    g_glState->bindVertexArray(m_handle);
 
     m_vertices = GBuffer::create(GBuffer::ArrayBuffer);
     m_indices = GBuffer::create(GBuffer::ElementArrayBuffer);
@@ -56,8 +57,8 @@ void VertexArray::setFormat(const VertexFormat& fmt)
 {
     m_format = fmt;
 
-    glBindVertexArray(m_handle);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertices->handle());
+    g_glState->bindVertexArray(m_handle);
+    g_glState->bindBuffer(GL_ARRAY_BUFFER, m_vertices->handle());
 
     for (uint i = 0; i < fmt.numAttribs(); ++i)
     {

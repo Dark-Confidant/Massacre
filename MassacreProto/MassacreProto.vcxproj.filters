@@ -129,16 +129,10 @@
     <ClInclude Include="..\MassacreShared\include\mcr\math\Vector.h">
       <Filter>Header Files\shared\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\MassacreShared\include\mcr\MassacreTypes.h">
-      <Filter>Header Files\shared</Filter>
-    </ClInclude>
     <ClInclude Include="..\MassacreShared\include\mcr\NonCopyable.h">
       <Filter>Header Files\shared</Filter>
     </ClInclude>
     <ClInclude Include="..\MassacreShared\include\mcr\RefCounted.h">
-      <Filter>Header Files\shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MassacreShared\include\mcr\MassacreBuildConfig.h">
       <Filter>Header Files\shared</Filter>
     </ClInclude>
     <ClInclude Include="include\mcr\gfx\MaterialParameterBuffer.h">
@@ -167,6 +161,21 @@
     </ClInclude>
     <ClInclude Include="include\mcr\gfx\IImageImporter.h">
       <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BeginInternal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EndInternal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLState.h">
+      <Filter>Source Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MassacreShared\include\mcr\Types.h">
+      <Filter>Header Files\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MassacreShared\include\mcr\BuildConfig.h">
+      <Filter>Header Files\shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +249,9 @@
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\SimpleMeshExporter.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\GLState.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
   </ItemGroup>
