@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mcr/MassacreBuildConfig.h>
+#include <mcr/BuildConfig.h>
 
 #include <cassert>
 #include <boost/foreach.hpp>

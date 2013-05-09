@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mcr/MassacreBuildConfig.h>
+#include <mcr/BuildConfig.h>
 
 namespace mcr {
 

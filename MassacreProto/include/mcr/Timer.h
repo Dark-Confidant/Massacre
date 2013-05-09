@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mcr/MassacreTypes.h>
+#include <mcr/Types.h>
 
 namespace mcr {
 

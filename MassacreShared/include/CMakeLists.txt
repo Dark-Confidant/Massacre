@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(HEADERS
-  mcr/MassacreTypes.h
-  mcr/MassacreBuildConfig.h
+  mcr/Types.h
+  mcr/BuildConfig.h
   mcr/NonCopyable.h
   mcr/RefCounted.h)
 set(HEADERS_BB

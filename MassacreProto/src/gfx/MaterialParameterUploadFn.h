@@ -2,7 +2,7 @@
 #pragma once
 
 #include <boost/preprocessor/seq/for_each.hpp>
-#include <mcr/MassacreTypes.h>
+#include <mcr/Types.h>
 
 //////////////////////////////////////////////////////////////////////////
 // Parameter type list, must match MaterialParameterType::Type
