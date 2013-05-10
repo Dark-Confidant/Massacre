@@ -90,9 +90,6 @@
     <ClInclude Include="include\mcr\ExternalSingleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\Io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     <ClInclude Include="include\mcr\gfx\MeshLoader.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
+    <ClInclude Include="include\mcr\gfx\Camera.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gfx\Shader.cpp">
@@ -207,9 +207,6 @@
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\Universe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Debug.cpp">
@@ -254,6 +251,9 @@
     <ClCompile Include="src\gfx\MeshLoader.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
+    <ClCompile Include="src\gfx\Camera.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\mcr\gfx\GBuffer.inl">
@@ -290,6 +290,9 @@
       <Filter>Source Files\gfx</Filter>
     </None>
     <None Include="include\mcr\gfx\Renderer.inl">
+      <Filter>Header Files\gfx</Filter>
+    </None>
+    <None Include="include\mcr\gfx\Camera.inl">
       <Filter>Header Files\gfx</Filter>
     </None>
   </ItemGroup>

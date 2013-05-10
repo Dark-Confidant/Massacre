@@ -6,7 +6,7 @@
 #include <mcr/Config.h>
 #include <mcr/Timer.h>
 
-#include <mcr/Camera.h>
+#include <mcr/gfx/Camera.h>
 #include <mcr/gfx/Renderer.h>
 #include <mcr/gfx/MaterialManager.h>
 #include <mcr/gfx/MeshLoader.h>

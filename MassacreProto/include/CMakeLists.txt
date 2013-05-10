@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(HEADERS
-    mcr/Camera.h
     mcr/Config.h
     mcr/Debug.h
     mcr/ExternalSingleton.h
@@ -11,6 +10,8 @@ set(HEADERS
     mcr/Timer.h
     mcr/Timer.inl)
 set(HEADERS_GFX
+    mcr/gfx/Camera.h
+    mcr/gfx/Camera.inl
     mcr/gfx/GBuffer.h
     mcr/gfx/GBuffer.inl
     mcr/gfx/GType.h

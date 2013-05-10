@@ -11,6 +11,7 @@ set(GFX_EXPERIMENTAL_SRC
 
 set(GFX_PATH gfx)
 set(GFX_SRC
+    ${GFX_PATH}/Camera.cpp
     ${GFX_PATH}/GBuffer.cpp
     ${GFX_PATH}/GLState.cpp
     ${GFX_PATH}/GType.cpp
@@ -30,7 +31,6 @@ set(GFX_SRC
     ${GFX_PATH}/VertexFormat.cpp)
 
 set(MASSACRE_SRC
-    Camera.cpp
     Config.cpp
     Debug.cpp
     FileSystem.cpp
