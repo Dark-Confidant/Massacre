@@ -28,7 +28,7 @@ public:
     static rcptr<MaterialParameterBuffer> create(
         const char* name,
         const MaterialParameterBufferLayout& layout,
-        Usage usage = Dynamic);
+        Usage usage = Stream);
 
 
     int                                     findParameter(const std::string& pname) const;
@@ -57,8 +57,10 @@ public:
     MCR_EXTERN void                         sync();
 
 protected:
-    MaterialParameterBuffer(const char* name, const MaterialParameterBufferLayout& layout, Usage usage);
-    ~MaterialParameterBuffer();
+    MCR_EXTERN MaterialParameterBuffer(const char* name,
+        const MaterialParameterBufferLayout& layout, Usage usage);
+
+    MCR_EXTERN ~MaterialParameterBuffer();
 
 private:
     class Parameter: public IMaterialParameter

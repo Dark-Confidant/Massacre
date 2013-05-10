@@ -19,6 +19,11 @@ struct GType {
     GType(Type atype = Unknown): type(atype) {}
     explicit GType(uint atype): type(Type(atype)) {}
 
+    operator Type() const
+    {
+        return type;
+    }
+
     uint size() const
     {
         static const uint s_sizes[] = {0, 1, 1, 2, 2, 4, 4, 4, 8};

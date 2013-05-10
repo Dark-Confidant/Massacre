@@ -9,7 +9,7 @@
 #include <mcr/Camera.h>
 #include <mcr/gfx/Renderer.h>
 #include <mcr/gfx/MaterialManager.h>
-#include <mcr/gfx/OldMeshes.h>
+#include <mcr/gfx/MeshLoader.h>
 
 using namespace mcr;
 using namespace gfx;
@@ -62,21 +62,38 @@ private:
 class BattleScreen: public GameLayer
 {
 public:
-    BattleScreen(Game* game):
-    GameLayer(game),
-        m_commonParameters(
-            MaterialParameterBuffer::create("Common",
-                MaterialParameterBufferLayout()
-                    (MaterialParameterType::Float, "Time")
-                    (MaterialParameterType::Float, "DeltaTime"))) {}
+    BattleScreen(Game* game): GameLayer(game) {}
 
     void onLoad()
     {
         m_camera.setZRange(vec2(1.f, 3000.f));
         m_camera.update();
 
+
+        m_commonParameters = MaterialParameterBuffer::create(
+            "Common", MaterialParameterBufferLayout()
+                (MaterialParameterType::Float, "Time")
+                (MaterialParameterType::Float, "DeltaTime"));
+
+        m_sunParameters = MaterialParameterBuffer::create(
+            "Sun", MaterialParameterBufferLayout()
+                (MaterialParameterType::Vec3,  "Direction")
+                (MaterialParameterType::Vec4,  "Color")
+                (MaterialParameterType::Vec4,  "ShadowColor")
+                (MaterialParameterType::Float, "Brightness"),
+            MaterialParameterBuffer::Static);
+
+        m_sunParameters->parameter("Direction")   = math::normalize(vec3(1, 1, -1));
+        m_sunParameters->parameter("Color")       = vec4(1, .9f, .7f, 1);
+        m_sunParameters->parameter("ShadowColor") = vec4(vec3(.5f), 1);
+        m_sunParameters->parameter("Brightness")  = 3.f;
+
         m_mm.addParameterBuffer(m_camera.parameterBuffer());
         m_mm.addParameterBuffer(m_commonParameters);
+        m_mm.addParameterBuffer(m_sunParameters);
+
+        m_sunParameters->sync();
+
 
         if (!m_mm.fs()->attachResource("DataArena/")
         &&  !m_mm.fs()->attachResource("/usr/share/massacre/"))
@@ -92,105 +109,68 @@ public:
         m_reach     = m_config["reach"]      || 780.f;
 
         loadArena();
-        loadSky();
+        buildSky();
         buildGates();
     }
 
     void loadArena()
     {
-        m_opaque      = m_mm.getMaterial("Materials/arena.mtl");
-        m_transparent = m_mm.getMaterial("Materials/branch.mtl");
+        m_opaque      = m_mm.getMaterial("Materials/opaque.mtl");
+        m_transparent = m_mm.getMaterial("Materials/trans.mtl");
         m_translucent = m_mm.getMaterial("Materials/leaves.mtl");
+        m_flags       = m_mm.getMaterial("Materials/flags.mtl");
 
-        auto opaqueAtlas      = m_mm.parseAtlasTMP("Textures/arena.json");
-        auto transparentAtlas = m_mm.parseAtlasTMP("Textures/trans.json");
+        MeshLoader loader(m_mm.fs());
 
         std::vector<Mesh> meshes;
-        std::vector<std::string> texNames;
 
-        m_arenaBuffer = OldMeshes::load(
-            m_mm.fs()->openFile("Meshes/arena.mesh"),
-            meshes, &texNames);
+        m_arenaBuffer = loader.load(
+            MeshFileSet()
+                ("Meshes/opaque.mesh")
+                ("Meshes/trans.mesh")
+                ("Meshes/leaves.mesh")
+                ("Meshes/flags.mesh"),
+            meshes);
 
-        // move
-        m_arenaBuffer->transformAttribs(0, math::buildTransform(vec3(-600, 0, 100)));
-
-        for (uint i = 0; i < meshes.size(); ++i)
+        if (m_arenaBuffer)
         {
-            auto& tex = texNames[i];
-
-            bool transformBit = false;
-
-            auto it = opaqueAtlas.find(tex);
-            if (it != opaqueAtlas.end())
-            {
-                transformBit = true;
-                m_opaqueMeshes.push_back(meshes[i]);
-            }
-            else
-            {
-                it = transparentAtlas.find(tex);
-                if (it != transparentAtlas.end())
-                {
-                    transformBit = true;
-
-                    if (boost::starts_with(tex, "leaves"))
-                        m_translucentMeshes.push_back(meshes[i]);
-                    else
-                        m_transparentMeshes.push_back(meshes[i]);
-                }
-                else
-                {
-                    auto mtl = Material::create(&m_mm);
-
-                    mtl->setRenderState(m_transparent->renderState());
-                    mtl->setShaders(m_transparent->shaders());
-                    mtl->setTexture(0, m_mm.getTexture(("Textures/" + tex).c_str()));
-
-                    m_other.push_back(mtl);
-                    m_otherMeshes.push_back(meshes[i]);
-                }
-            }
-
-            if (transformBit)
-            {
-                auto tf = math::buildTransform(
-                    vec3(it->second.botLeft(), 0.f),
-                    vec3(),
-                    vec3(it->second.size(), 0.f));
-
-                m_arenaBuffer->transformAttribs(2, tf, meshes[i].startVertex, meshes[i].numVertices);
-            }
+            m_opaqueMesh      = meshes[0];
+            m_transparentMesh = meshes[1];
+            m_translucentMesh = meshes[2];
+            m_flagsMesh       = meshes[3];
         }
     }
 
-    void loadSky()
+    void buildSky()
     {
-        MaterialShaderSet skyShaders;
-        skyShaders
-            (m_mm.getShader("Shaders/sky_t0.vert"))
-            (m_mm.getShader("Shaders/diffuse.frag"));
+        m_sky = m_mm.getMaterial("Materials/sky.mtl");
 
-        std::vector<std::string> texNames;
-
-        m_skyBuffer = OldMeshes::load(
-            m_mm.fs()->openFile("Meshes/sky.mesh"),
-            m_skyMeshes, &texNames);
-
-        for (uint i = 0; i < m_skyMeshes.size(); ++i)
+        float skyVertices[] =
         {
-            auto mtl = Material::create(&m_mm);
+            -50,50, 50,  0.25f,0.75f,   50,50, 50,  0.75f,0.75f,
+             50,50,-50,  0.75f,0.25f,  -50,50,-50,  0.25f,0.25f,
+            -50, 0, 50,  0.25f,1.00f,   50, 0, 50,  0.75f,1.00f,
+             50, 0, 50,  1.00f,0.75f,   50, 0,-50,  1.00f,0.25f,
+             50, 0,-50,  0.75f,0.00f,  -50, 0,-50,  0.25f,0.00f,
+            -50, 0,-50,  0.00f,0.25f,  -50, 0, 50,  0.00f,0.75f
+        };
+        uint skyIndices[] =
+        {
+            0, 2, 1,  0, 3, 2,
+            0, 5, 4,  0, 1, 5,
+            1, 7, 6,  1, 2, 7,
+            2, 9, 8,  2, 3, 9,
+            3,11,10,  3, 0,11
+        };
 
-            mtl->set(&RenderState::depthTest, false);
-            mtl->setPassHint(-1);
-            
-            mtl->setShaders(skyShaders);
+        m_skyBuffer = VertexArray::create(
+            skyVertices, sizeof(skyVertices),
+            skyIndices,  sizeof(skyIndices));
 
-            auto texName = "Textures/" + texNames[i];
-            mtl->setTexture(0, m_mm.getTexture(texName.c_str()));
+        m_skyBuffer->setFormat("p3f _ t2f");
 
-            m_sky.push_back(mtl);
-        }
+        Mesh mesh = {m_skyBuffer, 0, 12, 0, 30, PrimitiveType::Triangles};
+        m_skyMesh = mesh;
     }
 
     void buildGates()
@@ -216,12 +196,8 @@ public:
         m_gateBuffer->transformAttribs(0, math::buildTransform(vec3(957, 0, 5), vec3(0, -90, 0)), 0, 4);
         m_gateBuffer->transformAttribs(0, math::buildTransform(vec3(-837, 0, 22), vec3(0, 90, 0)), 4, 8);
 
-        m_gateMesh.buffer        = m_gateBuffer;
-        m_gateMesh.startVertex   = 0;
-        m_gateMesh.numVertices   = 8;
-        m_gateMesh.startIndex    = 0;
-        m_gateMesh.numIndices    = 12;
-        m_gateMesh.primitiveType = PrimitiveType::Triangles;
+        Mesh mesh = {m_gateBuffer, 0, 8, 0, 12, PrimitiveType::Triangles};
+        m_gateMesh = mesh;
     }
 
     void onUnload() {}
@@ -238,8 +214,8 @@ public:
     bool onRun()
     {
         m_timer.refresh();
-        m_commonParameters->parameter("Time")      = (float) m_timer.seconds();
-        m_commonParameters->parameter("DeltaTime") = (float) m_timer.dseconds();
+        m_commonParameters->parameter("Time")      = m_timer.seconds();
+        m_commonParameters->parameter("DeltaTime") = m_timer.dseconds();
         m_commonParameters->sync();
 
         handleKeys();
@@ -255,43 +231,27 @@ public:
         m_camera.update();
     }
 
-    void drawMeshes(Renderer& ctx, const std::vector<Mesh>& meshes)
-    {
-        for (std::size_t i = 0; i < meshes.size(); ++i)
-            ctx.drawMesh(meshes[i]);
-    }
-
     void render()
     {
         m_renderer.clear();
 
         m_camera.dumpMatrices();
 
-        m_renderer.setActiveVertexArray(m_skyBuffer);
-        for (auto i = 0u; i < m_sky.size(); ++i)
-        {
-            m_renderer.setActiveMaterial(m_sky[i]);
-            m_renderer.drawMesh(m_skyMeshes[i]);
-        }
-
-        m_renderer.setActiveVertexArray(m_arenaBuffer);
+        m_renderer.setActiveMaterial(m_sky);
+        m_renderer.drawMesh(m_skyMesh);
 
         m_renderer.setActiveMaterial(m_opaque);
-        drawMeshes(m_renderer, m_opaqueMeshes);
+        m_renderer.drawMesh(m_opaqueMesh);
 
-        for (std::size_t i = 0; i < m_other.size(); ++i)
-        {
-            m_renderer.setActiveMaterial(m_other[i]);
-            m_renderer.drawMesh(m_otherMeshes[i]);
-        }
+        m_renderer.setActiveMaterial(m_flags);
+        m_renderer.drawMesh(m_flagsMesh);
 
         m_renderer.setActiveMaterial(m_transparent);
-        drawMeshes(m_renderer, m_transparentMeshes);
+        m_renderer.drawMesh(m_transparentMesh);
 
         m_renderer.setActiveMaterial(m_translucent);
-        drawMeshes(m_renderer, m_translucentMeshes);
+        m_renderer.drawMesh(m_translucentMesh);
 
-        m_renderer.setActiveVertexArray(m_gateBuffer);
         m_renderer.setActiveMaterial(m_quasicrystal);
         m_renderer.drawMesh(m_gateMesh);
 
@@ -351,21 +311,12 @@ private:
     Camera m_camera;
 
     MaterialManager m_mm;
-    rcptr<MaterialParameterBuffer> m_commonParameters;
+    rcptr<MaterialParameterBuffer> m_commonParameters, m_sunParameters;
 
-    rcptr<Material> m_opaque, m_transparent, m_translucent, m_quasicrystal;
-    std::vector<rcptr<Material>> m_other, m_sky;
+    rcptr<Material> m_opaque, m_transparent, m_translucent, m_flags, m_sky, m_quasicrystal;
 
     rcptr<VertexArray> m_arenaBuffer, m_skyBuffer, m_gateBuffer;
-
-    std::vector<Mesh>
-        m_opaqueMeshes,
-        m_transparentMeshes,
-        m_translucentMeshes,
-        m_otherMeshes,
-        m_skyMeshes;
-
-    Mesh m_gateMesh;
+    Mesh m_opaqueMesh, m_transparentMesh, m_translucentMesh, m_flagsMesh, m_skyMesh, m_gateMesh;
 
     vec3 m_pos, m_rot;
     uint m_moveFlags;

@@ -144,9 +144,6 @@
     <ClInclude Include="src\gfx\ShaderPreprocessor.h">
       <Filter>Source Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="include\mcr\gfx\OldMeshes.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="include\mcr\gfx\Mesh.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
@@ -175,6 +172,9 @@
       <Filter>Header Files\shared</Filter>
     </ClInclude>
     <ClInclude Include="include\mcr\gfx\Renderer.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mcr\gfx\MeshLoader.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
   </ItemGroup>
@@ -239,9 +239,6 @@
     <ClCompile Include="src\gfx\ShaderPreprocessor.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
-    <ClCompile Include="src\gfx\OldMeshes.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
     <ClCompile Include="src\gfx\SimpleMeshImporter.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
@@ -252,6 +249,9 @@
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="src\gfx\Renderer.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gfx\MeshLoader.cpp">
       <Filter>Source Files\gfx</Filter>
     </ClCompile>
   </ItemGroup>

@@ -38,7 +38,7 @@ public:
     virtual rcptr<IMeshImportTask> createTask(IFile* file) const = 0;
 };
 
-MCR_EXTERN rcptr<IMeshImporter> createSimpleMeshLoader();
+MCR_EXTERN rcptr<IMeshImporter> createSimpleMeshImporter();
 
 } // ns gfx
 } // ns mcr

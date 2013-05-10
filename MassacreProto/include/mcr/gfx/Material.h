@@ -35,14 +35,14 @@ public:
     void                        set(T RenderState::* param, const T& val);
                                 
     const MaterialShaderSet&    shaders() const;
-    void                        setShaders(const MaterialShaderSet& shaders);
+    bool                        setShaders(const MaterialShaderSet& shaders);
 
-    const IMaterialParameter&   parameter(const std::string* pname) const;
-    IMaterialParameter&         parameter(const std::string* pname);
+    const IMaterialParameter&   parameter(const std::string& pname) const;
+    IMaterialParameter&         parameter(const std::string& pname);
 
     byte                        numTextures() const;
     Texture*                    texture(byte idx) const;
-    void                        setTexture(byte idx, Texture* tex);
+    bool                        setTexture(byte idx, Texture* tex);
 
     int                         passHint() const;
     void                        setPassHint(int pass);
@@ -75,7 +75,7 @@ private:
     MCR_EXTERN Material(MaterialManager* mgr);
     MCR_EXTERN ~Material();
 
-    MCR_EXTERN void _link();
+    MCR_EXTERN bool _link();
 
     MaterialManager*            m_mgr;
     RenderState                 m_renderState;

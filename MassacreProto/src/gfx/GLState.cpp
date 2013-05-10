@@ -17,12 +17,16 @@ GLState::GLState():
 
     memset(m_buffers, 0, sizeof(m_buffers));
 
-    GLint numUBOs, numTFBOs;
+    GLint numUBOs;
     glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &numUBOs);
-    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_BUFFERS, &numTFBOs);
-
     m_buffersIndexed[UniformBuffer].resize((std::size_t) numUBOs);
-    m_buffersIndexed[TransformFeedbackBuffer].resize((std::size_t) numTFBOs);
+
+    if (GLEW_ARB_transform_feedback3)
+    {
+        GLint numTFBOs;
+        glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_BUFFERS, &numTFBOs);
+        m_buffersIndexed[TransformFeedbackBuffer].resize((std::size_t) numTFBOs);
+    }
 }
 
 const irect& GLState::viewport() const

@@ -49,7 +49,7 @@ public:
     }
 
     //! Create an instance of the ith image importer, where 0 <= i < numImageImporters().
-    virtual rcptr<gfx::IImageImporter> createImageImporter()
+    virtual rcptr<gfx::IImageImporter> createImageImporter(uint i) const
     {
         return nullptr;
     }

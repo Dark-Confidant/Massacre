@@ -25,43 +25,7 @@ inline void MaterialParameterBuffer::Parameter::invalidate()
 
 
 //////////////////////////////////////////////////////////////////////////
-// Buffer structors
-
-inline MaterialParameterBuffer::MaterialParameterBuffer(
-    const char* name, const MaterialParameterBufferLayout& layout, Usage usage):
-    m_name(name),
-    m_layout(layout),
-    m_usage(usage),
-    m_dirty(true),
-    m_handle()
-{
-    auto& params = layout.parameters;
-
-    m_bufferSize = 0;
-
-    for (std::size_t i = 0; i < params.size(); ++i)
-        m_bufferSize += params[i].first.size();
-
-    m_buffer = new byte[m_bufferSize];
-
-    std::size_t offset = 0;
-
-    for (std::size_t i = 0; i < params.size(); ++i)
-    {
-        Parameter param(params[i].first, &m_buffer[offset], &m_dirty);
-
-        m_parameters.push_back(std::move(param));
-        m_parametersByName[params[i].second] = i;
-
-        offset += params[i].first.size();
-    }
-}
-
-inline MaterialParameterBuffer::~MaterialParameterBuffer()
-{
-    delete [] m_buffer;
-}
-
+// Buffer structor
 
 inline rcptr<MaterialParameterBuffer> MaterialParameterBuffer::create(
     const char* name, const MaterialParameterBufferLayout& layout, Usage usage)

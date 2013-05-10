@@ -60,7 +60,7 @@ public:
 
         for (uint i = 0; i < header.numAttributes; ++i)
         {
-            attribs[i].type   = fmt.attrib(i).type.type;
+            attribs[i].type   = fmt.attrib(i).type - GType::SByte;
             attribs[i].length = fmt.attrib(i).length;
         }
 
@@ -72,8 +72,19 @@ public:
             return false;
 
 
-        file.write((const char*) mesh.buffer->vertices()->map(GBuffer::Read), header.numVertices * header.vertexSize);
-        file.write((const char*) mesh.buffer->indices()->map(GBuffer::Read), header.numIndices * sizeof(uint));
+        file.write(
+            (const char*) mesh.buffer->vertices()->map(
+                header.vertexSize * mesh.startVertex,
+                header.vertexSize * mesh.numVertices,
+                GBuffer::Read),
+            header.vertexSize * mesh.numVertices);
+
+        file.write(
+            (const char*) mesh.buffer->indices()->map(
+                sizeof(uint) * mesh.startIndex,
+                sizeof(uint) * mesh.numIndices,
+                GBuffer::Read),
+            sizeof(uint) * mesh.numIndices);
 
         mesh.buffer->vertices()->unmap();
         mesh.buffer->indices()->unmap();

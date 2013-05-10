@@ -23,6 +23,7 @@ struct MaterialParameterType
     operator Type() const;
 
     std::size_t size() const;
+    std::size_t sizeAligned() const;
 };
 
 

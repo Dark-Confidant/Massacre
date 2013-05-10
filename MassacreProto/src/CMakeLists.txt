@@ -19,7 +19,7 @@ set(GFX_SRC
     ${GFX_PATH}/Material.cpp
     ${GFX_PATH}/MaterialManager.cpp
     ${GFX_PATH}/MaterialParameterBuffer.cpp
-    ${GFX_PATH}/OldMeshes.cpp
+    ${GFX_PATH}/MeshLoader.cpp
     ${GFX_PATH}/Renderer.cpp
     ${GFX_PATH}/Shader.cpp
     ${GFX_PATH}/ShaderPreprocessor.cpp

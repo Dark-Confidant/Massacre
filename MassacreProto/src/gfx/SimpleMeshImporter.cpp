@@ -56,22 +56,29 @@ public:
 
         mesh.primitiveType = PrimitiveType::Triangles;
 
-        size_t written = 0;
+        std::size_t read = 0;
 
-        auto vertices = mesh.buffer->vertices()->map(GBuffer::ReplaceSome);
-        auto indices  = mesh.buffer->indices()->map(GBuffer::ReplaceSome);
+        auto vertices = mesh.buffer->vertices()->map(
+            m_header.vertexSize * mesh.startVertex,
+            m_header.vertexSize * mesh.numVertices,
+            GBuffer::ReplaceSome);
+
+        auto indices = (uint*) mesh.buffer->indices()->map(
+            sizeof(uint) * mesh.startIndex,
+            sizeof(uint) * mesh.numIndices,
+            GBuffer::ReplaceSome);
 
         m_file->seek(m_header.vertexDataOffset);
-        written += m_file->read(vertices, m_header.numVertices * m_header.vertexSize);
+        read += m_file->read(vertices, m_header.vertexSize * m_header.numVertices);
 
         m_file->seek(m_header.indexDataOffset);
-        written += m_file->read(indices, m_header.numIndices);
+        read += m_file->read(indices, m_header.numIndices);
 
-        mesh.buffer->vertices()->unmap();
         mesh.buffer->indices()->unmap();
+        mesh.buffer->vertices()->unmap();
 
-        return written == m_header.numVertices * m_header.vertexSize
-                        + m_header.numIndices  * sizeof(uint);
+        return read == m_header.vertexSize * m_header.numVertices
+                     + sizeof(uint) * m_header.numIndices;
     }
 
 private:
@@ -93,7 +100,7 @@ public:
     }
 };
 
-rcptr<IMeshImporter> createSimpleMeshLoader()
+rcptr<IMeshImporter> createSimpleMeshImporter()
 {
     return new SimpleMeshImporter;
 }

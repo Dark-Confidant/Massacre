@@ -69,10 +69,10 @@ inline const MaterialShaderSet& Material::shaders() const
     return m_shaders;
 }
 
-inline void Material::setShaders(const MaterialShaderSet& shaders)
+inline bool Material::setShaders(const MaterialShaderSet& shaders)
 {
     m_shaders = shaders;
-    _link();
+    return _link();
 }
 
 inline byte Material::numTextures() const
@@ -85,9 +85,13 @@ inline Texture* Material::texture(byte idx) const
     return m_textures[idx].second;
 }
 
-inline void Material::setTexture(byte idx, Texture* tex)
+inline bool Material::setTexture(byte idx, Texture* tex)
 {
+    if (idx >= m_textures.size())
+        return false;
+
     m_textures[idx].second = tex;
+    return true;
 }
 
 inline int Material::passHint() const

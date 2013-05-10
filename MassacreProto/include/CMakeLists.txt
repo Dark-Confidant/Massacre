@@ -30,7 +30,7 @@ set(HEADERS_GFX
     mcr/gfx/MaterialParameterBuffer.h
     mcr/gfx/MaterialParameterBuffer.inl
     mcr/gfx/Mesh.h
-    mcr/gfx/OldMeshes.h
+    mcr/gfx/MeshLoader.h
     mcr/gfx/Renderer.h
     mcr/gfx/Renderer.inl
     mcr/gfx/RenderState.h

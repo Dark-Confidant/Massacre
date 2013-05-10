@@ -197,6 +197,7 @@
     <ClInclude Include="include\mcr\Debug.h" />
     <ClInclude Include="include\mcr\ExternalSingleton.h" />
     <ClInclude Include="include\mcr\FileSystem.h" />
+    <ClInclude Include="include\mcr\gfx\MeshLoader.h" />
     <ClInclude Include="include\mcr\gfx\Renderer.h" />
     <ClInclude Include="include\mcr\gfx\experimental\GeometryBuffer.h" />
     <ClInclude Include="include\mcr\gfx\GBuffer.h" />
@@ -212,7 +213,6 @@
     <ClInclude Include="include\mcr\gfx\MaterialParameter.h" />
     <ClInclude Include="include\mcr\gfx\MaterialParameterBuffer.h" />
     <ClInclude Include="include\mcr\gfx\Mesh.h" />
-    <ClInclude Include="include\mcr\gfx\OldMeshes.h" />
     <ClInclude Include="include\mcr\gfx\RenderState.h" />
     <ClInclude Include="include\mcr\gfx\Shader.h" />
     <ClInclude Include="include\mcr\gfx\Texture.h" />
@@ -233,6 +233,7 @@
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\FileSystem.cpp" />
+    <ClCompile Include="src\gfx\MeshLoader.cpp" />
     <ClCompile Include="src\gfx\Renderer.cpp" />
     <ClCompile Include="src\gfx\experimental\GeometryBuffer.cpp" />
     <ClCompile Include="src\gfx\GBuffer.cpp" />
@@ -243,7 +244,6 @@
     <ClCompile Include="src\gfx\Material.cpp" />
     <ClCompile Include="src\gfx\MaterialManager.cpp" />
     <ClCompile Include="src\gfx\MaterialParameterBuffer.cpp" />
-    <ClCompile Include="src\gfx\OldMeshes.cpp" />
     <ClCompile Include="src\gfx\Shader.cpp" />
     <ClCompile Include="src\gfx\ShaderPreprocessor.cpp" />
     <ClCompile Include="src\gfx\SimpleMeshExporter.cpp" />

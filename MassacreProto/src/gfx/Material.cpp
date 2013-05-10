@@ -42,7 +42,7 @@ Material::~Material()
 //////////////////////////////////////////////////////////////////////////
 // Linkage
 
-void Material::_link()
+bool Material::_link()
 {
     if (m_program)
         glDeleteProgram(m_program);
@@ -66,7 +66,7 @@ void Material::_link()
         glGetProgramInfoLog(m_program, logLength, nullptr, &logString[0]);
 
         debug("Material link failed: %s", logString.c_str());
-        return;
+        return false;
     }
 
     if (!GLEW_EXT_direct_state_access)
@@ -173,6 +173,8 @@ void Material::_link()
             }
         }
     }
+
+    return true;
 }
 
 

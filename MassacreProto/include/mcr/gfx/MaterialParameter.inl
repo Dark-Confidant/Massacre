@@ -25,6 +25,19 @@ inline std::size_t MaterialParameterType::size() const
     return s_sizes[type];
 }
 
+inline std::size_t MaterialParameterType::sizeAligned() const
+{
+    static const std::size_t s_sizes[] =
+    {
+        sizeof(float), sizeof(double), sizeof(int),   sizeof(uint),
+        sizeof(vec2),  sizeof(dvec2),  sizeof(ivec2), sizeof(uvec2),
+        sizeof(vec4),  sizeof(dvec4),  sizeof(ivec4), sizeof(uvec4), // no typo
+        sizeof(vec4),  sizeof(dvec4),  sizeof(ivec4), sizeof(uvec4),
+        sizeof(mat4),  sizeof(dmat4)
+    };
+    return s_sizes[type];
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Parameter structors

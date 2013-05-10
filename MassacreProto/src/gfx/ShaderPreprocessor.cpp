@@ -202,7 +202,7 @@ inline std::string buildBlockDef(const MaterialParameterBuffer* buffer)
 
     std::stringstream def;
 
-    def << "uniform " << name << "Layout\n{\n";
+    def << "layout(std140) uniform " << name << "Layout\n{\n";
 
     for (std::size_t i = 0; i < params.size(); ++i)
     {
