@@ -1,22 +1,24 @@
 cmake_minimum_required(VERSION 2.6)
-project(MASSACRE)
+
+project(Massacre)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-scripts/")
 
-find_package(Boost REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(GLFW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(YamlCpp REQUIRED)
-find_package(ZLIB REQUIRED)
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "-W3 -EHsc")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
+else (MSVC)
+    set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -O3 -fPIC")
+endif (MSVC)
 
-include_directories(${GLFW_INCLUDE_DIRS}
-                    ${GLEW_INCLUDE_PATH})
+if (WIN32)
+    set(CMAKE_INSTALL_PREFIX "$ENV{MASSACRE_ROOT}")
+    if (NOT CMAKE_INSTALL_PREFIX)
+        set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}")
+    endif (NOT CMAKE_INSTALL_PREFIX)
+    message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
+endif (WIN32)
 
-link_directories(${GLFW_LIBRARY_DIRS})
-
-set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -O3")
-
-add_subdirectory(MassacreProto)
-add_subdirectory(MassacreShared)
+add_subdirectory(Core)
+add_subdirectory(Gfx)
+add_subdirectory(Samples)
