@@ -20,9 +20,9 @@ const IPlugin* PluginManager::loadPlugin(const char* path)
     if (!fs::is_regular_file(wpath, err))
     {
 #if defined(MCR_PLATFORM_WINDOWS)
-        wpath += ".dll";
+        wpath.replace_extension(".dll");
 #elif defined(MCR_PLATFORM_LINUX)
-        wpath += ".so";
+        wpath.replace_extension(".so");
 #endif
         if (!fs::is_regular_file(wpath, err))
             return nullptr;
