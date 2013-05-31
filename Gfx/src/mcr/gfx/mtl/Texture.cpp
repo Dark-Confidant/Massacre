@@ -52,7 +52,6 @@ bool Texture::load(io::IReader* stream)
         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
         case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
         case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        case GL_COMPRESSED_RGBA_BPTC_UNORM:
             m_hasAlpha = true;
             break;
         default:
