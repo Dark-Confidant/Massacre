@@ -1,50 +1,49 @@
 #include <mcr/Config.h>
 
-#include <yaml-cpp/parser.h>
-#include <yaml-cpp/node.h>
-#include <mcr/io/FileStream.h>
+#include <cctype>
+#include <cstdio>
 #include <mcr/Debug.h>
 
 namespace mcr {
 
-bool Config::load(io::IFile* file, bool report)
+bool Config::load(io::IReader* stream, bool report)
 {
-    io::FileStream stream(file);
-    std::istream fin(&stream);
-
-    if (!fin)
+    if (!stream)
     {
         if (report)
-            debug("No config file found");
+            debug("No config");
 
         return false;
     }
 
-    try
-    {
-        YAML::Parser parser(fin);
+    std::string buffer;
+    stream->readString0(buffer);
 
-        YAML::Node doc;
-        parser.GetNextDocument(doc);
-    
-        for (auto it = doc.begin(); it != doc.end(); ++it)
+    for (auto it = buffer.c_str(), end = it + buffer.size(); it != end;)
+    {
+        char key[32], value[32];
+        int len = 0;
+
+        if (std::sscanf(it, "%[^=: \xA0] %*[=:] %[^\n\r]%n", key, value, &len) == 2)
+            it += len;
+        else
         {
-            std::string key, value;
-            it.first()  >> key;
-            it.second() >> value;
-
             if (report)
-                debug("var %s = %s", key.c_str(), value.c_str());
-            
-            m_vars[key] = value;
+            {
+                char line[128];
+                std::sscanf(it, "%[^\n\r]", line);
+                debug("Config syntax error: %s", line);
+            }
+            return false;
         }
-    }
-    catch(YAML::ParserException& e)
-    {
-        if (report)
-            debug("Yaml exception: %s", e.what());
 
-        return false;
+        m_vars[key] = value;
+
+        if (report)
+            debug("var %s = %s", key, value);
+
+        while (std::isspace(*it))
+            ++it;
     }
 
     return true;

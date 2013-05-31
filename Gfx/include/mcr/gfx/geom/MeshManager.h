@@ -12,8 +12,8 @@ class MeshManager
 public:
     MeshManager();
 
-    bool loadDynamic(io::IFile* file, Mesh& meshOut);
-    bool loadStatic(io::IFile* file, Mesh& meshOut);
+    bool loadDynamic(io::IFileReader* stream, Mesh& meshOut);
+    bool loadStatic(io::IFileReader* stream, Mesh& meshOut);
 
 private:
     mem::NaiveMemory
@@ -30,14 +30,14 @@ inline MeshManager::MeshManager():
     m_staticVertices (mem::NaiveMemory::Vertex, mem::NaiveMemory::Static),
     m_staticIndices  (mem::NaiveMemory::Index,  mem::NaiveMemory::Static) {}
 
-inline bool MeshManager::loadDynamic(io::IFile* file, Mesh& meshOut)
+inline bool MeshManager::loadDynamic(io::IFileReader* stream, Mesh& meshOut)
 {
-    return Mesh::load(file, &m_dynamicVertices, &m_dynamicIndices, meshOut);
+    return Mesh::load(stream, &m_dynamicVertices, &m_dynamicIndices, meshOut);
 }
 
-inline bool MeshManager::loadStatic(io::IFile* file, Mesh& meshOut)
+inline bool MeshManager::loadStatic(io::IFileReader* stream, Mesh& meshOut)
 {
-    return Mesh::load(file, &m_staticVertices, &m_staticIndices, meshOut);
+    return Mesh::load(stream, &m_staticVertices, &m_staticIndices, meshOut);
 }
 
 } // ns geom

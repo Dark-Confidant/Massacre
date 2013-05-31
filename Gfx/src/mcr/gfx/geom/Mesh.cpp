@@ -8,25 +8,35 @@ namespace mcr  {
 namespace gfx  {
 namespace geom {
 
-bool Mesh::load(io::IFile* file, mem::IVideoMemory* vertMem, mem::IVideoMemory* idxMem, Mesh& meshOut)
+bool Mesh::load(io::IFileReader* stream, mem::IVideoMemory* vertMem, mem::IVideoMemory* idxMem, Mesh& meshOut)
 {
-    if (!file)
+    if (!stream)
         return false;
 
+    auto startPos = stream->tell();
+
     SimpleMesh::Header header;
-    if (file->read(header) != sizeof(header))
+    if (stream->read(header) != sizeof(header))
         return false;
 
     if (!header.checkSignature() || header.version != SIMPLE_MESH_VERSION)
         return false;
 
 
+    const std::size_t
+        attribDataSize = header.numAttributes * sizeof(SimpleMesh::VertexAttribute),
+        vertexDataSize = header.numVertices * header.vertexSize,
+        indexDataSize  = header.numIndices * sizeof(uint);
+
+    std::size_t read = sizeof(header);
+
+
     VertexFormat fmt;
 
     auto attribs = new SimpleMesh::VertexAttribute[header.numAttributes];
 
-    file->seek(header.attributeDataOffset);
-    file->read(attribs, header.numAttributes);
+    stream->seek(startPos + header.attributeDataOffset);
+    read += stream->read(attribs, header.numAttributes);
 
     for (uint i = 0; i < header.numAttributes; ++i)
         fmt.addAttrib(AttribType(AttribType::SByte + attribs[i].type), attribs[i].length); // sic!
@@ -34,22 +44,16 @@ bool Mesh::load(io::IFile* file, mem::IVideoMemory* vertMem, mem::IVideoMemory* 
     delete [] attribs;
 
 
-    const std::size_t
-        vertexDataSize = header.numVertices * header.vertexSize,
-        indexDataSize  = header.numIndices * sizeof(uint);
-
-    std::size_t read = 0;
-
-    auto vertices = new byte[header.vertexSize * header.numVertices];
+    auto vertices = new byte[vertexDataSize];
     auto indices  = new uint[header.numIndices];
 
-    file->seek(header.vertexDataOffset);
-    read += file->read(vertices, header.vertexSize * header.numVertices);
+    stream->seek(startPos +header.vertexDataOffset);
+    read += stream->read(vertices, vertexDataSize);
 
-    file->seek(header.indexDataOffset);
-    read += file->read(indices, header.numIndices);
+    stream->seek(startPos +header.indexDataOffset);
+    read += stream->read(indices, header.numIndices);
 
-    bool success = read == vertexDataSize + indexDataSize;
+    bool success = read == sizeof(header) + attribDataSize + vertexDataSize + indexDataSize;
     if (success)
     {
         meshOut.vertices = vertMem->allocate(vertexDataSize);
@@ -70,8 +74,11 @@ bool Mesh::load(io::IFile* file, mem::IVideoMemory* vertMem, mem::IVideoMemory* 
     return success;
 }
 
-bool Mesh::save(const Mesh& mesh, const char* filename)
+bool Mesh::save(io::IWriter* stream, const Mesh& mesh)
 {
+    if (!stream)
+        return false;
+
     SimpleMesh::Header header;
     header.signature     = 0x4d53u;
     header.version       = SIMPLE_MESH_VERSION;
@@ -82,54 +89,42 @@ bool Mesh::save(const Mesh& mesh, const char* filename)
     header.numVertices   = mesh.numVertices;
     header.numIndices    = mesh.numIndices;
 
-    header.attributeDataOffset = sizeof(header);
-    header.vertexDataOffset    = header.attributeDataOffset
-                               + header.numAttributes * sizeof(SimpleMesh::VertexAttribute);
-    header.indexDataOffset     = header.vertexDataOffset
-                               + header.numVertices * header.vertexSize;
-
-    std::ofstream file(filename, std::ios::binary);
-    if (!file)
-        return false;
-
-    file.write((const char*) &header, sizeof(header));
-    if (!file)
-        return false;
-
-
-    auto attribs = new SimpleMesh::VertexAttribute[header.numAttributes];
-
-    for (uint i = 0; i < header.numAttributes; ++i)
-    {
-        attribs[i].type   = mesh.vertexFormat.attrib(i).type - AttribType::SByte;
-        attribs[i].length = mesh.vertexFormat.attrib(i).length;
-    }
-
-    file.write((const char*) attribs, header.numAttributes * sizeof(SimpleMesh::VertexAttribute));
-
-    delete [] attribs;
-
-    if (!file)
-        return false;
-
-
     const std::size_t
+        attribDataSize = header.numAttributes * sizeof(SimpleMesh::VertexAttribute),
         vertexDataSize = header.numVertices * header.vertexSize,
         indexDataSize  = header.numIndices * sizeof(uint);
 
-    auto vertices = new char[vertexDataSize];
-    auto indices  = new char[indexDataSize];
+    header.attributeDataOffset = sizeof(header);
+    header.vertexDataOffset    = header.attributeDataOffset + attribDataSize;
+    header.indexDataOffset     = header.vertexDataOffset + vertexDataSize;
+
+    std::size_t written = stream->write(header);
+
+
+    for (uint i = 0; i < header.numAttributes; ++i)
+    {
+        SimpleMesh::VertexAttribute attrib;
+
+        attrib.type   = mesh.vertexFormat.attrib(i).type - AttribType::SByte;
+        attrib.length = mesh.vertexFormat.attrib(i).length;
+
+        written += stream->write(attrib);
+    }
+
+
+    auto vertices = new byte[vertexDataSize];
+    auto indices  = new byte[indexDataSize];
 
     mesh.vertices.memory->read(mesh.vertices, 0, vertexDataSize, vertices);
     mesh.indices.memory->read(mesh.indices, 0, indexDataSize, indices);
 
-    file.write(vertices, vertexDataSize);
-    file.write(indices, indexDataSize);
+    written += stream->write(vertices, vertexDataSize);
+    written += stream->write(indices, indexDataSize);
 
     delete [] indices;
     delete [] vertices;
 
-    return !!file;
+    return written == sizeof(header) + attribDataSize + vertexDataSize + indexDataSize;
 }
 
 } // ns geom

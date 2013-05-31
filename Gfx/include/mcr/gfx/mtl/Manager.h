@@ -39,9 +39,9 @@ public:
 
     // Resource management
 
-    MCR_GFX_EXTERN Texture*     getTexture(const char* filename);
-    MCR_GFX_EXTERN Shader*      getShader(const char* filename);
-    MCR_GFX_EXTERN Material*    getMaterial(const char* filename);
+    MCR_GFX_EXTERN Texture*     getTexture(const std::string& filename);
+    MCR_GFX_EXTERN Shader*      getShader(const std::string& filename);
+    MCR_GFX_EXTERN Material*    getMaterial(const std::string& filename);
 
     MCR_GFX_EXTERN void         clear();
     MCR_GFX_EXTERN void         removeUnused();
@@ -53,8 +53,7 @@ private:
     MCR_GFX_EXTERN void         _init();
     MCR_GFX_EXTERN void         _destroy();
 
-    MCR_GFX_INTERN Shader*      _getShader(const char* filename, std::string& path);
-    MCR_GFX_INTERN void         _parseMaterial(Material* materil, io::IFile* file);
+    MCR_GFX_INTERN void         _parseMaterial(Material* material, io::IReader* stream);
 
     template <typename M> void  _dropAll(M& map);
     template <typename M> void  _grabAll(M& map);

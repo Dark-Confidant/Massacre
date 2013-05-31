@@ -8,7 +8,7 @@ Crossplatform despair simulator
 Installation
 ------------
 
-Now we support installation from gamerlay in **Gentoo** linux.
+We now support installation from gamerlay in **Gentoo** linux.
 
 ```bash
 layman -a gamerlay
@@ -16,23 +16,18 @@ emerge games-engines/massacre games-util/massacre-data
 ```
 
 Building
-------------
+--------
 
-Linux: 
+Linux:
 
 ```bash
-mkdir build 
-cd build && cmake ..
+mkdir build && cd build
+cmake ..
+make
 ```
-
-Windows : 
-
-who cares ?
 
 Dependencies
 ------------
 
-boost (1.53)
-yaml-cpp (0.3 , not 0.5)
-glew (1.9.0)
-glfw (2.7.8)
+- Gfx: Boost 1.46+, GLEW 1.6+, yaml-cpp 0.3.0
+- Samples: GLFW 2.7.2+

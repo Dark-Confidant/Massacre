@@ -1,7 +1,8 @@
 #pragma once
 
 #include <mcr/GfxExtern.h>
-#include <mcr/io/IFile.h>
+#include <mcr/io/IFileReader.h>
+#include <mcr/io/IWriter.h>
 #include <mcr/gfx/geom/VertexFormat.h>
 #include <mcr/gfx/geom/mem/IVideoMemory.h>
 
@@ -40,14 +41,14 @@ struct Mesh
     uint                numIndices;
 
     MCR_GFX_EXTERN static bool load(
-        io::IFile* file,
+        io::IFileReader* stream,
         mem::IVideoMemory* vertMem,
         mem::IVideoMemory* idxMem,
         Mesh& meshOut);
 
     MCR_GFX_EXTERN static bool save(
-        const Mesh& mesh,
-        const char* filename);
+        io::IWriter* stream,
+        const Mesh& mesh);
 };
 
 } // ns geom

@@ -4,12 +4,11 @@ compiler:
   - g++
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - echo -e "deb http://ppa.launchpad.net/stephane.magnenat/precise/ubuntu presise main universe\ndeb-src http://ppa.launchpad.net/stephane.magnenat/precise/ubuntu precise main universe" | sudo tee -a /etc/apt/sources.list
+  - echo -e "deb http://ppa.launchpad.net/stephane.magnenat/precise/ubuntu precise main universe\ndeb-src http://ppa.launchpad.net/stephane.magnenat/precise/ubuntu precise main universe" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update || echo 'Screw it'
   - sudo apt-get upgrade -y || echo 'Screw it'
   - sudo apt-get build-dep yaml-cpp
   - sudo apt-get install curl
-  - sudo apt-get install libboost-filesystem-dev
   - mkdir build
   - cd build
   - curl "https://yaml-cpp.googlecode.com/files/yaml-cpp-0.3.0.tar.gz" | tar xvfz -

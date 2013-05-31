@@ -20,15 +20,8 @@ public:
         NumTypes
     };
 
-    //! Create empty shader of given \c type
+    //! Create an empty shader of given \c type
     static rcptr<Shader> create(Type type);
-
-    /*! Create shader from contents of \c file,
-        with type derived from file extension */
-    static rcptr<Shader> createFromFile(io::IFile* file);
-
-    //! Create shader of given type from contents of \c file
-    static rcptr<Shader> createFromFile(Type type, io::IFile* file);
 
 
     //! Shader type enum
@@ -54,8 +47,8 @@ public:
     //! Set shader source and optionally recompile OpenGL binary
     MCR_GFX_EXTERN void setSource(const char* source, bool recompile = true);
 
-    //! Set shader source from contents of file and optionally recompile
-    void setSourceFromFile(io::IFile* reader, bool recompile = true);
+    //! Read shader source from the stream and optionally recompile
+    void setSourceFromStream(io::IReader* stream, bool recompile = true);
 
 
     //! Compile shader

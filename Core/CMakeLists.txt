@@ -1,15 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-find_package(Boost REQUIRED)
-find_package(YamlCpp REQUIRED)
-
-include_directories(
-    ${Boost_INCLUDE_DIRS}
-    ${YAMLCPP_INCLUDE_DIR}
-    "${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-link_libraries(
-    ${YAMLCPP_LIBRARY})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 file(GLOB_RECURSE Sources src/*.cpp)
 
@@ -18,4 +9,12 @@ add_library(massacre-core SHARED ${Sources})
 set_target_properties(massacre-core PROPERTIES DEBUG_POSTFIX d)
 
 install(DIRECTORY include/ DESTINATION include)
-install(TARGETS massacre-core DESTINATION lib)
+
+if(WIN32)
+    install(TARGETS massacre-core
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib)
+else()
+    install(TARGETS massacre-core
+            DESTINATION lib)
+endif()

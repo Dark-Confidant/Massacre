@@ -81,13 +81,13 @@ struct Scene
         materials.quasicrystal = mtlm.getMaterial("Materials/quasicrystal.mtl");
 
 
-        meshm.loadStatic(fs->openFile("Meshes/opaque.mesh"), meshes.opaque);
-        meshm.loadStatic(fs->openFile("Meshes/trans.mesh"),  meshes.transparent);
-        meshm.loadStatic(fs->openFile("Meshes/leaves.mesh"), meshes.translucent);
-        meshm.loadStatic(fs->openFile("Meshes/flags.mesh"),  meshes.flags);
+        meshm.loadStatic(fs->openReader("Meshes/opaque.mesh"), meshes.opaque);
+        meshm.loadStatic(fs->openReader("Meshes/trans.mesh"),  meshes.transparent);
+        meshm.loadStatic(fs->openReader("Meshes/leaves.mesh"), meshes.translucent);
+        meshm.loadStatic(fs->openReader("Meshes/flags.mesh"),  meshes.flags);
 
-        meshm.loadStatic(fs->openFile("Meshes/sky.mesh"),    meshes.sky);
-        meshm.loadStatic(fs->openFile("Meshes/gates.mesh"),  meshes.gates);
+        meshm.loadStatic(fs->openReader("Meshes/sky.mesh"),    meshes.sky);
+        meshm.loadStatic(fs->openReader("Meshes/gates.mesh"),  meshes.gates);
     }
 
     void render(Renderer& renderer)
@@ -123,14 +123,14 @@ class Demo
 public:
     Demo()
     {
-        if (!m_mtlm.fs()->attachResource("DataArena/")
-        &&  !m_mtlm.fs()->attachResource("/usr/share/massacre/"))
+        if (!m_mtlm.fs()->setRoot("DataArena/")
+        &&  !m_mtlm.fs()->setRoot("/usr/share/massacre/"))
         {
             debug("Can't find data directory");
             exit(1);
         }
 
-        m_config.load(m_mtlm.fs()->openFile("mainconf.yaml"));
+        m_config.load(m_mtlm.fs()->openReader("mainconf.yaml"));
 
         m_config.query("turn_speed", m_turnSpeed, 60.f);
         m_config.query("velocity",   m_velocity,  100.f);

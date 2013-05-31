@@ -1,11 +1,8 @@
 #include "Universe.h"
 #include <mcr/gfx/mtl/Manager.h>
 
-#include <set>
 #include <istream>
 #include <boost/algorithm/string/case_conv.hpp>
-
-#include "ShaderPreprocessor.h"
 
 #ifdef _MSC_VER
 #   pragma warning(push)
@@ -16,7 +13,8 @@
 #   include <yaml-cpp/yaml.h>
 #endif
 
-#include <mcr/io/FileStream.h>
+#include <mcr/io/InputStream.h>
+#include "ShaderPreprocessor.h"
 
 namespace mcr {
 namespace gfx {
@@ -54,36 +52,55 @@ Manager::TextureData::TextureData():
 //////////////////////////////////////////////////////////////////////////
 // Cached getters
 
-Texture* Manager::getTexture(const char* filename)
+Texture* Manager::getTexture(const std::string& filename)
 {
-    std::string path;
-    auto file = m_fs->openFile(filename, &path);
-
-    if (path.empty())
+    auto file = m_fs->openReader(filename.c_str());
+    if (!file)
         return nullptr;
 
-    auto& tex = m_tex.textures[path];
+    auto& tex = m_tex.textures[filename];
     if (!tex)
-        tex = Texture::createFromFile(file);
+    {
+        tex = Texture::create();
+        tex->load(file);
+    }
 
     return tex;
 }
 
-Shader* Manager::getShader(const char* filename)
+Shader* Manager::getShader(const std::string& filename)
 {
-    std::string path;
-    return _getShader(filename, path);
-}
-
-Material* Manager::getMaterial(const char* filename)
-{
-    std::string path;
-    auto file = m_fs->openFile(filename, &path);
-
-    if (path.empty())
+    auto file = m_fs->openReader(filename.c_str());
+    if (!file)
         return nullptr;
 
-    auto& material = m_materials[path];
+    auto& shader = m_shaders[filename];
+    if (!shader)
+    {
+        auto type = Shader::Vertex;
+    
+        switch (io::Path::ext(file->filename())[0])
+        {
+        case 'g': type = Shader::Geometry; break;
+        case 'f': type = Shader::Fragment;
+        }
+
+        shader = Shader::create(type);
+
+        shader->setPreprocessor(m_preprocessor);
+        shader->setSourceFromStream(file);
+    }
+
+    return shader;
+}
+
+Material* Manager::getMaterial(const std::string& filename)
+{
+    auto file = m_fs->openReader(filename.c_str());
+    if (!file)
+        return nullptr;
+
+    auto& material = m_materials[filename];
     if (!material)
     {
         material = Material::create(this);
@@ -119,34 +136,7 @@ void Manager::removeUnused()
 //////////////////////////////////////////////////////////////////////////
 // Internals
 
-Shader* Manager::_getShader(const char* filename, std::string& path)
-{
-    auto file = m_fs->openFile(filename, &path);
-
-    if (path.empty())
-        return nullptr;
-
-    auto& shdr = m_shaders[path];
-    if (!shdr)
-    {
-        Shader::Type type = Shader::Vertex;
-    
-        switch (io::Path::ext(file->filename())[0])
-        {
-        case 'g': type = Shader::Geometry; break;
-        case 'f': type = Shader::Fragment;
-        }
-
-        shdr = Shader::create(type);
-
-        shdr->setPreprocessor(m_preprocessor);
-        shdr->setSourceFromFile(file);
-    }
-
-    return shdr;
-}
-
-void Manager::_parseMaterial(Material* material, io::IFile* file)
+void Manager::_parseMaterial(Material* material, io::IReader* stream)
 {
     static const std::pair<std::string, uint> literalArray[] =
     {
@@ -175,11 +165,9 @@ void Manager::_parseMaterial(Material* material, io::IFile* file)
     static const std::map<std::string, int> literals(
         literalArray, literalArray + sizeof(literalArray) / sizeof(literalArray[0]));
 
-    auto dir = io::Resource::create(file->fs(), io::Path::dir(file->filename()).c_str());
-
-    io::FileStream stream(file);
-    std::istream fin(&stream);
-    YAML::Parser parser(fin);
+    io::InputStream istream(stream);
+    std::istream in(&istream);
+    YAML::Parser parser(in);
 
     YAML::Node doc;
     parser.GetNextDocument(doc);

@@ -2,7 +2,7 @@
 
 #include <map>
 #include <sstream>
-#include <mcr/io/IFile.h>
+#include <mcr/io/IReader.h>
 
 namespace mcr {
 
@@ -12,7 +12,7 @@ public:
     Config() {}
     virtual ~Config() {}
 
-    MCR_CORE_EXTERN bool load(io::IFile* file, bool report = true);
+    MCR_CORE_EXTERN bool load(io::IReader* stream, bool report = true);
 
     template <typename T>
     bool query(const std::string& varName, T& varOut, const T& varDefault = T()) const

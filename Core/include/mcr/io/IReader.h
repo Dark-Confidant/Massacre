@@ -1,17 +1,15 @@
 #pragma once
 
-#include <cstddef>
 #include <cstring>
 #include <string>
+#include <mcr/RefCounted.h>
 
 namespace mcr {
 namespace io  {
 
-class IReader
+class IReader: public RefCounted
 {
 public:
-    virtual ~IReader() {}
-
     virtual std::size_t read(void* buffer, std::size_t size) = 0;
 
     template            <typename T>

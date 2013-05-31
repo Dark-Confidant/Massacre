@@ -1,17 +1,15 @@
 #pragma once
 
-#include <cstddef>
 #include <cstring>
 #include <string>
+#include <mcr/RefCounted.h>
 
 namespace mcr {
 namespace io  {
 
-class IWriter
+class IWriter: public RefCounted
 {
 public:
-    virtual ~IWriter() {}
-
     virtual std::size_t write(const void* buffer, std::size_t size) = 0;
 
     template            <typename T>

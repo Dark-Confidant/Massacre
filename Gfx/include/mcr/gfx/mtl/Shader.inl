@@ -10,29 +10,6 @@ inline rcptr<Shader> Shader::create(Type type)
     return new Shader(type);
 }
 
-inline rcptr<Shader> Shader::createFromFile(io::IFile* file)
-{
-    Type type;
-    
-    switch (io::Path::ext(file->filename())[0])
-    {
-    case 'v': type = Vertex;   break;
-    case 'g': type = Geometry; break;
-    case 'f': type = Fragment; break;
-    default: return nullptr;
-    }
-
-    return createFromFile(type, file);
-}
-
-inline rcptr<Shader> Shader::createFromFile(Type type, io::IFile* file)
-{
-    auto result = new Shader(type);
-
-    result->setSourceFromFile(file);
-    return result;
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // Accessors & mutators
@@ -51,17 +28,12 @@ inline void Shader::setPreprocessor(IShaderPreprocessor* pp)
 //////////////////////////////////////////////////////////////////////////
 // Source stuff
 
-inline void Shader::setSourceFromFile(io::IFile* file, bool recompile /*= true*/)
+inline void Shader::setSourceFromStream(io::IReader* stream, bool recompile)
 {
-    auto length = (size_t) file->size();
-    auto contents = new char[length + 1];
+    std::string buffer;
+    stream->readString0(buffer);
 
-    file->read(contents, length);
-    contents[length] = 0;
-
-    setSource(contents, recompile);
-
-    delete [] contents;
+    setSource(buffer.c_str(), recompile);
 }
 
 } // ns mtl

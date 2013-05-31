@@ -11,7 +11,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <boost/foreach.hpp>
 
 namespace mcr {
 namespace io  {
@@ -94,114 +93,149 @@ bool Dir::exists(const char* dirname)
 
 
 //////////////////////////////////////////////////////////////////////////
-// Resource management
+// Root
 
-bool FileSystem::attachResource(const char* path)
+bool FileSystem::setRoot(const char* dir, std::string* oldRootOut)
 {
-    auto neatPath = Path::format(path);
-    return Dir::exists(neatPath.c_str()) && m_paths.insert(neatPath).second;
-}
+    std::string newRoot = dir;
+    std::transform(newRoot.begin(), newRoot.end(), newRoot.begin(), toPathChar);
 
-bool FileSystem::detachResource(const char* path)
-{
-    return m_paths.erase(Path::format(path)) != 0;
+    if (newRoot.back() != '/')
+        newRoot += '/';
+
+    if (!Dir::exists(newRoot.c_str()))
+        return false;
+
+    if (oldRootOut)
+        *oldRootOut = m_root;
+
+    m_root = newRoot;
+    return true;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-// Standard iostream-based file reader
+// Standard iostream-based reader and writer
 
-namespace
+namespace {
+class StdFstreamReader: public IFileReader
 {
-    class StdStreamFile: public IFile
+public:
+    using RefCounted::operator new;
+    using RefCounted::operator delete;
+
+    StdFstreamReader(const char* filename):
+        m_filename(filename),
+        m_stream(filename, std::ios::binary),
+        m_size(0u)
     {
-    public:
-        using RefCounted::operator new;
-        using RefCounted::operator delete;
-
-        StdStreamFile(FileSystem* fs, const char* filename):
-            m_fs(fs),
-            m_filename(filename),
-            m_stream(filename, std::ios::binary),
-            m_size(0u)
+        if (m_stream.good())
         {
-            if (m_stream.good())
-            {
-                m_stream.seekg(0, std::ios::end);
-                m_size = m_stream.tellg();
-                m_stream.seekg(0, std::ios::beg);
-            }
+            m_stream.seekg(0, std::ios::end);
+            m_size = m_stream.tellg();
+            m_stream.seekg(0, std::ios::beg);
         }
+    }
 
-        size_t read(void* buffer, size_t size)
-        {
-            m_stream.read(static_cast<char*>(buffer), size);
-            return (size_t) m_stream.gcount();
-        }
+    std::size_t read(void* buffer, std::size_t size)
+    {
+        m_stream.read(static_cast<char*>(buffer), size);
+        return (std::size_t) m_stream.gcount();
+    }
 
-        uint64 size() const
-        {
-            return m_size;
-        }
+    uint64 size() const
+    {
+        return m_size;
+    }
 
-        void seek(uint64 pos)
-        {
-            m_stream.seekg(pos);
-        }
+    uint64 tell() const
+    {
+        return m_stream.tellg();
+    }
 
-        uint64 tell() const
-        {
-            return m_stream.tellg();
-        }
+    void seek(uint64 pos)
+    {
+        m_stream.seekg(pos);
+    }
 
-        const char* filename() const
-        {
-            return m_filename.c_str();
-        }
+    const char* filename() const
+    {
+        return m_filename.c_str();
+    }
 
-        FileSystem* fs() const
-        {
-            return m_fs;
-        }
+    bool good() const
+    {
+        return m_stream.good();
+    }
 
-    protected:
-        FileSystem* m_fs;
-        std::string m_filename;
-        mutable std::ifstream m_stream;
-        uint64 m_size;
-    };
-}
+protected:
+    std::string m_filename;
+    mutable std::ifstream m_stream;
+    uint64 m_size;
+};
+
+class StdFstreamWriter: public IFileWriter
+{
+public:
+    using RefCounted::operator new;
+    using RefCounted::operator delete;
+
+    StdFstreamWriter(const char* filename):
+        m_filename(filename),
+        m_stream(filename, std::ios::binary) {}
+
+    std::size_t write(const void* buffer, std::size_t size)
+    {
+        m_stream.write(static_cast<const char*>(buffer), size);
+        return m_stream.bad() ? 0u : size;
+    }
+
+    uint64 tell() const
+    {
+        return m_stream.tellp();
+    }
+
+    void seek(uint64 pos)
+    {
+        m_stream.seekp(pos);
+    }
+
+    const char* filename() const
+    {
+        return m_filename.c_str();
+    }
+
+    bool good() const
+    {
+        return m_stream.good();
+    }
+
+protected:
+    std::string m_filename;
+    mutable std::ofstream m_stream;
+};
+} // ns
 
 
 //////////////////////////////////////////////////////////////////////////
 // File search & access
 
-rcptr<IFile> FileSystem::openFile(const char* filename, std::string* pathOut)
+rcptr<IFileReader> FileSystem::openReader(const char* filename)
 {
-    rcptr<StdStreamFile> file = new StdStreamFile(this, filename);
+    rcptr<StdFstreamReader> file = new StdFstreamReader((m_root + filename).c_str());
 
-    if (file->size())
-    {
-        if (pathOut)
-            *pathOut = filename;
+    if (!file->good())
+        return nullptr;
 
-        return file;
-    }
+    return file;
+}
 
-    BOOST_FOREACH (auto& path, m_paths)
-    {
-        auto guess = path + '/' + filename;
+rcptr<IFileWriter> FileSystem::openWriter(const char* filename)
+{
+    rcptr<StdFstreamWriter> file = new StdFstreamWriter((m_root + filename).c_str());
 
-        file = new StdStreamFile(this, guess.c_str());
-
-        if (file->size())
-        {
-            if (pathOut)
-                *pathOut = guess;
-
-            break;
-        }
-    }
+    if (!file->good())
+        return nullptr;
 
     return file;
 }

@@ -4,20 +4,24 @@ project(Massacre)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-scripts/")
 
-if (MSVC)
+set(Compiler ${CMAKE_CXX_COMPILER_ID})
+
+if(MSVC)
     set(CMAKE_CXX_FLAGS "-W3 -EHsc")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
-else (MSVC)
-    set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -O3 -fPIC")
-endif (MSVC)
+elseif(Compiler STREQUAL Clang)
+    set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
+else() # default to gcc-like flags
+    set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -O3")
+endif()
 
-if (WIN32)
+if(WIN32)
     set(CMAKE_INSTALL_PREFIX "$ENV{MASSACRE_ROOT}")
-    if (NOT CMAKE_INSTALL_PREFIX)
+    if(NOT CMAKE_INSTALL_PREFIX)
         set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}")
-    endif (NOT CMAKE_INSTALL_PREFIX)
+    endif()
     message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
-endif (WIN32)
+endif()
 
 add_subdirectory(Core)
 add_subdirectory(Gfx)

@@ -5,16 +5,16 @@
 #include <streambuf>
 #include <vector>
 #include <mcr/NonCopyable.h>
-#include <mcr/io/IFile.h>
+#include <mcr/io/IReader.h>
 
 namespace mcr {
 namespace io  {
 
-class FileStream: public std::streambuf, NonCopyable
+class InputStream: public std::streambuf, NonCopyable
 {
 public:
-    FileStream(IFile* file, size_t bufSize = 1024, size_t putSize = 16):
-        m_file(file),
+    InputStream(IReader* reader, size_t bufSize = 1024, size_t putSize = 16):
+        m_reader(reader),
         m_putSize(std::max<size_t>(putSize, 1)),
         m_buffer(std::max(bufSize, m_putSize) + m_putSize)
     {
@@ -22,7 +22,7 @@ public:
         setg(end, end, end);
     }
 
-protected:
+private:
     int_type underflow()
     {
         if (gptr() >= egptr())
@@ -35,8 +35,7 @@ protected:
                 start += m_putSize;
             }
 
-            auto bytes = m_file->read(start, m_buffer.size() - (start - base));
-
+            auto bytes = m_reader->read(start, m_buffer.size() - (start - base));
             if (!bytes)
                 return traits_type::eof();
 
@@ -46,9 +45,9 @@ protected:
         return traits_type::to_int_type(*gptr());
     }
 
-    const rcptr<IFile>  m_file;
-    std::size_t         m_putSize;
-    std::vector<char>   m_buffer;
+    const rcptr<IReader>    m_reader;
+    std::size_t             m_putSize;
+    std::vector<char>       m_buffer;
 };
 
 } // ns io

@@ -2,37 +2,21 @@
 #include <mcr/gfx/mtl/Texture.h>
 
 #include <algorithm>
+#include <mcr/io/FileSystem.h>
 #include "mcr/gfx/GLState.h"
 
 namespace mcr {
 namespace gfx {
 namespace mtl {
 
-rcptr<Texture> Texture::createFromFile(io::IFile* file, rcptr<Image>* imgOut)
+struct TexHeaderTMP
 {
-    auto result = new Texture;
+    uint magic;
+    int  width, height;
+    uint fmt, size;
+};
 
-    result->m_filename = file->filename();
-
-    auto slash = result->m_filename.find_last_of("/\\");
-    if (slash != std::string::npos)
-        result->m_filename = result->m_filename.substr(slash + 1);
-
-    auto img = Image::createFromFile(file);
-    if (imgOut)
-        *imgOut = img;
-
-    result->upload(img);
-
-    return result;
-}
-
-rcptr<Texture> Texture::create()
-{
-    return new Texture;
-}
-
-Texture::Texture(): m_uploaded(false)
+Texture::Texture(): m_hasAlpha(false)
 {
     glGenTextures(1, &m_handle);
     g_glState->bindTexture(m_handle);
@@ -49,46 +33,82 @@ Texture::~Texture()
     glDeleteTextures(1, &m_handle);
 }
 
-void Texture::upload(Image* img)
+bool Texture::load(io::IReader* stream)
 {
-    m_filename   = img->filename();
-    m_format     = img->format();
-    m_size       = img->size();
+    TexHeaderTMP header;
+    if (!stream || stream->read(header) != sizeof(header))
+        return false;
 
-    g_glState->bindTexture(m_handle);
+    auto buffer = new byte[header.size];
 
-    glTexImage2D(GL_TEXTURE_2D, 0, m_format.toGLEnum(),
-        m_size.x(), m_size.y(), 0, m_format.toGLEnum(),
-        GL_UNSIGNED_BYTE, img->data());
+    auto success = stream->read(buffer, header.size) == header.size;
+    if (success)
+    {
+        m_size.set(header.width, header.height);
 
-    glGenerateMipmap(GL_TEXTURE_2D);
+        switch (header.fmt)
+        {
+        case GL_COMPRESSED_RGBA:
+        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
+        case GL_COMPRESSED_RGBA_BPTC_UNORM:
+            m_hasAlpha = true;
+            break;
+        default:
+            m_hasAlpha = false;
+        }
 
-    m_uploaded = true;
+        g_glState->bindTexture(m_handle);
+
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0,
+            header.fmt,
+            header.width, header.height, 0,
+            header.size, buffer);
+
+        /*glTexImage2D(GL_TEXTURE_2D, 0,
+            m_hasAlpha ? GL_COMPRESSED_RGBA : GL_COMPRESSED_RGB,
+            m_size.x(), m_size.y(), 0, hasAlpha ? GL_RGBA : GL_RGB,
+            GL_UNSIGNED_BYTE, buffer);*/
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    delete [] buffer;
+
+    return success;
 }
 
-void Texture::clear()
+bool Texture::save(io::IWriter* writer) const
 {
+    if (!writer)
+        return false;
+
     g_glState->bindTexture(m_handle);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, m_format.toGLEnum(),
-        0, 0, 0, m_format.toGLEnum(),
-        GL_UNSIGNED_BYTE, nullptr);
+    GLint fmt, bufSize;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &fmt);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &bufSize);
 
-    m_uploaded = false;
-}
+    TexHeaderTMP header =
+    {
+        0x20584554, // "TEX "
+        m_size.x(), m_size.y(),
+        (uint) fmt,
+        (uint) bufSize
+    };
 
-rcptr<Image> Texture::download()
-{
-    g_glState->bindTexture(m_handle);
+    auto buffer = new byte[bufSize];
+    glGetCompressedTexImage(GL_TEXTURE_2D, 0, buffer);
 
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &m_size[0]);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &m_size[1]);
+    std::size_t written = 0;
 
-    auto img = Image::create(m_size, m_format);
+    written += writer->write(header);
+    written += writer->write(buffer, (std::size_t) bufSize);
 
-    glGetTexImage(GL_TEXTURE_2D, 0, m_format.toGLEnum(), GL_UNSIGNED_BYTE, img->data());
+    delete [] buffer;
 
-    return img;
+    return written == sizeof(header) + (std::size_t) bufSize;
 }
 
 } // ns mtl
