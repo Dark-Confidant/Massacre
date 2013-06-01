@@ -119,10 +119,17 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
     {
         auto& attrib = mesh.vertexFormat.attrib(i);
 
-        (attrib.length ? glEnableVertexAttribArray : glDisableVertexAttribArray)(i);
-        glVertexAttribPointer(i,
-            attrib.length, g_attribTypeTable[attrib.type], GL_FALSE,
-            mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*>(attrib.offset));
+        if (attrib.length)
+        {
+            glEnableVertexAttribArray(i);
+            glVertexAttribPointer(i,
+                attrib.length, g_attribTypeTable[attrib.type], GL_FALSE,
+                mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*>(attrib.offset));
+        }
+        else
+        {
+            glDisableVertexAttribArray(i);
+        }
     }
 
     glDrawElementsBaseVertex(
