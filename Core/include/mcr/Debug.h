@@ -7,9 +7,14 @@
 namespace mcr {
 
 MCR_CORE_EXTERN extern bool g_enableLoggingToFile;
-
 MCR_CORE_EXTERN void vdebug(const char* fmt, va_list args);
-MCR_CORE_EXTERN void debug(const char* fmt, ...);
+
+inline void debug(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    vdebug(fmt, args);
+}
 
 class DebugStream
 {
