@@ -34,13 +34,37 @@ template <typename C>
 inline std::size_t IReader::readString(std::basic_string<C>& str, C term)
 {
     std::size_t bytes, total = 0;
+    str.clear();
 
-    for (C chr; bytes = read(chr), bytes && chr != term;)
+    for (C chr; bytes = read(chr), bytes;)
     {
         total += bytes;
+
+        if (chr == term)
+            break;
+
         str += chr;
     }
 
+    return total;
+}
+
+template <typename C>
+inline std::size_t IReader::readString(std::basic_string<C>& str, const C* terms)
+{
+    std::size_t bytes, total = 0;
+    str.clear();
+
+    for (C chr; bytes = read(chr), bytes;)
+    {
+        total += bytes;
+
+        for (auto it = terms; *it; ++it)
+            if (chr == *it)
+                return total;
+
+        str += chr;
+    }
     return total;
 }
 

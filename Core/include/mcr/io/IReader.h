@@ -28,6 +28,9 @@ public:
     std::size_t         readString(std::basic_string<C>& str, C term);
 
     template            <typename C>
+    std::size_t         readString(std::basic_string<C>& str, const C* terms);
+
+    template            <typename C>
     std::size_t         readString0(std::basic_string<C>& str);
 };
 
