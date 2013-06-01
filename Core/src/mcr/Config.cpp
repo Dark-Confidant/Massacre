@@ -2,6 +2,7 @@
 
 #include <cctype>
 #include <cstdio>
+#include <algorithm>
 #include <mcr/Debug.h>
 
 namespace mcr {
@@ -16,24 +17,17 @@ bool Config::load(io::IReader* stream, bool report)
         return false;
     }
 
-    std::string buffer;
-    stream->readString0(buffer);
-
-    for (auto it = buffer.c_str(), end = it + buffer.size(); it != end;)
+    for (std::string line; stream->readString(line, "\r\n");)
     {
-        char key[32], value[32];
-        int len = 0;
+        if (std::all_of(line.begin(), line.end(), ::isspace))
+            continue;
 
-        if (std::sscanf(it, "%[^=: \xA0] %*[=:] %[^\n\r]%n", key, value, &len) == 2)
-            it += len;
-        else
+        char key[128], value[128];
+        if (std::sscanf(line.c_str(), "%127[^=: \xA0] %*[=:] %127s", key, value) != 2)
         {
             if (report)
-            {
-                char line[128];
-                std::sscanf(it, "%[^\n\r]", line);
-                debug("Config syntax error: %s", line);
-            }
+                debug("Config syntax error: %s", line.c_str());
+
             return false;
         }
 
@@ -41,9 +35,6 @@ bool Config::load(io::IReader* stream, bool report)
 
         if (report)
             debug("var %s = %s", key, value);
-
-        while (std::isspace(*it))
-            ++it;
     }
 
     return true;
