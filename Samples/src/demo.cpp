@@ -1,11 +1,3 @@
-#include <mcr/Platform.h>
-
-#ifdef MCR_PLATFORM_WINDOWS
-#   define WIN32_LEAN_AND_MEAN
-#   define NOMINMAX
-#   include <Windows.h>
-#endif
-
 #define GLFW_NO_GLU
 #include <GL/glfw.h>
 
@@ -313,14 +305,3 @@ int main()
     Demo app;
     app.run();
 }
-
-#ifdef MCR_PLATFORM_WINDOWS
-#   define WIN32_LEAN_AND_MEAN
-#   include <Windows.h>
-
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
-{
-    return main();
-}
-
-#endif
