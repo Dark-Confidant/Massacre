@@ -124,12 +124,11 @@ public:
 
         m_config.load(m_mtlm.fs()->openReader("mainconf.yaml"));
 
+        m_config.query("velocity",   m_velocity,  200.f);
         m_config.query("turn_speed", m_turnSpeed, 60.f);
-        m_config.query("velocity",   m_velocity,  100.f);
-        m_config.query("reach",      m_reach,     780.f);
 
 
-        m_camera.setZRange(vec2(1.f, 3000.f));
+        m_camera.setZRange(vec2(10.f, 3000.f));
         m_camera.update();
         m_pos.setY(20);
 
@@ -200,40 +199,27 @@ public:
 
     void handleKeys()
     {
-        // you better look away
+        auto rotationControl = 0.f + glfwGetKey('A') - glfwGetKey('D');
 
-        auto mv = math::normalize(vec3(
+        auto movementControl = math::normalize(vec3(
                 0.f + glfwGetKey('E') - glfwGetKey('Q'), 0,
                 0.f + glfwGetKey('S') - glfwGetKey('W')));
 
-        auto yAngle = math::deg2rad * m_rot.y();
-        auto ySine = sin(yAngle), yCosine = cos(yAngle);
-
-        auto dir = mv.x() * vec3(yCosine, 0, -ySine) + mv.z() * vec3(ySine, 0, yCosine);
-        auto velocity = m_velocity;
+        movementControl *= math::buildTransform(vec3(), m_rot);
 
 
-        if (!math::equals(m_reach, 0.f))
-        {
-            auto bias     = math::normalize(vec2(m_pos.x(), m_pos.z()));
-            auto affinity = .7071068f * math::length(bias + vec2(dir.x(), dir.z()));
-            auto tensity  = math::length(vec2(m_pos.x(), m_pos.z())) / m_reach;
+        auto dtime = (float) m_timer.dseconds();
 
-            velocity *= std::max(0.f, 1.f - affinity * tensity);
-        }
-
-        m_pos += (float) m_timer.dseconds() * velocity * dir;
-
-        auto turnStep = (float) m_timer.dseconds() * -m_turnSpeed;
-        m_rot += vec3(0, turnStep * (glfwGetKey('D') - glfwGetKey('A')), 0);
+        m_pos += dtime * m_velocity * movementControl;
+        m_rot += vec3(0, dtime * m_turnSpeed * rotationControl, 0);
 
 
         static const vec3 camOffset(0, 35, 0);
 
-        auto tf = math::buildTransform(vec3(), m_rot);
+        auto rotation = math::buildTransform(vec3(), m_rot);
 
-        m_camera.setViewMatrix(tf, true);
-        m_camera.setPosition(m_pos + camOffset * tf);
+        m_camera.setViewMatrix(rotation, true);
+        m_camera.setPosition(m_pos + camOffset * rotation);
     }
 
     // [Esc]
@@ -259,9 +245,8 @@ private:
     geom::MeshManager       m_meshm;
     Scene                   m_scene;
 
-    vec3    m_pos, m_rot;
-    uint    m_moveFlags;
-    float   m_turnSpeed, m_velocity, m_reach;
+    vec3                    m_pos, m_rot;
+    float                   m_velocity, m_turnSpeed;
 };
 
 ivec2 Demo::s_windowSize;
