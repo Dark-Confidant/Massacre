@@ -1,9 +1,8 @@
 #include <mcr/Config.h>
 
-#include <cctype>
 #include <cstdio>
-#include <algorithm>
 #include <mcr/Debug.h>
+#include <mcr/io/LineParser.h>
 
 namespace mcr {
 
@@ -17,16 +16,13 @@ bool Config::load(io::IReader* stream, bool report)
         return false;
     }
 
-    for (std::string line; stream->readString(line, "\r\n");)
+    for (io::LineParser parser(stream); parser.readLine();)
     {
-        if (std::all_of(line.begin(), line.end(), ::isspace))
-            continue;
-
         char key[128], value[128];
-        if (std::sscanf(line.c_str(), "%127[^=: \xA0] %*[=:] %127s", key, value) != 2)
+        if (std::sscanf(parser.line().c_str(), "%127[^=: \xA0\t] %*1[=:] %127s", key, value) != 2)
         {
             if (report)
-                debug("Config syntax error: %s", line.c_str());
+                debug("Config syntax error: %s", parser.line().c_str());
 
             return false;
         }
