@@ -3,12 +3,10 @@ cmake_minimum_required(VERSION 2.6)
 find_package(Boost REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(YamlCpp REQUIRED)
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
     ${GLEW_INCLUDE_PATH}
-    ${YAMLCPP_INCLUDE_DIR}
     "${PROJECT_SOURCE_DIR}/Core/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/extras/SimpleMesh"
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
@@ -17,7 +15,6 @@ include_directories(
 link_libraries(
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARY}
-    ${YAMLCPP_LIBRARY}
     massacre-core)
 
 file(GLOB_RECURSE Sources RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp)

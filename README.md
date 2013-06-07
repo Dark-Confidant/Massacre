@@ -29,5 +29,5 @@ make
 Dependencies
 ------------
 
-- Gfx: Boost 1.46+, GLEW 1.6+, yaml-cpp 0.3.0
+- Gfx: Boost 1.46+, GLEW 1.6+
 - Samples: GLFW 2.7.2+
