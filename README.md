@@ -3,27 +3,43 @@ Massacre Proto
 
 [![Build Status](https://travis-ci.org/Dark-Confidant/Massacre.png)](https://travis-ci.org/Dark-Confidant/Massacre)
 
-Crossplatform despair simulator
+Cross-platform despair simulator.
 
 Installation
 ------------
 
-We now support installation from gamerlay in **Gentoo** linux.
+We now support installation from gamerlay on **Gentoo** linux:
 
 ```bash
 layman -a gamerlay
 emerge games-engines/massacre games-util/massacre-data
 ```
 
-Building
---------
+Building on Linux
+-----------------
 
-Linux:
+Install the [dependencies](#dependencies), then run:
 
 ```bash
 mkdir build && cd build
 cmake ..
 make
+```
+
+Building on Windows
+-------------------
+
+Install [CMake](http://www.cmake.org/cmake/resources/software.html).
+Get [Boost](http://boost.org/users/download/),
+    [GLEW](http://glew.sourceforge.net/),
+    [GLFW](http://glfw.org/download.html).
+Run *Visual Studio Command Prompt (2010)*:
+
+```cmd
+mkdir build && cd build
+cmake -DCMAKE_PREFIX_PATH="<path to boost>;<path to glew>;<path to glfw>" ..
+msbuild /p:Configuration=Release /v:m Massacre.sln
+msbuild /p:Configuration=Release INSTALL.vcxproj
 ```
 
 Dependencies
