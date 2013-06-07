@@ -3,18 +3,10 @@
 
 #include <istream>
 #include <boost/algorithm/string/case_conv.hpp>
-
-#ifdef _MSC_VER
-#   pragma warning(push)
-#   pragma warning(disable: 4146)
-#   include <yaml-cpp/yaml.h>
-#   pragma warning(pop)
-#else
-#   include <yaml-cpp/yaml.h>
-#endif
-
-#include <mcr/io/InputStream.h>
+#include <mcr/io/LineParser.h>
 #include "ShaderPreprocessor.h"
+
+// TODO: rethink, rewrite
 
 namespace mcr {
 namespace gfx {
@@ -39,6 +31,8 @@ Manager::ParamBufferData::ParamBufferData():
     glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, (GLint*) &numBindings);
 }
 
+Manager::ParamBufferData::~ParamBufferData() {}
+
 Manager::TextureData::TextureData():
     nextFreeUnit(0)
 {
@@ -47,6 +41,8 @@ Manager::TextureData::TextureData():
 
     units.resize((std::size_t) numUnits);
 }
+
+Manager::TextureData::~TextureData() {}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -138,117 +134,127 @@ void Manager::removeUnused()
 
 void Manager::_parseMaterial(Material* material, io::IReader* stream)
 {
-    static const std::pair<std::string, uint> literalArray[] =
+    static std::map<std::string, bool RenderState::*>   stateCommands;
+    static std::map<std::string, DepthFn>               depthFnLiterals;
+    static std::map<std::string, BlendFn::Factor>       blendFnLiterals;
+
+    if (stateCommands.empty())
     {
-        std::make_pair("never",    DepthFn::Never),
-        std::make_pair("less",     DepthFn::Less),
-        std::make_pair("equal",    DepthFn::Equal),
-        std::make_pair("lequal",   DepthFn::LEqual),
-        std::make_pair("greater",  DepthFn::Greater),
-        std::make_pair("notequal", DepthFn::NotEqual),
-        std::make_pair("gequal",   DepthFn::GEqual),
-        std::make_pair("always",   DepthFn::Always),
+        stateCommands["depthtest"]     = &RenderState::depthTest;
+        stateCommands["depthwrite"]    = &RenderState::depthWrite;
+        stateCommands["alphatest"]     = &RenderState::alphaTest;
+        stateCommands["blend"]         = &RenderState::blend;
+        stateCommands["cullface"]      = &RenderState::cullFace;
+        stateCommands["polygonoffset"] = &RenderState::polygonOffset;
+    }
 
-        std::make_pair("one",               BlendFn::One),
-        std::make_pair("zero",              BlendFn::Zero),
-        std::make_pair("srccolor",          BlendFn::SrcColor),
-        std::make_pair("oneminussrccolor",  BlendFn::OneMinusSrcColor),
-        std::make_pair("srcalpha",          BlendFn::SrcAlpha),
-        std::make_pair("oneminussrcalpha",  BlendFn::OneMinusSrcAlpha),
-        std::make_pair("dstalpha",          BlendFn::DstAlpha),
-        std::make_pair("oneminusdstalpha",  BlendFn::OneMinusDstAlpha),
-        std::make_pair("dstcolor",          BlendFn::DstColor),
-        std::make_pair("oneminusdstcolor",  BlendFn::OneMinusDstColor),
-        std::make_pair("srcalphasaturate",  BlendFn::SrcAlphaSaturate),
-    };
-
-    static const std::map<std::string, int> literals(
-        literalArray, literalArray + sizeof(literalArray) / sizeof(literalArray[0]));
-
-    io::InputStream istream(stream);
-    std::istream in(&istream);
-    YAML::Parser parser(in);
-
-    YAML::Node doc;
-    parser.GetNextDocument(doc);
-
-    if (doc.Type() == YAML::NodeType::Map)
+    if (depthFnLiterals.empty())
     {
-        RenderState rs;
+        depthFnLiterals["never"]    = DepthFn::Never;
+        depthFnLiterals["less"]     = DepthFn::Less;
+        depthFnLiterals["equal"]    = DepthFn::Equal;
+        depthFnLiterals["lequal"]   = DepthFn::LEqual;
+        depthFnLiterals["greater"]  = DepthFn::Greater;
+        depthFnLiterals["notequal"] = DepthFn::NotEqual;
+        depthFnLiterals["gequal"]   = DepthFn::GEqual;
+        depthFnLiterals["always"]   = DepthFn::Always;
+    }
 
-        std::string key;
-        for (auto it = doc.begin(); it != doc.end(); ++it)
+    if (blendFnLiterals.empty())
+    {
+        blendFnLiterals["one"]               = BlendFn::One;
+        blendFnLiterals["zero"]              = BlendFn::Zero;
+        blendFnLiterals["srccolor"]          = BlendFn::SrcColor;
+        blendFnLiterals["oneminussrccolor"]  = BlendFn::OneMinusSrcColor;
+        blendFnLiterals["srcalpha"]          = BlendFn::SrcAlpha;
+        blendFnLiterals["oneminussrcalpha"]  = BlendFn::OneMinusSrcAlpha;
+        blendFnLiterals["dstalpha"]          = BlendFn::DstAlpha;
+        blendFnLiterals["oneminusdstalpha"]  = BlendFn::OneMinusDstAlpha;
+        blendFnLiterals["dstcolor"]          = BlendFn::DstColor;
+        blendFnLiterals["oneminusdstcolor"]  = BlendFn::OneMinusDstColor;
+        blendFnLiterals["srcalphasaturate"]  = BlendFn::SrcAlphaSaturate;
+    }
+
+    enum {States, Textures, Shaders} mode = States;
+
+    RenderState renderState;
+    ShaderList shaders;
+    byte iTexture = 0;
+
+    char key[64] = {}, value[256] = {};
+    int tokens = 0;
+
+    for (io::LineParser parser(stream); parser.readLine();)
+    {
+        if (!parser.indent())
         {
-            it.first() >> key;
-            boost::to_lower(key);
-
-            if      (key == "depthtest")     it.second() >> rs.depthTest;
-            else if (key == "depthwrite")    it.second() >> rs.depthWrite;
-            else if (key == "alphatest")     it.second() >> rs.alphaTest;
-            else if (key == "blend")         it.second() >> rs.blend;
-            else if (key == "cullface")      it.second() >> rs.cullFace;
-            else if (key == "polygonoffset") it.second() >> rs.polygonOffset;
-            else if (key == "depthfunc")
-            {
-                std::string fn;
-
-                it.second() >> fn;
-                boost::to_lower(fn);
-
-                auto lit = literals.find(fn);
-                if (lit != literals.end())
-                    rs.depthFunc = DepthFn(lit->second);
-            }
-            else if (key == "blendfunc")
-            {
-                std::string fn[2];
-
-                it.second()[0] >> fn[0];
-                it.second()[1] >> fn[1];
-
-                boost::to_lower(fn[0]);
-                boost::to_lower(fn[1]);
-
-                auto lit = literals.find(fn[0]);
-                if (lit != literals.end())
-                    rs.blendFunc.srcFactor = BlendFn::Factor(lit->second);
-
-                lit = literals.find(fn[1]);
-                if (lit != literals.end())
-                    rs.blendFunc.dstFactor = BlendFn::Factor(lit->second);
-            }
-            else if (key == "passhint")
-            {
-                int hint;
-                it.second() >> hint;
-                material->setPassHint(hint);
-            }
-            else if (key == "shaders")
-            {
-                gfx::mtl::ShaderList shaders;
-
-                for (auto nodeIt = it.second().begin(); nodeIt != it.second().end(); ++nodeIt)
-                    shaders.add(getShader(nodeIt->to<std::string>().c_str()));
-
+            if (mode == Shaders)
                 material->setShaders(shaders);
-            }
-            else if (key == "textures")
-            {
-                auto& textures = it.second();
 
-                assert(textures.size() < 256);
-
-                std::string tex;
-                for (byte i = 0; i < textures.size(); ++i)
-                {
-                    textures[size_t(i)] >> tex;
-                    material->setTexture(i, getTexture(tex.c_str()));
-                }
-            }
+            mode = States;
         }
 
-        material->setRenderState(rs);
+        switch (mode)
+        {
+        case States:
+            tokens = std::sscanf(parser.line().c_str(), "%63[^:] : %255s", key, value);
+            if (tokens == 2)
+            {
+                boost::to_lower(key);
+                boost::to_lower(value);
+
+                auto stateCmdIt = stateCommands.find(key);
+                if (stateCmdIt != stateCommands.end())
+                    renderState.*stateCmdIt->second = strcmp(value, "true") == 0;
+
+                else if (strcmp(key, "depthfunc") == 0)
+                {
+                    auto depthFnIt = depthFnLiterals.find(value);
+                    if (depthFnIt != depthFnLiterals.end())
+                        renderState.depthFunc = depthFnIt->second;
+                }
+                else if (strcmp(key, "blendfunc") == 0)
+                {
+                    char srcFactor[32], dstFactor[32];
+                    if (std::sscanf("[ %31[^ 0xa0\t,] , %31[^ 0xa0\t\\] ]", srcFactor, dstFactor) == 2)
+                    {
+                        auto blendFnIt = blendFnLiterals.find(srcFactor);
+                        if (blendFnIt != blendFnLiterals.end())
+                            renderState.blendFunc.srcFactor = blendFnIt->second;
+
+                        blendFnIt = blendFnLiterals.find(dstFactor);
+                        if (blendFnIt != blendFnLiterals.end())
+                            renderState.blendFunc.dstFactor = blendFnIt->second;
+                    }
+                }
+                else if (strcmp(key, "passhint") == 0)
+                    material->setPassHint(atoi(value));
+            }
+            else if (tokens == 1)
+            {
+                boost::to_lower(key);
+
+                if (strcmp(key, "shaders") == 0)
+                    mode = Shaders;
+
+                else if (strcmp(key, "textures") == 0)
+                    mode = Textures;
+            }
+            break;
+
+        case Shaders:
+            if (std::sscanf(parser.line().c_str(), " - %255s", value) == 1)
+                shaders.add(getShader(value));
+            break;
+
+        case Textures:
+            if (std::sscanf(parser.line().c_str(), " - %255s", value) == 1)
+                material->setTexture(iTexture++, getTexture(value));
+            break;
+        }
     }
+
+    material->setRenderState(renderState);
 }
 
 } // ns mtl

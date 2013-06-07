@@ -19,25 +19,18 @@ public:
     ~Manager(); // inherit not
 
 
-    // Parameter buffer management
+    uint                        requestParamBufferBinding();
 
-    uint requestParamBufferBinding();
+    bool                        addParamBuffer(mtl::ParamBuffer* buffer);
+    bool                        addParamBuffer(const std::string& name, mtl::ParamBuffer* buffer);
 
-    bool addParamBuffer(mtl::ParamBuffer* buffer);
-    bool addParamBuffer(const std::string& name, mtl::ParamBuffer* buffer);
+    void                        removeParamBuffer(mtl::ParamBuffer* buffer);
+    void                        removeParamBuffer(const std::string& name);
 
-    void removeParamBuffer(mtl::ParamBuffer* buffer);
-    void removeParamBuffer(const std::string& name);
+    mtl::ParamBuffer*           paramBuffer(const std::string& name) const;
 
-    mtl::ParamBuffer* paramBuffer(const std::string& name) const;
+    uint                        requestTexUnit();
 
-
-    // Texture units management
-
-    uint requestTexUnit();
-
-
-    // Resource management
 
     MCR_GFX_EXTERN Texture*     getTexture(const std::string& filename);
     MCR_GFX_EXTERN Shader*      getShader(const std::string& filename);
@@ -75,6 +68,7 @@ private:
         std::size_t nextFreeUnit;
 
         MCR_GFX_EXTERN TextureData();
+        MCR_GFX_EXTERN ~TextureData();
     }
     m_tex;
 
@@ -84,6 +78,7 @@ private:
         uint numBindings, nextFreeBinding;
 
         MCR_GFX_EXTERN ParamBufferData();
+        MCR_GFX_EXTERN ~ParamBufferData();
     }
     m_pb;
 
