@@ -24,7 +24,7 @@ add_library(massacre-gfx SHARED ${Sources})
 set_target_properties(massacre-gfx PROPERTIES DEBUG_POSTFIX d)
 
 if(MSVC)
-    set_target_properties(massacre-gfx PROPERTIES LINK_FLAGS_RELEASE /NODEFAULTLIB:libcmt)
+    set_target_properties(massacre-gfx PROPERTIES LINK_FLAGS /NODEFAULTLIB:libcmt)
     set_source_files_properties(${Sources} PROPERTIES COMPILE_FLAGS -YuUniverse.h)
     set_source_files_properties(src/Universe.cpp PROPERTIES COMPILE_FLAGS -YcUniverse.h)
 else()

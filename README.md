@@ -29,26 +29,31 @@ make
 Building on Windows
 -------------------
 
-Install [CMake](http://www.cmake.org/cmake/resources/software.html).
-Get [Boost](http://boost.org/users/download/),
-    [GLEW](http://glew.sourceforge.net/),
-    [GLFW](http://glfw.org/download.html).
-Run:
+#### Prerequisites
+
+* [CMake](http://www.cmake.org/cmake/resources/software.html);
+* [Boost](http://boost.org/users/download/);
+* [GLEW](http://glew.sourceforge.net/);
+* [GLFW](http://glfw.org/download.html), if you want samples.
+
+
+#### The Easy Way
+
+1. Extract prerequisites to `./extras/`.
+2. Configure and Generate via CMake GUI.
+3. Build `Massacre.sln` with Visual Studio 2010 or later.
+4. Build the `INSTALL` project inside the solution.
+
+#### The Right Way
+
+Run *Visual Studio Command Prompt (2010)*:
 
 ```cmd
 mkdir build && cd build
 cmake -DCMAKE_PREFIX_PATH="<path to boost>;<path to glew>;<path to glfw>" ..
-```
-
-Then you can either run *Visual Studio Command Prompt (2010)*:
-
-```cmd
 msbuild /v:m Massacre.sln
 msbuild INSTALL.vcxproj
 ```
-
-or simply open Massacre.sln in *Visual Studio 2010* or later and build everything,  
-then build INSTALL manually in order that the outputs are placed nicely.
 
 Dependencies
 ------------

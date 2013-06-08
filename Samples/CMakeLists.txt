@@ -20,7 +20,8 @@ else()
     if(MSVC)
         set_target_properties(
             massacre-demo
-            PROPERTIES LINK_FLAGS_DEBUG /NODEFAULTLIB:msvcrt)
+            PROPERTIES LINK_FLAGS_DEBUG /NODEFAULTLIB:msvcrt
+                       DEBUG_POSTFIX d)
     endif()
 
     install(TARGETS massacre-demo DESTINATION bin)

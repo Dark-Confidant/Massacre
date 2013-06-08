@@ -11,12 +11,9 @@ find_path(GLEW_INCLUDE_DIRS GL/glew.h)
 
 if(WIN32)
     find_library(GLEW_LIBRARY glew32s)
-    find_library(GLEW_LIBRARY_DEBUG glew32sd)
+    find_library(GLEW_LIBRARY_DEBUG NAMES glew32sd glew32s)
 else()
     find_library(GLEW_LIBRARY NAMES GLEW glew)
-endif()
-
-if(NOT GLEW_LIBRARY_DEBUG)
     set(GLEW_LIBRARY_DEBUG ${GLEW_LIBRARY})
 endif()
 
