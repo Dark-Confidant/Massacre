@@ -33,14 +33,22 @@ Install [CMake](http://www.cmake.org/cmake/resources/software.html).
 Get [Boost](http://boost.org/users/download/),
     [GLEW](http://glew.sourceforge.net/),
     [GLFW](http://glfw.org/download.html).
-Run *Visual Studio Command Prompt (2010)*:
+Run:
 
 ```cmd
 mkdir build && cd build
 cmake -DCMAKE_PREFIX_PATH="<path to boost>;<path to glew>;<path to glfw>" ..
-msbuild /p:Configuration=Release /v:m Massacre.sln
-msbuild /p:Configuration=Release INSTALL.vcxproj
 ```
+
+Then you can either run *Visual Studio Command Prompt (2010)*:
+
+```cmd
+msbuild /v:m Massacre.sln
+msbuild INSTALL.vcxproj
+```
+
+or simply open Massacre.sln in *Visual Studio 2010* or later and build everything,  
+then build INSTALL manually in order that the outputs are placed nicely.
 
 Dependencies
 ------------

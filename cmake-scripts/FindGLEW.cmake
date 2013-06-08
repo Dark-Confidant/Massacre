@@ -3,45 +3,32 @@
 # Once done this will define
 #
 # GLEW_FOUND
-# GLEW_INCLUDE_PATH
-# GLEW_LIBRARY
+# GLEW_INCLUDE_DIRS
+# GLEW_LIBRARIES
 # 
 
-IF (WIN32)
-	FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
-		$ENV{PROGRAMFILES}/GLEW/include
-		${PROJECT_SOURCE_DIR}/src/nvgl/glew/include
-		DOC "The directory where GL/glew.h resides")
-	FIND_LIBRARY( GLEW_LIBRARY
-		NAMES glew32s glew32 glew GLEW
-		PATHS
-		$ENV{PROGRAMFILES}/GLEW/lib
-		${PROJECT_SOURCE_DIR}/src/nvgl/glew/bin
-		${PROJECT_SOURCE_DIR}/src/nvgl/glew/lib
-		DOC "The GLEW library")
-ELSE (WIN32)
-	FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
-		/usr/include
-		/usr/local/include
-		/sw/include
-		/opt/local/include
-		DOC "The directory where GL/glew.h resides")
-	FIND_LIBRARY( GLEW_LIBRARY
-		NAMES GLEW glew
-		PATHS
-		/usr/lib64
-		/usr/lib
-		/usr/local/lib64
-		/usr/local/lib
-		/sw/lib
-		/opt/local/lib
-		DOC "The GLEW library")
-ENDIF (WIN32)
+find_path(GLEW_INCLUDE_DIRS GL/glew.h)
 
-IF (GLEW_INCLUDE_PATH)
-	SET( GLEW_FOUND 1 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
-ELSE (GLEW_INCLUDE_PATH)
-	SET( GLEW_FOUND 0 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
-ENDIF (GLEW_INCLUDE_PATH)
+if(WIN32)
+    find_library(GLEW_LIBRARY glew32s)
+    find_library(GLEW_LIBRARY_DEBUG glew32sd)
+else()
+    find_library(GLEW_LIBRARY NAMES GLEW glew)
+endif()
 
-MARK_AS_ADVANCED( GLEW_FOUND )
+if(NOT GLEW_LIBRARY_DEBUG)
+    set(GLEW_LIBRARY_DEBUG ${GLEW_LIBRARY})
+endif()
+
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(
+    GLEW DEFAULT_MSG
+    GLEW_INCLUDE_DIRS GLEW_LIBRARY)
+
+if(GLEW_FOUND)
+    set(GLEW_LIBRARIES
+        optimized ${GLEW_LIBRARY}
+        debug ${GLEW_LIBRARY_DEBUG})
+endif()
+
+mark_as_advanced(GLEW_INCLUDE_DIRS GLEW_LIBRARIES GLEW_LIBRARY GLEW_LIBRARY_DEBUG)

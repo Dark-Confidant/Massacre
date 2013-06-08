@@ -20,7 +20,7 @@ if(WIN32)
     if(NOT CMAKE_INSTALL_PREFIX)
         set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}")
     endif()
-    message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 endif()
 
 add_subdirectory(Core)

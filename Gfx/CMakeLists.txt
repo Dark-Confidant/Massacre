@@ -6,7 +6,7 @@ find_package(GLEW REQUIRED)
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
-    ${GLEW_INCLUDE_PATH}
+    ${GLEW_INCLUDE_DIRS}
     "${PROJECT_SOURCE_DIR}/Core/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/extras/SimpleMesh"
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
@@ -14,7 +14,7 @@ include_directories(
 
 link_libraries(
     ${OPENGL_LIBRARIES}
-    ${GLEW_LIBRARY}
+    ${GLEW_LIBRARIES}
     massacre-core)
 
 file(GLOB_RECURSE Sources RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp)
@@ -24,6 +24,7 @@ add_library(massacre-gfx SHARED ${Sources})
 set_target_properties(massacre-gfx PROPERTIES DEBUG_POSTFIX d)
 
 if(MSVC)
+    set_target_properties(massacre-gfx PROPERTIES LINK_FLAGS_RELEASE /NODEFAULTLIB:libcmt)
     set_source_files_properties(${Sources} PROPERTIES COMPILE_FLAGS -YuUniverse.h)
     set_source_files_properties(src/Universe.cpp PROPERTIES COMPILE_FLAGS -YcUniverse.h)
 else()
