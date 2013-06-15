@@ -1,7 +1,7 @@
 #include "Universe.h"
 #include "GLState.h"
 
-#include <mcr/Debug.h>
+#include <mcr/Log.h>
 
 namespace mcr {
 namespace gfx {
@@ -30,16 +30,23 @@ static void GLAPIENTRY onGLDebug(
     },
     *const s_severityLiterals[] = { "High", "Middle", "Low" };
 
+    static const Log::Verbosity s_logLevelTable[] =
+    {
+        Log::Errors, Log::Warnings, Log::Warnings,
+        Log::Info, Log::Debug, Log::Debug
+    };
+
     source   -= GL_DEBUG_SOURCE_API_ARB;
     type     -= GL_DEBUG_TYPE_ERROR_ARB;
     severity -= GL_DEBUG_SEVERITY_HIGH_ARB;
 
-    debug("[GL %s] [%s - %s severity] [%#010x]:",
+    g_log->print(
+        type     < arrsize(s_logLevelTable)    ? s_logLevelTable[type]        : Log::Errors,
+        "[GL %s] [%s - %s severity] [%#010x]:\n%s",
         source   < arrsize(s_sourceLiterals)   ? s_sourceLiterals[source]     : "Unknown",
         type     < arrsize(s_typeLiterals)     ? s_typeLiterals[type]         : "Unknown",
         severity < arrsize(s_severityLiterals) ? s_severityLiterals[severity] : "Unknown",
-        id);
-    debug("%s", message);
+        id, message);
 }
 
 GLState::GLState():
@@ -50,7 +57,7 @@ GLState::GLState():
 
     auto err = glewInit();
     if (err != GLEW_OK)
-        debug("glewInit failed: %s", glewGetErrorString(err));
+        g_log->error("glewInit() failed: %s", glewGetErrorString(err));
 
     if (GLEW_ARB_debug_output)
         glDebugMessageCallbackARB(onGLDebug, nullptr);

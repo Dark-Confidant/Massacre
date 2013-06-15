@@ -19,11 +19,42 @@
 #include <boost/spirit/include/phoenix_object.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
-#include <mcr/Debug.h>
+#include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
 
 namespace qi = boost::spirit::qi;
 namespace phx = boost::phoenix;
+
+namespace mcr    {
+namespace detail {
+
+class LogWrapper
+{
+public:
+    enum FlushType { Flush };
+
+    LogWrapper& operator<<(FlushType)
+    {
+        g_log->error("%s", m_stream.str().c_str());
+        m_stream.str("");
+
+        return *this;
+    }
+
+    template <typename T>
+    LogWrapper& operator<<(const T& thingy)
+    {
+        m_stream << thingy;
+        return *this;
+    }
+
+private:
+    std::stringstream m_stream;
+};
+
+} // ns detail
+} // ns mcr
+
 
 //////////////////////////////////////////////////////////////////////////
 // Directives
@@ -125,7 +156,7 @@ struct Grammar: public qi::grammar<It, std::vector<directives::Directive>(), Ski
     qi::rule<It, std::vector<directives::Directive>(), Skipper> preprocess;
 
 
-    Grammar(mcr::DebugStream& dbg):
+    Grammar(mcr::detail::LogWrapper& errlog):
     Grammar::base_type(preprocess, "preprocess"),
         bufferName  (std::string("quoted or plain name")),
         version     (std::string("#version")),
@@ -165,11 +196,11 @@ struct Grammar: public qi::grammar<It, std::vector<directives::Directive>(), Ski
         qi::on_error<qi::fail>
         (
             preprocess,
-            phx::ref(dbg)
+            phx::ref(errlog)
                 << "Syntax error: expecting " << _4 << std::endl
                 << ",--" << std::endl
                 << phx::construct<std::string>(_3, _2)
-                << mcr::DebugStream::Flush
+                << mcr::detail::LogWrapper::Flush
         );
     }
 };
@@ -223,8 +254,8 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 {
     namespace charset = boost::spirit::standard;
 
-    static DebugStream debugstream;
-    static Grammar<const char*, charset::space_type> grammar(debugstream);
+    static mcr::detail::LogWrapper errlog;
+    static Grammar<const char*, charset::space_type> grammar(errlog);
 
     std::string mutableSource = source;
 

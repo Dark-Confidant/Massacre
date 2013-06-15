@@ -1,7 +1,7 @@
 #include "Universe.h"
 #include <mcr/gfx/mtl/Shader.h>
 
-#include <mcr/Debug.h>
+#include <mcr/Log.h>
 
 namespace mcr {
 namespace gfx {
@@ -48,7 +48,7 @@ bool Shader::compile()
     m_valid = status == GL_TRUE;
 
     if (!m_valid)
-        debug("Compilation failed:\n%s", log().c_str());
+        g_log->error("Shader compilation failed: %s", log().c_str());
 
     return true;
 }

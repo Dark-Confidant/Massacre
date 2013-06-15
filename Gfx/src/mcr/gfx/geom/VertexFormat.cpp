@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 #include <boost/lexical_cast.hpp>
-#include <mcr/Debug.h>
+#include <mcr/Log.h>
 
 namespace mcr  {
 namespace gfx  {
@@ -101,7 +101,7 @@ std::string VertexFormat::toString() const
         case AttribType::Double: result += 'd';  break;
         default:
             result += '?';
-            debug("Warning: unknown attrib type %u", attrib.type);
+            g_log->warn("Unknown attribute type: %u", attrib.type);
         }
 
         result += ' ';

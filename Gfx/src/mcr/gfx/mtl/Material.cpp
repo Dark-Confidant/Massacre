@@ -1,7 +1,7 @@
 #include "Universe.h"
 #include <mcr/gfx/mtl/Material.h>
 
-#include <mcr/Debug.h>
+#include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
 #include "mcr/gfx/GLState.h"
 #include "ParamUploadFn.h"
@@ -68,7 +68,7 @@ bool Material::_link()
         std::string logString((std::size_t) logLength, '\0');
         glGetProgramInfoLog(m_program, logLength, nullptr, &logString[0]);
 
-        debug("Material link failed: %s", logString.c_str());
+        g_log->error("Material link failed: %s", logString.c_str());
         return false;
     }
 
