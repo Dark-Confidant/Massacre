@@ -6,6 +6,42 @@
 namespace mcr {
 namespace gfx {
 
+static void GLAPIENTRY onGLDebug(
+    GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    GLvoid* userParam)
+{
+    (void) length;
+    (void) userParam;
+
+    static const char *const s_sourceLiterals[] =
+    {
+        "API", "Window System", "Shader Compiler",
+        "Third Party", "Application", "Other"
+    },
+    *const s_typeLiterals[] =
+    {
+        "Error", "Deprecated Behavior", "Undefined Behavior",
+        "Portability", "Performance", "Other"
+    },
+    *const s_severityLiterals[] = { "High", "Middle", "Low" };
+
+    source   -= GL_DEBUG_SOURCE_API_ARB;
+    type     -= GL_DEBUG_TYPE_ERROR_ARB;
+    severity -= GL_DEBUG_SEVERITY_HIGH_ARB;
+
+    debug("[GL %s] [%s - %s severity] [%#010x]:",
+        source   < arrsize(s_sourceLiterals)   ? s_sourceLiterals[source]     : "Unknown",
+        type     < arrsize(s_typeLiterals)     ? s_typeLiterals[type]         : "Unknown",
+        severity < arrsize(s_severityLiterals) ? s_severityLiterals[severity] : "Unknown",
+        id);
+    debug("%s", message);
+}
+
 GLState::GLState():
     m_activeTexUnit(0),
     m_activeVertexArray(0)
@@ -15,6 +51,9 @@ GLState::GLState():
     auto err = glewInit();
     if (err != GLEW_OK)
         debug("glewInit failed: %s", glewGetErrorString(err));
+
+    if (GLEW_ARB_debug_output)
+        glDebugMessageCallbackARB(onGLDebug, nullptr);
 
     glGetIntegerv(GL_VIEWPORT, &m_viewport[0][0]);
 

@@ -266,6 +266,10 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 
+#ifdef _DEBUG
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
+#endif
+
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 
     if (!glfwOpenWindow(w, h, 8, 8, 8, 8, 24, 8, GLFW_WINDOW))
