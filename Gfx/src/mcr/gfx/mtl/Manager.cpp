@@ -179,7 +179,7 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
 
     RenderState renderState;
     ShaderList shaders;
-    byte iTexture = 0;
+    std::vector<std::string> textures;
 
     char key[64] = {}, value[256] = {};
     int tokens = 0;
@@ -187,12 +187,7 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
     for (io::LineParser parser(stream); parser.readLine();)
     {
         if (!parser.indent())
-        {
-            if (mode == Shaders)
-                material->setShaders(shaders);
-
             mode = States;
-        }
 
         switch (mode)
         {
@@ -249,12 +244,18 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
 
         case Textures:
             if (std::sscanf(parser.line().c_str(), " - %255s", value) == 1)
-                material->setTexture(iTexture++, getTexture(value));
+                textures.push_back(value);
             break;
         }
     }
 
     material->setRenderState(renderState);
+    material->setShaders(shaders);
+
+    auto maxTextures = std::min<std::size_t>(material->numTextures(), textures.size());
+
+    for (std::size_t i = 0; i < maxTextures; ++i)
+        material->setTexture(i, getTexture(textures[i]));
 }
 
 } // ns mtl
