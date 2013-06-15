@@ -206,6 +206,18 @@ template <typename T>
 inline T sum(const Vector<T, 4>& a)
 { return a.x() + a.y() + a.z() + a.w(); }
 
+template <typename T>
+inline T mul(const Vector<T, 2>& a)
+{ return a.x() * a.y(); }
+
+template <typename T>
+inline T mul(const Vector<T, 3>& a)
+{ return a.x() * a.y() * a.z(); }
+
+template <typename T>
+inline T mul(const Vector<T, 4>& a)
+{ return a.x() * a.y() * a.z() * a.w(); }
+
 template <typename T, int n>
 inline T dot(const Vector<T, n>& a, const Vector<T, n>& b)
 { return sum(a * b); }
