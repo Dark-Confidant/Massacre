@@ -11,8 +11,6 @@ namespace mcr {
 
 std::size_t internalLogOutput(const char* str, io::IWriter* stream, bool stdoutToo)
 {
-    // TODO: handle line breaks
-
 #ifdef MCR_PLATFORM_WINDOWS
     OutputDebugStringA(str);
 #endif
@@ -45,12 +43,7 @@ std::size_t Log::vprint(Verbosity level, const char* fmt, std::va_list args)
 
     std::string outputFmt = s_levelLiterals[level];
     outputFmt += fmt;
-
-#ifdef MCR_PLATFORM_WINDOWS
-    outputFmt += "\r\n";
-#else
     outputFmt += '\n';
-#endif
 
     char buf[4096];
     if (vsnprintf(buf, sizeof(buf), outputFmt.c_str(), args) >= 0)

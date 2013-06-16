@@ -41,8 +41,8 @@ public:
     const std::string&      root() const;
     MCR_CORE_EXTERN bool    setRoot(const char* dir, std::string* oldRootOut = nullptr);
 
-    MCR_CORE_EXTERN rcptr<IFileReader>  openReader(const char* filename);
-    MCR_CORE_EXTERN rcptr<IFileWriter>  openWriter(const char* filename);
+    MCR_CORE_EXTERN rcptr<IFileReader>  openReader(const char* filename, bool binary = true);
+    MCR_CORE_EXTERN rcptr<IFileWriter>  openWriter(const char* filename, bool binary = true);
 
 private:
     std::string m_root;

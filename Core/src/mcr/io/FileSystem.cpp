@@ -124,9 +124,9 @@ public:
     using RefCounted::operator new;
     using RefCounted::operator delete;
 
-    StdFstreamReader(const char* filename):
+    StdFstreamReader(const char* filename, bool binary):
         m_filename(filename),
-        m_stream(filename, std::ios::binary),
+        m_stream(filename, binary ? std::ios::binary : std::ios::in),
         m_size(0u)
     {
         if (m_stream.good())
@@ -180,9 +180,9 @@ public:
     using RefCounted::operator new;
     using RefCounted::operator delete;
 
-    StdFstreamWriter(const char* filename):
+    StdFstreamWriter(const char* filename, bool binary):
         m_filename(filename),
-        m_stream(filename, std::ios::binary) {}
+        m_stream(filename, binary ? std::ios::binary | std::ios::trunc : std::ios::trunc) {}
 
     std::size_t write(const void* buffer, std::size_t size)
     {
@@ -220,9 +220,9 @@ protected:
 //////////////////////////////////////////////////////////////////////////
 // File search & access
 
-rcptr<IFileReader> FileSystem::openReader(const char* filename)
+rcptr<IFileReader> FileSystem::openReader(const char* filename, bool binary)
 {
-    rcptr<StdFstreamReader> file = new StdFstreamReader((m_root + filename).c_str());
+    rcptr<StdFstreamReader> file = new StdFstreamReader((m_root + filename).c_str(), binary);
 
     if (!file->good())
         return nullptr;
@@ -230,9 +230,9 @@ rcptr<IFileReader> FileSystem::openReader(const char* filename)
     return file;
 }
 
-rcptr<IFileWriter> FileSystem::openWriter(const char* filename)
+rcptr<IFileWriter> FileSystem::openWriter(const char* filename, bool binary)
 {
-    rcptr<StdFstreamWriter> file = new StdFstreamWriter((m_root + filename).c_str());
+    rcptr<StdFstreamWriter> file = new StdFstreamWriter((m_root + filename).c_str(), binary);
 
     if (!file->good())
         return nullptr;
