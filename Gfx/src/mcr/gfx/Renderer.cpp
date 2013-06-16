@@ -135,18 +135,20 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
     glDrawElementsBaseVertex(
         g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(),
         GL_UNSIGNED_INT, const_cast<GLvoid*>(mesh.indices->offset()),
-        (GLint) mesh.vertices->offset() / mesh.vertexFormat.stride());
+        GLint((std::size_t) mesh.vertices->offset() / mesh.vertexFormat.stride()));
 }
 
 void Renderer::clear()
 {
-    if (!m_renderState.depthWrite)
+    if (m_renderState.depthWrite)
     {
-        m_renderState.depthWrite = true;
-        glDepthMask(true);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        return;
     }
 
+    glDepthMask(true);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDepthMask(false);
 }
 
 } // ns gfx
