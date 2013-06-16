@@ -12,30 +12,56 @@ namespace mem  {
 class SystemMemory: public IVideoMemory
 {
 public:
-    VideoHandle allocate(std::size_t size)
+    class Buffer: public IVideoBuffer
     {
-        VideoHandle handle = {this, std::malloc(size)};
-        return handle;
-    }
+    public:
+        using RefCounted::operator new;
+        using RefCounted::operator delete;
 
-    void free(VideoHandle handle)
-    {
-        std::free(handle.ptr);
-    }
+        Buffer(std::size_t size):
+            m_size(size)
+        {
+            m_ptr = static_cast<byte*>(std::malloc(size));
+        }
 
-    void read(VideoHandle src, std::size_t offset, std::size_t length, void* dst)
-    {
-        std::memcpy(dst, (byte*) src.ptr + offset, length);
-    }
+        ~Buffer()
+        {
+            std::free(m_ptr);
+        }
 
-    void write(const void* src, std::size_t length, VideoHandle dst, std::size_t offset)
-    {
-        std::memcpy((byte*) dst.ptr + offset, src, length);
-    }
+        void read(std::size_t offset, std::size_t length, void* dst) const
+        {
+            std::memcpy(dst, m_ptr + offset, length);
+        }
 
-    bool isVirtual() const
+        void write(std::size_t offset, std::size_t length, const void* src)
+        {
+            std::memcpy(m_ptr + offset, src, length);
+        }
+
+        std::size_t size() const
+        {
+            return m_size;
+        }
+
+        uint vbo() const
+        {
+            return 0;
+        }
+
+        const void* offset() const
+        {
+            return m_ptr;
+        }
+
+    private:
+        byte* m_ptr;
+        std::size_t m_size;
+    };
+
+    rcptr<IVideoBuffer> allocate(std::size_t size)
     {
-        return false;
+        return new Buffer(size);
     }
 };
 

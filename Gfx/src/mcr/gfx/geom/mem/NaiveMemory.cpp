@@ -8,44 +8,43 @@ namespace gfx  {
 namespace geom {
 namespace mem  {
 
+NaiveMemory::Buffer::Buffer(const NaiveMemory* memory, std::size_t size):
+    m_memory(memory), m_size(size)
+{
+    glGenBuffers(1, &m_vbo);
+    g_glState->bindVertexArray(0);
+    g_glState->bindBuffer(memory->m_target, m_vbo);
+    glBufferData(memory->m_target, size, nullptr, memory->m_usage);
+}
+
+NaiveMemory::Buffer::~Buffer()
+{
+    glDeleteBuffers(1, &m_vbo);
+}
+
+void NaiveMemory::Buffer::read(std::size_t offset, std::size_t length, void* dst) const
+{
+    g_glState->bindVertexArray(0);
+    g_glState->bindBuffer(m_memory->m_target, m_vbo);
+    glGetBufferSubData(m_memory->m_target, (GLintptr) offset, (GLsizeiptr) length, dst);
+}
+
+void NaiveMemory::Buffer::write(std::size_t offset, std::size_t length, const void* src)
+{
+    g_glState->bindVertexArray(0);
+    g_glState->bindBuffer(m_memory->m_target, m_vbo);
+    glBufferSubData(m_memory->m_target, (GLintptr) offset, (GLsizeiptr) length, src);
+}
+
 NaiveMemory::NaiveMemory(Target target, Usage usage)
 {
     m_target = target == Index ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
     m_usage  = usage  == Static ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
 }
 
-VideoHandle NaiveMemory::allocate(std::size_t size)
+rcptr<IVideoBuffer> NaiveMemory::allocate(std::size_t size)
 {
-    VideoHandle handle;
-
-    handle.memory = this;
-    handle.offset = 0;
-
-    glGenBuffers(1, &handle.vbo);
-    g_glState->bindVertexArray(0);
-    g_glState->bindBuffer(m_target, handle.vbo);
-    glBufferData(m_target, size, nullptr, m_usage);
-
-    return handle;
-}
-
-void NaiveMemory::free(VideoHandle handle)
-{
-    glDeleteBuffers(1, &handle.vbo);
-}
-
-void NaiveMemory::read(VideoHandle src, std::size_t offset, std::size_t length, void* dst)
-{
-    g_glState->bindVertexArray(0);
-    g_glState->bindBuffer(m_target, src.vbo);
-    glGetBufferSubData(m_target, (GLintptr) offset, (GLsizeiptr) length, dst);
-}
-
-void NaiveMemory::write(const void* src, std::size_t length, VideoHandle dst, std::size_t offset)
-{
-    g_glState->bindVertexArray(0);
-    g_glState->bindBuffer(m_target, dst.vbo);
-    glBufferSubData(m_target, (GLintptr) offset, (GLsizeiptr) length, src);
+    return new Buffer(this, size);
 }
 
 } // ns mem

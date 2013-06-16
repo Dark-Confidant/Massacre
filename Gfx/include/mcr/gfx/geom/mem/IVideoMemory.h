@@ -1,34 +1,29 @@
 #pragma once
 
-#include <mcr/Types.h>
+#include <mcr/RefCounted.h>
 
 namespace mcr  {
 namespace gfx  {
 namespace geom {
 namespace mem  {
 
-class IVideoMemory;
-
-struct VideoHandle
+class IVideoBuffer: public RefCounted
 {
-    IVideoMemory* memory;
-    union
-    {
-        void* ptr;
-        struct { uint vbo, offset; };
-    };
+public:
+    virtual void        read(std::size_t offset, std::size_t length, void* dst) const = 0;
+    virtual void        write(std::size_t offset, std::size_t length, const void* src) = 0;
+
+    virtual std::size_t size() const = 0;
+
+    virtual uint        vbo() const = 0;
+    virtual const void* offset() const = 0;
 };
 
 class IVideoMemory
 {
 public:
-    virtual VideoHandle allocate(std::size_t size) = 0;
-    virtual void        free(VideoHandle handle) = 0;
-
-    virtual void        read(VideoHandle src, std::size_t offset, std::size_t length, void* dst) = 0;
-    virtual void        write(const void* src, std::size_t length, VideoHandle dst, std::size_t offset) = 0;
-
-    virtual bool        isVirtual() const = 0;
+    virtual ~IVideoMemory() {}
+    virtual rcptr<IVideoBuffer> allocate(std::size_t size) = 0;
 };
 
 } // ns mem

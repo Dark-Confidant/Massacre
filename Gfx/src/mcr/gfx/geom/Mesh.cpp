@@ -47,10 +47,10 @@ bool Mesh::load(io::IFileReader* stream, mem::IVideoMemory* vertMem, mem::IVideo
     auto vertices = new byte[vertexDataSize];
     auto indices  = new uint[header.numIndices];
 
-    stream->seek(startPos +header.vertexDataOffset);
+    stream->seek(startPos + header.vertexDataOffset);
     read += stream->read(vertices, vertexDataSize);
 
-    stream->seek(startPos +header.indexDataOffset);
+    stream->seek(startPos + header.indexDataOffset);
     read += stream->read(indices, header.numIndices);
 
     bool success = read == sizeof(header) + attribDataSize + vertexDataSize + indexDataSize;
@@ -59,12 +59,10 @@ bool Mesh::load(io::IFileReader* stream, mem::IVideoMemory* vertMem, mem::IVideo
         meshOut.vertices = vertMem->allocate(vertexDataSize);
         meshOut.indices  = idxMem->allocate(indexDataSize);
 
-        vertMem->write(vertices, vertexDataSize, meshOut.vertices, 0);
-        idxMem->write(indices, indexDataSize, meshOut.indices, 0);
+        meshOut.vertices->write(0, vertexDataSize, vertices);
+        meshOut.indices->write(0, indexDataSize, indices);
 
         meshOut.vertexFormat  = fmt;
-        meshOut.numVertices   = header.numVertices;
-        meshOut.numIndices    = header.numIndices;
         meshOut.primitiveType = PrimitiveType::Triangles;
     }
 
@@ -86,8 +84,8 @@ bool Mesh::save(io::IWriter* stream, const Mesh& mesh)
     header.primitiveType = mesh.primitiveType;
     header.vertexSize    = mesh.vertexFormat.stride();
     header.numAttributes = mesh.vertexFormat.numAttribs();
-    header.numVertices   = mesh.numVertices;
-    header.numIndices    = mesh.numIndices;
+    header.numVertices   = mesh.numVertices();
+    header.numIndices    = mesh.numIndices();
 
     const std::size_t
         attribDataSize = header.numAttributes * sizeof(SimpleMesh::VertexAttribute),
@@ -115,8 +113,8 @@ bool Mesh::save(io::IWriter* stream, const Mesh& mesh)
     auto vertices = new byte[vertexDataSize];
     auto indices  = new byte[indexDataSize];
 
-    mesh.vertices.memory->read(mesh.vertices, 0, vertexDataSize, vertices);
-    mesh.indices.memory->read(mesh.indices, 0, indexDataSize, indices);
+    mesh.vertices->read(0, vertexDataSize, vertices);
+    mesh.indices->read(0, indexDataSize, indices);
 
     written += stream->write(vertices, vertexDataSize);
     written += stream->write(indices, indexDataSize);

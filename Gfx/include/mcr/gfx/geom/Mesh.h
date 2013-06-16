@@ -31,14 +31,13 @@ struct PrimitiveType
 
 struct Mesh
 {
-    VertexFormat        vertexFormat;
-    PrimitiveType       primitiveType;
+    VertexFormat  vertexFormat;
+    PrimitiveType primitiveType;
 
-    mem::VideoHandle    vertices;
-    uint                numVertices;
+    rcptr<mem::IVideoBuffer> vertices, indices;
 
-    mem::VideoHandle    indices;
-    uint                numIndices;
+    uint numVertices() const;
+    uint numIndices() const;
 
     MCR_GFX_EXTERN static bool load(
         io::IFileReader* stream,
@@ -50,6 +49,17 @@ struct Mesh
         io::IWriter* stream,
         const Mesh& mesh);
 };
+
+
+inline uint Mesh::numVertices() const
+{
+    return uint(vertices->size() / vertexFormat.stride());
+}
+
+inline uint Mesh::numIndices() const
+{
+    return uint(indices->size() / sizeof(uint));
+}
 
 } // ns geom
 } // ns gfx

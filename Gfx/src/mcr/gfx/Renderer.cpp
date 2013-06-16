@@ -112,8 +112,8 @@ void Renderer::setActiveMaterial(mtl::Material* material)
 
 void Renderer::drawMesh(const geom::Mesh& mesh)
 {
-    g_glState->bindBuffer(GL_ARRAY_BUFFER, mesh.vertices.vbo);
-    g_glState->bindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.vbo);
+    g_glState->bindBuffer(GL_ARRAY_BUFFER, mesh.vertices->vbo());
+    g_glState->bindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indices->vbo());
 
     for (uint i = 0; i < mesh.vertexFormat.numAttribs(); ++i)
     {
@@ -133,9 +133,9 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
     }
 
     glDrawElementsBaseVertex(
-        g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices,
-        GL_UNSIGNED_INT, reinterpret_cast<GLvoid*>(mesh.indices.offset),
-        (GLint) mesh.vertices.offset / mesh.vertexFormat.stride());
+        g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(),
+        GL_UNSIGNED_INT, const_cast<GLvoid*>(mesh.indices->offset()),
+        (GLint) mesh.vertices->offset() / mesh.vertexFormat.stride());
 }
 
 void Renderer::clear()
