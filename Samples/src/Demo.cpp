@@ -86,11 +86,11 @@ struct Scene
     {
         renderer.clear();
 
-        renderer.setActiveMaterial(materials.sky);
-        renderer.drawMesh(meshes.sky);
-
         renderer.setActiveMaterial(materials.opaque);
         renderer.drawMesh(meshes.opaque);
+
+        renderer.setActiveMaterial(materials.sky);
+        renderer.drawMesh(meshes.sky);
 
         renderer.setActiveMaterial(materials.flags);
         renderer.drawMesh(meshes.flags);
@@ -131,7 +131,7 @@ public:
         m_config.query("turn_speed", m_turnSpeed, 60.f);
 
 
-        m_camera.setZRange(vec2(10.f, 3000.f));
+        m_camera.setZRange(vec2(10.f, 3500.f));
         m_camera.update();
         m_pos.setY(20);
 
@@ -160,6 +160,9 @@ public:
             m_commonParams->param("Time")      = m_timer.seconds();
             m_commonParams->param("DeltaTime") = m_timer.dseconds();
             m_commonParams->sync();
+
+            if (m_timer.dmilliseconds() >= 17)
+                g_log->debug("Frame time: %llu", m_timer.dmilliseconds());
 
             m_camera.dumpMatrices();
             m_scene.render(m_renderer);
