@@ -65,37 +65,59 @@ void Renderer::setViewport(const irect& vp)
 void Renderer::setRenderState(const mtl::RenderState& rs)
 {
     if (m_renderState.depthTest != rs.depthTest)
+    {
         (rs.depthTest ? glEnable : glDisable)(GL_DEPTH_TEST);
+        m_renderState.depthTest = rs.depthTest;
+    }
 
     if (rs.depthTest)
     {
         if (m_renderState.depthFunc != rs.depthFunc)
+        {
             glDepthFunc(g_depthFnTable[rs.depthFunc.fn]);
+            m_renderState.depthFunc = rs.depthFunc;
+        }
 
         if (m_renderState.depthWrite != rs.depthWrite)
+        {
             glDepthMask(rs.depthWrite);
+            m_renderState.depthWrite = rs.depthWrite;
+        }
     }
 
     if (m_renderState.blend != rs.blend)
+    {
         (rs.depthTest ? glEnable : glDisable)(GL_BLEND);
+        m_renderState.blend = rs.blend;
+    }
 
     if (rs.blend && m_renderState.blendFunc != rs.blendFunc)
     {
         glBlendFunc(g_blendFnTable[rs.blendFunc.srcFactor],
                     g_blendFnTable[rs.blendFunc.dstFactor]);
+
+        m_renderState.blendFunc = rs.blendFunc;
     }
 
     if (m_renderState.alphaTest != rs.alphaTest)
+    {
         (rs.alphaTest ? glEnable : glDisable)(GL_SAMPLE_ALPHA_TO_COVERAGE);
+        m_renderState.alphaTest = rs.alphaTest;
+    }
 
     if (m_renderState.cullFace != rs.cullFace)
+    {
         (rs.cullFace ? glEnable : glDisable)(GL_CULL_FACE);
+        m_renderState.cullFace = rs.cullFace;
+    }
 
     if (m_renderState.polygonOffset != rs.polygonOffset)
+    {
         (rs.polygonOffset ? glEnable : glDisable)(GL_POLYGON_OFFSET_FILL);
+        m_renderState.polygonOffset = rs.polygonOffset;
+    }
 
-    m_renderState     = rs;
-    m_renderStateHash = rs.hash();
+    m_renderStateHash = m_renderState.hash();
 }
 
 void Renderer::setActiveMaterial(mtl::Material* material)
@@ -140,15 +162,19 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
 
 void Renderer::clear()
 {
-    if (m_renderState.depthWrite)
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        return;
-    }
+    if (!m_renderState.depthTest)
+        glEnable(GL_DEPTH_TEST);
 
-    glDepthMask(true);
+    if (!m_renderState.depthWrite)
+        glDepthMask(true);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDepthMask(false);
+
+    if (!m_renderState.depthWrite)
+        glDepthMask(false);
+
+    if (!m_renderState.depthTest)
+        glDisable(GL_DEPTH_TEST);
 }
 
 } // ns gfx
