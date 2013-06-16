@@ -15,7 +15,7 @@ else()
         massacre-core
         massacre-gfx)
 
-    add_executable(massacre-demo src/demo.cpp)
+    add_executable(massacre-demo src/Demo.cpp)
     
     if(MSVC)
         set_target_properties(
