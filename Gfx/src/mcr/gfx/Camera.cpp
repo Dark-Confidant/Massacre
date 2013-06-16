@@ -16,7 +16,8 @@ Camera::Camera():
             .addMat4("Projection")
             .addMat4("View")
             .addVec3("Position")
-            .addVec3("Direction"));
+            .addVec3("Direction")
+            .addVec2("ZRange"));
 
     dumpMatrices();
 }
@@ -30,6 +31,7 @@ void Camera::dumpMatrices()
     m_paramBuffer->param(1) = math::transpose(m_view);
     m_paramBuffer->param(2) = m_position;
     m_paramBuffer->param(3) = vec3(0, 0, 1) * m_view;
+    m_paramBuffer->param(4) = m_zRange;
     m_paramBuffer->sync();
 }
 
