@@ -3,7 +3,7 @@
 
 #include <mcr/Config.h>
 #include <mcr/Timer.h>
-#include <mcr/Debug.h>
+#include <mcr/Log.h>
 
 #include <mcr/gfx/Camera.h>
 #include <mcr/gfx/Renderer.h>
@@ -115,11 +115,14 @@ class Demo
 public:
     Demo()
     {
+        g_log->setStream(m_mtlm.fs()->openWriter("output.log", false));
+        g_log->setVerbosity(Log::Debug);
+
         if (!m_mtlm.fs()->setRoot("DataArena/")
         &&  !m_mtlm.fs()->setRoot("/usr/share/massacre/"))
         {
-            debug("Can't find data directory");
-            exit(1);
+            g_log->error("Can't find data directory");
+            std::abort();
         }
 
         m_config.load(m_mtlm.fs()->openReader("mainconf.yaml"));
@@ -144,7 +147,7 @@ public:
         m_scene.load(m_mtlm, m_meshm);
         m_timer.refresh();
 
-        debug("Scene load time: %f seconds", m_timer.seconds());
+        g_log->info("Scene load time: %f seconds", m_timer.seconds());
     }
 
     void run()
@@ -258,7 +261,10 @@ ivec2 Demo::s_windowSize;
 void initWindow(int w, int h, GLFWwindowsizefun onResize)
 {
     if (!glfwInit())
-        debug("glfwInit failed");
+    {
+        g_log->error("glfwInit() failed");
+        std::abort();
+    }
 
 #ifdef MCR_PLATFORM_MAC
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
@@ -273,7 +279,10 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 
     if (!glfwOpenWindow(w, h, 8, 8, 8, 8, 24, 8, GLFW_WINDOW))
-        debug("glfwOpenWindow failed");
+    {
+        g_log->error("glfwOpenWindow(%d, %d ...) failed", w, h);
+        std::abort();
+    }
 
     glfwSetWindowTitle("MassacreProto");
     glfwSetWindowSizeCallback(onResize);
@@ -287,8 +296,6 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
 
 int main()
 {
-    g_enableLoggingToFile = true;
-
     initWindow(1024, 768, &Demo::resizeWindow);
 
     Demo app;
