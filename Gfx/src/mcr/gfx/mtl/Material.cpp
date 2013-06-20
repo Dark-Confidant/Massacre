@@ -133,7 +133,13 @@ bool Material::_link()
             switch (type)
             {
             case GL_SAMPLER_2D:
+            case GL_SAMPLER_2D_ARRAY:
             case GL_SAMPLER_2D_SHADOW:
+            case GL_SAMPLER_2D_ARRAY_SHADOW:
+            case GL_SAMPLER_2D_MULTISAMPLE:
+            case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
+            case GL_SAMPLER_2D_RECT:
+            case GL_SAMPLER_2D_RECT_SHADOW:
                 {
                     auto unit = (GLint) m_mgr->requestTexUnit();
 
