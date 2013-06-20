@@ -15,6 +15,11 @@ public:
     bool loadDynamic(io::IFileReader* stream, Mesh& meshOut);
     bool loadStatic(io::IFileReader* stream, Mesh& meshOut);
 
+    mem::NaiveMemory& dynamicVertexMem();
+    mem::NaiveMemory& dynamicIndexMem();
+    mem::NaiveMemory& staticVertexMem();
+    mem::NaiveMemory& staticIndexMem();
+
 private:
     mem::NaiveMemory
         m_dynamicVertices,
@@ -38,6 +43,26 @@ inline bool MeshManager::loadDynamic(io::IFileReader* stream, Mesh& meshOut)
 inline bool MeshManager::loadStatic(io::IFileReader* stream, Mesh& meshOut)
 {
     return Mesh::load(stream, &m_staticVertices, &m_staticIndices, meshOut);
+}
+
+inline mem::NaiveMemory& MeshManager::dynamicVertexMem()
+{
+    return m_dynamicVertices;
+}
+
+inline mem::NaiveMemory& MeshManager::dynamicIndexMem()
+{
+    return m_dynamicIndices;
+}
+
+inline mem::NaiveMemory& MeshManager::staticVertexMem()
+{
+    return m_staticVertices;
+}
+
+inline mem::NaiveMemory& MeshManager::staticIndexMem()
+{
+    return m_staticIndices;
 }
 
 } // ns geom
