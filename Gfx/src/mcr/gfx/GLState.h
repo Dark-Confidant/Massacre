@@ -87,6 +87,8 @@ private:
 namespace detail {
 struct GLStateSingleton
 {
+    GLStateSingleton() {}
+
     GLState& operator*() const
     {
         static GLState instance;
