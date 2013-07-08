@@ -51,6 +51,7 @@ private:
 namespace detail {
 struct LogSingleton
 {
+    LogSingleton() {}
     MCR_CORE_EXTERN Log* operator->() const;
 };
 } // ns detail

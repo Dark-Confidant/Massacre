@@ -84,7 +84,8 @@ private:
 };
 
 
-static const struct
+namespace detail {
+struct GLStateSingleton
 {
     GLState& operator*() const
     {
@@ -96,8 +97,10 @@ static const struct
     {
         return &**this;
     }
-}
-g_glState;
+};
+} // ns detail;
+
+static const detail::GLStateSingleton g_glState;
 
 } // ns gfx
 } // ns mcr
