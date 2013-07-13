@@ -31,7 +31,7 @@ struct TextureType
 
     bool isValid()          const { return type < NumTypes; }
     bool isArray()          const { return type == Tex1DArray || type == Tex2DArray || type == Tex2DMSArray; }
-    bool isMultisampled()   const { return type == Tex2DMS || type == Tex2DMSArray; }
+    bool isMultisample()    const { return type == Tex2DMS || type == Tex2DMSArray; }
     bool supportsMipmaps()  const { return type <= TexCubeMap; }
     bool supportsFilters()  const { return type <= TexRect; }
     byte numDimensions()    const;
