@@ -207,16 +207,48 @@ inline T sum(const Vector<T, 4>& a)
 { return a.x() + a.y() + a.z() + a.w(); }
 
 template <typename T>
-inline T mul(const Vector<T, 2>& a)
+inline T mulc(const Vector<T, 2>& a)
 { return a.x() * a.y(); }
 
 template <typename T>
-inline T mul(const Vector<T, 3>& a)
+inline T mulc(const Vector<T, 3>& a)
 { return a.x() * a.y() * a.z(); }
 
 template <typename T>
-inline T mul(const Vector<T, 4>& a)
+inline T mulc(const Vector<T, 4>& a)
 { return a.x() * a.y() * a.z() * a.w(); }
+
+template <typename T>
+inline T area(const Vector<T, 2>& a)
+{ return mulc(a); }
+
+template <typename T>
+inline T volume(const Vector<T, 3>& a)
+{ return mulc(a); }
+
+template <typename T>
+inline T maxc(const Vector<T, 2>& a)
+{ return std::max(a.x(), a.y()); }
+
+template <typename T>
+inline T maxc(const Vector<T, 3>& a)
+{ return std::max(a.x(), std::max(a.y(), a.z())); }
+
+template <typename T>
+inline T maxc(const Vector<T, 4>& a)
+{ return std::max(std::max(a.x(), a.y()), std::max(a.z(), a.w())); }
+
+template <typename T>
+inline T minc(const Vector<T, 2>& a)
+{ return std::min(a.x(), a.y()); }
+
+template <typename T>
+inline T minc(const Vector<T, 3>& a)
+{ return std::min(a.x(), std::min(a.y(), a.z())); }
+
+template <typename T>
+inline T minc(const Vector<T, 4>& a)
+{ return std::min(std::min(a.x(), a.y()), std::min(a.z(), a.w())); }
 
 template <typename T, int n>
 inline T dot(const Vector<T, n>& a, const Vector<T, n>& b)
