@@ -1,0 +1,7 @@
+{
+  "name": "massacre-page",
+  "version": "0.0.0",
+  "devDependencies": {
+    "stylus": "~0.34.1"
+  }
+}
