@@ -34,7 +34,7 @@ Building on Windows
 * [CMake](http://www.cmake.org/cmake/resources/software.html);
 * [Boost](http://boost.org/users/download/);
 * [GLEW](http://glew.sourceforge.net/);
-* [GLFW](http://glfw.org/download.html), if you want samples.
+* [GLFW](http://sourceforge.net/projects/glfw/files/glfw/2.7.9/), if you want samples.
 
 
 #### The Easy Way
@@ -59,4 +59,4 @@ Dependencies
 ------------
 
 - Gfx: Boost 1.46+, GLEW 1.6+
-- Samples: GLFW 2.7.2+
+- Samples: GLFW 2.7.2, up to 2.7.9
