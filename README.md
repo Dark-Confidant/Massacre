@@ -1,5 +1,8 @@
-Massacre Proto
-==============
+---
+layout: default
+page_type: index
+permalink: /
+---
 
 [![Build Status](https://travis-ci.org/Dark-Confidant/Massacre.png)](https://travis-ci.org/Dark-Confidant/Massacre)
 
