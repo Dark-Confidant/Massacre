@@ -23,7 +23,7 @@ struct ShaderList
 
 class Manager;
 
-class Material: public RefCounted
+class Material: public ParamBufferBase
 {
 public:
     static rcptr<Material>  create(Manager* mgr);
@@ -38,9 +38,6 @@ public:
     const ShaderList&       shaders() const;
     bool                    setShaders(const ShaderList& shaders);
 
-    const mtl::IParam&      param(const std::string& pname) const;
-    mtl::IParam&            param(const std::string& pname);
-
     byte                    numTextures() const;
     Texture*                texture(byte idx) const;
     bool                    setTexture(byte idx, Texture* tex);
@@ -51,42 +48,32 @@ public:
     MCR_GFX_EXTERN void     syncParams();
 
 private:
-    class Param: public mtl::IParam
-    {
-    public:
-        typedef void(*UploadFn)(uint program, int loc, const void* mem);
-
-        Param(mtl::ParamType type, uint program, int loc, UploadFn uploadFn);
-        ~Param();
-
-        void sync();
-
-    private:
-        const void*         mem() const;
-        void*               mem();
-        MCR_GFX_EXTERN void invalidate();
-
-        uint     m_program;
-        int      m_location;
-        byte*    m_data;
-        UploadFn m_uploadFn;
-        bool     m_dirty;
-    };
-
     MCR_GFX_EXTERN Material(Manager* mgr);
     MCR_GFX_EXTERN ~Material();
 
     MCR_GFX_EXTERN bool _link();
 
-    Manager*            m_mgr;
-    RenderState         m_renderState;
-    uint                m_renderStateHash;
-    ShaderList          m_shaders;
-    std::vector<Param>  m_params;
-    int                 m_passHint;
+    Manager*    m_mgr;
+    RenderState m_renderState;
+    uint        m_renderStateHash;
+    ShaderList  m_shaders;
+    int         m_passHint;
 
-    std::vector<std::pair<uint, rcptr<mtl::ParamBuffer>>> m_buffers;
-    std::vector<std::pair<uint, rcptr<Texture>>>          m_textures;
+    struct ParamDef
+    {
+        int         location;
+        const void* dirtyData;
+    };
+
+    void onInvalidateParam(int index, const void* data)
+    {
+        m_paramDefs[(std::size_t) index].dirtyData = data;
+    }
+
+    std::vector<ParamDef> m_paramDefs;
+
+    std::vector<std::pair<uint, rcptr<ParamBuffer>>> m_buffers;
+    std::vector<std::pair<uint, rcptr<Texture>>>     m_textures;
 
     // implementation details
     uint m_program;

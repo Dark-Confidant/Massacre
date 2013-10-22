@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mcr/gfx/mtl/Param.h>
+#include <mcr/gfx/mtl/ParamType.h>
 
 namespace mcr {
 namespace gfx {
@@ -30,6 +30,9 @@ struct ParamLayout
     ParamLayout& addUVec4 (const char* pname);
     ParamLayout& addMat4  (const char* pname);
     ParamLayout& addDMat4 (const char* pname);
+
+    std::size_t totalSize() const;
+    std::size_t totalSizeAligned() const;
 };
 
 } // ns mtl

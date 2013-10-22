@@ -27,12 +27,11 @@ Camera::~Camera() {}
 
 void Camera::dumpMatrices()
 {
-    m_paramBuffer->param(0) = math::transpose(m_projection.first);
-    m_paramBuffer->param(1) = math::transpose(m_view);
-    m_paramBuffer->param(2) = m_position;
-    m_paramBuffer->param(3) = vec3(0, 0, 1) * m_view;
-    m_paramBuffer->param(4) = m_zRange;
-    m_paramBuffer->sync();
+    m_paramBuffer->setParam(0, math::transpose(m_projection.first));
+    m_paramBuffer->setParam(1, math::transpose(m_view));
+    m_paramBuffer->setParam(2, m_position);
+    m_paramBuffer->setParam(3, vec3(0, 0, 1) * m_view);
+    m_paramBuffer->setParam(4, m_zRange);
 }
 
 

@@ -58,11 +58,10 @@ struct Scene
 
         mtlm.addParamBuffer(sun);
 
-        sun->param("Direction")   = math::normalize(vec3(-1, -1, 1));
-        sun->param("Color")       = vec4(1, .9f, .7f, 1);
-        sun->param("ShadowColor") = vec4(vec3(.5f), 1);
-        sun->param("Brightness")  = 3.f;
-        sun->sync();
+        sun->setParam("Direction", math::normalize(vec3(-1, -1, 1)));
+        sun->setParam("Color", vec4(1, .9f, .7f, 1));
+        sun->setParam("ShadowColor", vec4(vec3(.5f), 1));
+        sun->setParam("Brightness", 3);
 
         materials.opaque       = mtlm.getMaterial("Materials/opaque.mtl");
         materials.transparent  = mtlm.getMaterial("Materials/trans.mtl");
@@ -157,9 +156,8 @@ public:
             handleKeys();
 
             m_timer.refresh();
-            m_commonParams->param("Time")      = m_timer.seconds();
-            m_commonParams->param("DeltaTime") = m_timer.dseconds();
-            m_commonParams->sync();
+            m_commonParams->setParam("Time", m_timer.seconds());
+            m_commonParams->setParam("DeltaTime", m_timer.dseconds());
 
             if (m_timer.dmilliseconds() >= 17)
                 g_log->debug("Frame time: %llu", m_timer.dmilliseconds());

@@ -3,41 +3,6 @@ namespace gfx {
 namespace mtl {
 
 //////////////////////////////////////////////////////////////////////////
-// Parameter
-
-inline Material::Param::Param(mtl::ParamType type, uint program, int loc, UploadFn uploadFn):
-mtl::IParam(type),
-    m_program(program), m_location(loc), m_uploadFn(uploadFn)
-{
-    m_data = new byte[type.size()];
-}
-
-inline Material::Param::~Param()
-{
-    delete [] m_data;
-}
-
-inline void Material::Param::sync()
-{
-    if (!m_dirty)
-        return;
-
-    m_uploadFn(m_program, m_location, m_data);
-    m_dirty = false;
-}
-
-inline const void* Material::Param::mem() const
-{
-    return m_data;
-}
-
-inline void* Material::Param::mem()
-{
-    return m_data;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
 // Material structor
 
 inline rcptr<Material> Material::create(Manager* mgr)

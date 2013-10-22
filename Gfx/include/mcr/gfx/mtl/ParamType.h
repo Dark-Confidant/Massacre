@@ -27,31 +27,8 @@ struct ParamType
     std::size_t sizeAligned() const;
 };
 
-
-class IParam
-{
-public:
-    ParamType                       type() const;
-
-    template <typename T> bool      get(T& valueOut) const;
-    template <typename T> bool      set(const T& value);
-
-    template <typename T> IParam&   operator=(const T& rhs);
-
-protected:
-    IParam(ParamType type);
-    ~IParam();
-
-private:
-    virtual const void* mem() const  = 0;
-    virtual void*       mem()        = 0;
-    virtual void        invalidate() = 0;
-
-    ParamType m_type;
-};
-
 } // ns mtl
 } // ns gfx
 } // ns mcr
 
-#include "Param.inl"
+#include "ParamType.inl"

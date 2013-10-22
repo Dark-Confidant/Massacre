@@ -98,6 +98,26 @@ inline ParamLayout& ParamLayout::addDMat4(const char* pname)
     return add(ParamType::DMat4, pname);
 }
 
+inline std::size_t ParamLayout::totalSize() const
+{
+    std::size_t size = 0;
+
+    for (std::size_t i = 0; i < params.size(); ++i)
+        size += params[i].first.size();
+
+    return size;
+}
+
+inline std::size_t ParamLayout::totalSizeAligned() const
+{
+    std::size_t size = 0;
+
+    for (std::size_t i = 0; i < params.size(); ++i)
+        size += params[i].first.sizeAligned();
+
+    return size;
+}
+
 } // ns mtl
 } // ns gfx
 } // ns mcr
