@@ -146,7 +146,7 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
             glEnableVertexAttribArray(i);
             glVertexAttribPointer(i,
                 attrib.length, g_attribTypeTable[attrib.type], GL_FALSE,
-                mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*>(attrib.offset));
+                mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*>((uint) mesh.vertices->offset() + attrib.offset));
         }
         else
         {
@@ -154,10 +154,7 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
         }
     }
 
-    glDrawElementsBaseVertex(
-        g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(),
-        GL_UNSIGNED_INT, const_cast<GLvoid*>(mesh.indices->offset()),
-        GLint((std::size_t) mesh.vertices->offset() / mesh.vertexFormat.stride()));
+    glDrawElements(g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(), GL_UNSIGNED_INT, mesh.indices->offset());
 }
 
 void Renderer::clear()
