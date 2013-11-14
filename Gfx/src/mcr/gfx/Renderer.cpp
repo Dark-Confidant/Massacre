@@ -146,7 +146,9 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
             glEnableVertexAttribArray(i);
             glVertexAttribPointer(i,
                 attrib.length, g_attribTypeTable[attrib.type], GL_FALSE,
-                mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*>((uint) mesh.vertices->offset() + attrib.offset));
+                mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*> 
+					(reinterpret_cast<uintptr_t>(mesh.vertices->offset()) 
+					 + attrib.offset));
         }
         else
         {

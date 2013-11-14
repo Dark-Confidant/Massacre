@@ -59,7 +59,7 @@ inline const std::string& ParamBufferBase::paramName(int index) const
 
 inline ParamType ParamBufferBase::paramType(int index) const
 {
-    return index >= 0 && (std::size_t) index < m_params.size() ? m_layout.params[index].first : ParamType::Float;
+    return index >= 0 && (std::size_t) index < m_params.size() ? m_layout.params[index].first : ParamType(ParamType::Float);
 }
 
 inline int ParamBufferBase::findParam(const std::string& pname) const
