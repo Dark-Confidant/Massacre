@@ -147,7 +147,7 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
             glVertexAttribPointer(i,
                 attrib.length, g_attribTypeTable[attrib.type], GL_FALSE,
                 mesh.vertexFormat.stride(), reinterpret_cast<const GLvoid*> 
-					(reinterpret_cast<uintptr_t>(mesh.vertices->offset()) 
+					(reinterpret_cast<std::size_t>(mesh.vertices->offset()) 
 					 + attrib.offset));
         }
         else
