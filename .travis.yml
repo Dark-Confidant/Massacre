@@ -7,7 +7,7 @@ before_install:
   - echo -e "deb http://ppa.launchpad.net/stephane.magnenat/precise/ubuntu precise main universe\ndeb-src http://ppa.launchpad.net/stephane.magnenat/precise/ubuntu precise main universe" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update || echo 'Screw it'
   - sudo apt-get Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y || echo 'Screw it'
-  - sudo apt-get install gcc-4.7 libboost-dev libglew1.6-dev libglfw-dev libgl1-mesa-dev
+  - sudo apt-get install gcc-4.7 libboost-dev libglew1.6-dev libglfw3-dev libgl1-mesa-dev
 script:
   - mkdir build && cd build
   - cmake ..

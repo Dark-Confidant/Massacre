@@ -1,5 +1,5 @@
 #define GLFW_NO_GLU
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 
 #include <mcr/Config.h>
 #include <mcr/Timer.h>
@@ -13,6 +13,8 @@
 
 using namespace mcr;
 using namespace gfx;
+
+GLFWwindow *win;
 
 //////////////////////////////////////////////////////////////////////////
 // Scene
@@ -165,7 +167,7 @@ public:
             m_camera.dumpMatrices();
             m_scene.render(m_renderer);
 
-            glfwSwapBuffers();
+            glfwSwapBuffers(win);
 
             measureFps();
 
@@ -192,22 +194,22 @@ public:
 
             char caption[32];
             sprintf(caption, "%.2f FPS", fps);
-            glfwSetWindowTitle(caption);
+            glfwSetWindowTitle(win, caption);
         }
     }
 
-    static void resizeWindow(int w, int h)
+    static void resizeWindow(GLFWwindow* win, int w, int h)
     {
         s_windowSize.set(w, h);
     }
 
     void handleKeys()
     {
-        auto rotationControl = 0.f + glfwGetKey('A') - glfwGetKey('D');
+        auto rotationControl = 0.f + glfwGetKey(win, 'A') - glfwGetKey(win, 'D');
 
         auto movementControl = math::normalize(vec3(
-                0.f + glfwGetKey('E') - glfwGetKey('Q'), 0,
-                0.f + glfwGetKey('S') - glfwGetKey('W')));
+                0.f + glfwGetKey(win, 'E') - glfwGetKey(win, 'Q'), 0,
+                0.f + glfwGetKey(win, 'S') - glfwGetKey(win, 'W')));
 
         movementControl *= math::buildTransform(vec3(), m_rot);
 
@@ -229,10 +231,10 @@ public:
     // [Esc]
     bool handleEvents()
     {
-        if (glfwGetKey(GLFW_KEY_ESC))
-            glfwCloseWindow();
+        if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwDestroyWindow(win);
 
-        return !!glfwGetWindowParam(GLFW_OPENED);
+        return true; //glfwGetWindowAttrib(win, GLFW_VISIBLE);
     }
 
 private:
@@ -268,30 +270,29 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
     }
 
 #ifdef MCR_PLATFORM_MAC
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
-    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 
 #ifdef _DEBUG
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 #endif
 
-    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
-    if (!glfwOpenWindow(w, h, 8, 8, 8, 8, 24, 8, GLFW_WINDOW))
+    if (!(win = glfwCreateWindow(w, h, "MassacreProto", NULL, NULL)))
     {
         g_log->error("glfwOpenWindow(%d, %d ...) failed", w, h);
         std::abort();
     }
 
-    glfwSetWindowTitle("MassacreProto");
-    glfwSetWindowSizeCallback(onResize);
+    glfwSetWindowSizeCallback(win, onResize);
 
-    GLFWvidmode desktop;
-    glfwGetDesktopMode(&desktop);
-    glfwSetWindowPos((desktop.Width - w) / 2, (desktop.Height - h) / 2 - 30); // slightly above the center
+    const GLFWvidmode *desktop(glfwGetVideoMode(glfwGetPrimaryMonitor()));
+    glfwSetWindowPos(win, (desktop->width - w) / 2, (desktop->height - h) / 2 - 30); // slightly above the center
 
+    glfwMakeContextCurrent(win);
     glfwSwapInterval(0);
 }
 
