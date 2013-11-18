@@ -289,7 +289,7 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
 
     glfwSetWindowSizeCallback(win, onResize);
 
-    const GLFWvidmode *desktop(glfwGetVideoMode(glfwGetPrimaryMonitor()));
+    const auto *desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
     glfwSetWindowPos(win, (desktop->width - w) / 2, (desktop->height - h) / 2 - 30); // slightly above the center
 
     glfwMakeContextCurrent(win);
