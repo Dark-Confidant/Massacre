@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get update || echo 'Screw it'
   - sudo apt-get Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y || echo 'Screw it'
   - sudo apt-get install gcc-4.7 libboost-dev libglew1.6-dev libgl1-mesa-dev x11proto-xf86vidmode-dev libxxf86vm-dev
-  - wget "http://downloads.sourceforge.net/project/glfw/glfw/3.0.3/glfw-3.0.3.zip?r=&use_mirror=optimate" -O glfw-3.0.3.zip && unzip glfw-3.0.3.zip && cd glfw-3.0.3 && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && make -j4 && sudo make install && cd ..
+  - wget "http://downloads.sourceforge.net/project/glfw/glfw/3.0.3/glfw-3.0.3.zip?r=&use_mirror=optimate" -O glfw-3.0.3.zip && unzip glfw-3.0.3.zip && cd glfw-3.0.3 && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && make -j4 && sudo make install && cd .. && cd ..
 script:
   - mkdir build && cd build
   - cmake ..
