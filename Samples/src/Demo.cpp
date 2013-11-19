@@ -283,7 +283,7 @@ void initWindow(int w, int h)
         std::abort();
     }
 
-    auto desktop = glfwGetVideoMode(glfwGetWindowMonitor(win));
+    auto desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
     glfwSetWindowPos(win, (desktop->width - w) / 2, (desktop->height - h) / 2 - 30); // slightly above the center
 
     glfwMakeContextCurrent(win);
