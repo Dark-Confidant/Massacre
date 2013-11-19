@@ -1,4 +1,3 @@
-#define GLFW_NO_GLU
 #include <GLFW/glfw3.h>
 
 #include <mcr/Config.h>
@@ -171,10 +170,13 @@ public:
 
             measureFps();
 
-            if (s_windowSize != m_renderer.viewport().size())
+            ivec2 winSize;
+            glfwGetWindowSize(win, &winSize[0], &winSize[1]);
+
+            if (winSize != m_renderer.viewport().size())
             {
-                m_renderer.setViewport(s_windowSize);
-                m_camera.setAspectRatio((float) s_windowSize.x() / s_windowSize.y());
+                m_renderer.setViewport(winSize);
+                m_camera.setAspectRatio((float) winSize.x() / winSize.y());
                 m_camera.update();
             }
         }
@@ -196,11 +198,6 @@ public:
             sprintf(caption, "%.2f FPS", fps);
             glfwSetWindowTitle(win, caption);
         }
-    }
-
-    static void resizeWindow(GLFWwindow* win, int w, int h)
-    {
-        s_windowSize.set(w, h);
     }
 
     void handleKeys()
@@ -231,15 +228,15 @@ public:
     // [Esc]
     bool handleEvents()
     {
-        if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwDestroyWindow(win);
+        glfwPollEvents();
 
-        return true; //glfwGetWindowAttrib(win, GLFW_VISIBLE);
+        if (glfwGetKey(win, GLFW_KEY_ESCAPE))
+            glfwSetWindowShouldClose(win, 1);
+
+        return !glfwWindowShouldClose(win);
     }
 
 private:
-    static ivec2            s_windowSize;
-
     Config                  m_config;
     Timer                   m_timer;
 
@@ -255,13 +252,11 @@ private:
     float                   m_velocity, m_turnSpeed;
 };
 
-ivec2 Demo::s_windowSize;
-
 // 8008135
 //////////////////////////////////////////////////////////////////////////
 
 
-void initWindow(int w, int h, GLFWwindowsizefun onResize)
+void initWindow(int w, int h)
 {
     if (!glfwInit())
     {
@@ -279,17 +274,16 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 #endif
 
+    glfwWindowHint(GLFW_AUX_BUFFERS, 0);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    if (!(win = glfwCreateWindow(w, h, "MassacreProto", NULL, NULL)))
+    if (!(win = glfwCreateWindow(w, h, "MassacreProto", nullptr, nullptr)))
     {
         g_log->error("glfwOpenWindow(%d, %d ...) failed", w, h);
         std::abort();
     }
 
-    glfwSetWindowSizeCallback(win, onResize);
-
-    const auto *desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    auto desktop = glfwGetVideoMode(glfwGetWindowMonitor(win));
     glfwSetWindowPos(win, (desktop->width - w) / 2, (desktop->height - h) / 2 - 30); // slightly above the center
 
     glfwMakeContextCurrent(win);
@@ -298,7 +292,7 @@ void initWindow(int w, int h, GLFWwindowsizefun onResize)
 
 int main()
 {
-    initWindow(1024, 768, &Demo::resizeWindow);
+    initWindow(1024, 768);
 
     Demo app;
     app.run();
