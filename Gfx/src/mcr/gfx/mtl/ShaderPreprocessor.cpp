@@ -128,13 +128,18 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     auto end = it + mutableSource.size();
 
     sourceStringsOut.push_back(source);
-    auto pos = mutableSource.find("#use");
-    std::cout << "Pos: " << pos << std::endl;
+    std::string search = "#use";
+    std::string replace = buildBlockDef(m_mm->paramBuffer("Camera"));
+    size_t pos = 0;
+    while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
+	    mutableSource.replace(pos, search.length(), replace);
+	    pos += replace.length();
+	    std::cout << "Pos: " << pos << std::endl;
+    };
 
     std::cout << "Before: " << std::endl << source << std::endl;
-    std::cout << "After: " << std::endl;
-    for (const auto& s : sourceStringsOut)
-	    std::cout << s << std::endl;
+    std::cout << "After: " << std::endl << mutableSource << std::endl;
+
     std::abort();
     return true;
 }
