@@ -128,11 +128,17 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     auto end = it + mutableSource.size();
 
     sourceStringsOut.push_back(source);
-    std::string search = "#use";
-    std::string replace = buildBlockDef(m_mm->paramBuffer("Camera"));
+    std::string search = "#use ";
     size_t pos = 0;
     while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
-	    mutableSource.replace(pos, search.length(), replace);
+	    auto name_start = pos + search.length();
+	    auto name_end = name_start;
+	    while (mutableSource.at(name_end) != '\n')
+		    name_end++;
+	    std::string buffer_name = mutableSource.substr(name_start,
+							   name_end - name_start);
+	    std::string replace = buildBlockDef(m_mm->paramBuffer(buffer_name));
+	    mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
 	    pos += replace.length();
 	    std::cout << "Pos: " << pos << std::endl;
     };
@@ -140,7 +146,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     std::cout << "Before: " << std::endl << source << std::endl;
     std::cout << "After: " << std::endl << mutableSource << std::endl;
 
-    std::abort();
+    //std::abort();
     return true;
 }
 
