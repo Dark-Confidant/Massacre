@@ -127,7 +127,6 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     auto it  = mutableSource.c_str();
     auto end = it + mutableSource.size();
 
-    sourceStringsOut.push_back(source);
     std::string search = "#use ";
     size_t pos = 0;
     while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
@@ -141,11 +140,17 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
 	    pos += replace.length();
 	    std::cout << "Pos: " << pos << std::endl;
+	    std::cout << "Buffer: '" << buffer_name << "'" << std::endl;
+	    size_t replacement = 0;
+	    while ((replacement = mutableSource.find(buffer_name + ".", replacement)) != std::string::npos) {
+		mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
+	    }
     };
 
     std::cout << "Before: " << std::endl << source << std::endl;
     std::cout << "After: " << std::endl << mutableSource << std::endl;
 
+    sourceStringsOut.push_back(mutableSource);
     //std::abort();
     return true;
 }
