@@ -147,6 +147,14 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    }
     };
 
+    search = "#version 130";
+    pos = 0;
+    while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
+	    std::string replace = "#version 130\n#extension GL_ARB_uniform_buffer_object: enable\n";
+	    mutableSource.replace(pos, search.length(), replace);
+	    pos += replace.length();
+    }
+
     std::cout << "Before: " << std::endl << source << std::endl;
     std::cout << "After: " << std::endl << mutableSource << std::endl;
 
