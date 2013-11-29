@@ -2,6 +2,7 @@
 #include "ShaderPreprocessor.h"
 
 #include <sstream>
+#include "mcr/gfx/GLState.h"
 #include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
 
@@ -119,11 +120,10 @@ inline std::string buildBlockDef(const mtl::ParamBuffer* buffer)
 
 bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>& sourceStringsOut)
 {
-
+    *g_glState;
     static mcr::detail::LogWrapper errlog;
 
     bool uniform_buffer_support = false;
-    bool intel_card = true;
     std::string mutableSource = source;
 
     std::string search = "#use ";
@@ -164,7 +164,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    trim.clear();
 	    trim >> version;
 	    version = std::max(version, 140);
-	    if (intel_card)
+	    if (g_glState->isIntel())
 		    version = 130;
 	    if (version >= 140)
 		    uniform_buffer_support = true;
@@ -177,11 +177,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    pos += trim.str().length();
     }
 
-    std::cout << "Before: " << std::endl << source << std::endl;
-    std::cout << "After: " << std::endl << mutableSource << std::endl;
-
     sourceStringsOut.push_back(mutableSource);
-    //std::abort();
     return true;
 }
 

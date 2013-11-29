@@ -28,6 +28,13 @@ Renderer::Renderer():
     glGetIntegerv(GL_BLEND_SRC,  &blendFnSrc);
     glGetIntegerv(GL_BLEND_DST,  &blendFnDst);
 
+    const char *renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+    const char *vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    if ((strcasestr(renderer, "intel") == NULL) &&
+	(strcasestr(vendor, "intel") == NULL))
+	    g_glState->setIntel(false);
+    else
+	    g_glState->setIntel(true);
     for (uint i = 0; i < mtl::DepthFn::NumFns; ++i)
     {
         if (g_depthFnTable[i] == (GLenum) depthFn)

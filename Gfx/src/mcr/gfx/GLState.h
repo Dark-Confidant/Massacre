@@ -33,6 +33,9 @@ public:
     uint            boundVertexArray() const;
     void            bindVertexArray(uint va);
 
+    bool            isIntel() const;
+    void            setIntel(bool);
+
 private:
     enum IndexedBufferTarget
     {
@@ -81,6 +84,8 @@ private:
 
     std::vector<VAO>    m_vertexArrays;
     uint                m_activeVertexArray;
+
+    bool                m_intelRenderer;
 };
 
 

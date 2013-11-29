@@ -234,5 +234,15 @@ uint GLState::bufferTargetEnumToIndex(uint target)
     return NumBufferTargets;
 }
 
+bool GLState::isIntel() const
+{
+    return m_intelRenderer;
+}
+
+void GLState::setIntel(bool isIntel)
+{
+    m_intelRenderer = isIntel;
+}
+
 } // ns gfx
 } // ns mcr
