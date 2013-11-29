@@ -2,6 +2,7 @@
 #include "ShaderPreprocessor.h"
 
 #include <sstream>
+#include <cstring>
 #include "mcr/gfx/GLState.h"
 #include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
@@ -120,21 +121,26 @@ inline std::string buildBlockDef(const mtl::ParamBuffer* buffer)
 
 bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>& sourceStringsOut)
 {
-    *g_glState;
     static mcr::detail::LogWrapper errlog;
+    bool isIntel = false;
 
-    bool uniform_buffer_support = false;
+    if ((strcasestr(g_glState->renderer().c_str(), "intel") != NULL) ||
+	(strcasestr(g_glState->vendor().c_str(), "intel") != NULL))
+	    isIntel = true;
+	
+    bool uniformBufferSupport = false;
     std::string mutableSource = source;
 
     std::string search = "#use ";
-    size_t pos = 0;
-    while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
-	    auto name_start = pos + search.length();
-	    auto name_end = name_start;
-	    while (mutableSource.at(name_end) != '\n')
-		    name_end++;
-	    std::string buffer_name = mutableSource.substr(name_start,
-							   name_end - name_start);
+    std::size_t pos = 0;
+    while ((pos = mutableSource.find(search, pos)) != std::string::npos)
+    {
+	    auto nameStart = pos + search.length();
+	    auto nameEnd = nameStart;
+	    while (mutableSource.at(nameEnd) != '\n')
+		    ++nameEnd;
+	    std::string buffer_name = mutableSource.substr(nameStart,
+							   nameEnd - nameStart);
 	    std::string replace = buildBlockDef(m_mm->paramBuffer(buffer_name));
 	    mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
 	    pos += replace.length();
@@ -145,18 +151,20 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     };
 
     search = "GL_ARB_uniform_buffer_object";
-    if ((pos = mutableSource.find(search, 0)) != std::string::npos) {
+    if ((pos = mutableSource.find(search, 0)) != std::string::npos)
+    {
 	    auto newline = mutableSource.find('\n', pos);
 	    search = "enable";
 	    if (mutableSource.find(search, pos) < newline) {
-		    uniform_buffer_support = true;
+		    uniformBufferSupport = true;
 		    g_log->debug("uniform_buffer_support explicitly enabled");
 	    }
     }
 
     search = "#version";
     pos = 0;
-    while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
+    while ((pos = mutableSource.find(search, pos)) != std::string::npos)
+    {
 	    auto newline = mutableSource.find('\n', pos);
 	    int version;
 	    std::stringstream trim;
@@ -164,14 +172,14 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    trim.clear();
 	    trim >> version;
 	    version = std::max(version, 140);
-	    if (g_glState->isIntel())
+	    if (isIntel)
 		    version = 130;
 	    if (version >= 140)
-		    uniform_buffer_support = true;
+		    uniformBufferSupport = true;
 
 	    trim.str("");
 	    trim << "#version " << version << "\n";
-	    if (!uniform_buffer_support)
+	    if (!uniformBufferSupport)
 		    trim << "#extension GL_ARB_uniform_buffer_object: enable\n";
 	    mutableSource.replace(pos, newline - pos, std::string(trim.str()));
 	    pos += trim.str().length();

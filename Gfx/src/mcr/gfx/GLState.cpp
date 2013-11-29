@@ -234,14 +234,24 @@ uint GLState::bufferTargetEnumToIndex(uint target)
     return NumBufferTargets;
 }
 
-bool GLState::isIntel() const
+void GLState::setRenderer(const char* renderer)
 {
-    return m_intelRenderer;
+    m_renderer = renderer;
 }
 
-void GLState::setIntel(bool isIntel)
+void GLState::setVendor(const char* vendor)
 {
-    m_intelRenderer = isIntel;
+    m_vendor = vendor;
+}
+
+std::string GLState::renderer() const
+{
+    return m_renderer;
+}
+
+std::string GLState::vendor() const
+{
+    return m_vendor;
 }
 
 } // ns gfx
