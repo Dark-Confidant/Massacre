@@ -122,10 +122,9 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 
     static mcr::detail::LogWrapper errlog;
 
+    bool uniform_buffer_support = false;
+    bool intel_card = true;
     std::string mutableSource = source;
-
-    auto it  = mutableSource.c_str();
-    auto end = it + mutableSource.size();
 
     std::string search = "#use ";
     size_t pos = 0;
@@ -139,20 +138,43 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    std::string replace = buildBlockDef(m_mm->paramBuffer(buffer_name));
 	    mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
 	    pos += replace.length();
-	    std::cout << "Pos: " << pos << std::endl;
-	    std::cout << "Buffer: '" << buffer_name << "'" << std::endl;
 	    size_t replacement = 0;
 	    while ((replacement = mutableSource.find(buffer_name + ".", replacement)) != std::string::npos) {
 		mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
 	    }
     };
 
-    search = "#version 130";
+    search = "GL_ARB_uniform_buffer_object";
+    if ((pos = mutableSource.find(search, 0)) != std::string::npos) {
+	    auto newline = mutableSource.find('\n', pos);
+	    search = "enable";
+	    if (mutableSource.find(search, pos) < newline) {
+		    uniform_buffer_support = true;
+		    g_log->debug("uniform_buffer_support explicitly enabled");
+	    }
+    }
+
+    search = "#version";
     pos = 0;
     while ((pos = mutableSource.find(search, pos)) != std::string::npos) {
-	    std::string replace = "#version 130\n#extension GL_ARB_uniform_buffer_object: enable\n";
-	    mutableSource.replace(pos, search.length(), replace);
-	    pos += replace.length();
+	    auto newline = mutableSource.find('\n', pos);
+	    int version;
+	    std::stringstream trim;
+	    trim << mutableSource.substr(pos + search.length(), newline);
+	    trim.clear();
+	    trim >> version;
+	    version = std::max(version, 140);
+	    if (intel_card)
+		    version = 130;
+	    if (version >= 140)
+		    uniform_buffer_support = true;
+
+	    trim.str("");
+	    trim << "#version " << version << "\n";
+	    if (!uniform_buffer_support)
+		    trim << "#extension GL_ARB_uniform_buffer_object: enable\n";
+	    mutableSource.replace(pos, newline - pos, std::string(trim.str()));
+	    pos += trim.str().length();
     }
 
     std::cout << "Before: " << std::endl << source << std::endl;
