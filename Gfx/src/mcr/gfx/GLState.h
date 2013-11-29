@@ -33,6 +33,11 @@ public:
     uint            boundVertexArray() const;
     void            bindVertexArray(uint va);
 
+    std::string     renderer() const;
+    std::string     vendor() const;
+    void            setRenderer(const char*);
+    void            setVendor(const char*);
+
 private:
     enum IndexedBufferTarget
     {
@@ -81,6 +86,9 @@ private:
 
     std::vector<VAO>    m_vertexArrays;
     uint                m_activeVertexArray;
+
+    std::string         m_vendor;
+    std::string         m_renderer;
 };
 
 

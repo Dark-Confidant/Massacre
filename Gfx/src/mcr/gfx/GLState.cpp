@@ -234,5 +234,25 @@ uint GLState::bufferTargetEnumToIndex(uint target)
     return NumBufferTargets;
 }
 
+void GLState::setRenderer(const char* renderer)
+{
+    m_renderer = renderer;
+}
+
+void GLState::setVendor(const char* vendor)
+{
+    m_vendor = vendor;
+}
+
+std::string GLState::renderer() const
+{
+    return m_renderer;
+}
+
+std::string GLState::vendor() const
+{
+    return m_vendor;
+}
+
 } // ns gfx
 } // ns mcr
