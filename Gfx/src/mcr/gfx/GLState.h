@@ -85,8 +85,8 @@ private:
     std::vector<VAO>    m_vertexArrays;
     uint                m_activeVertexArray;
 
-    const std::string   m_vendor;
-    const std::string   m_renderer;
+    std::string         m_vendorString;
+    std::string         m_rendererString;
 };
 
 
