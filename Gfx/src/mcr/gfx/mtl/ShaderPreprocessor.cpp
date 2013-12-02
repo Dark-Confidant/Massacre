@@ -9,79 +9,6 @@
 #include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
 
-namespace mcr    {
-namespace detail {
-
-class LogWrapper
-{
-public:
-    enum FlushType { Flush };
-
-    LogWrapper& operator<<(FlushType)
-    {
-        g_log->error("%s", m_stream.str().c_str());
-        m_stream.str("");
-
-        return *this;
-    }
-
-    template <typename T>
-    LogWrapper& operator<<(const T& thingy)
-    {
-        m_stream << thingy;
-        return *this;
-    }
-
-private:
-    std::stringstream m_stream;
-};
-
-} // ns detail
-} // ns mcr
-
-
-//////////////////////////////////////////////////////////////////////////
-// Directives
-
-namespace directives {
-
-struct Version
-{
-    int version;
-    std::string profile;
-
-    Version(): version(0) {}
-};
-
-struct Extension
-{
-    enum Behavior
-    {
-        Enable,
-        Require,
-        Warn,
-        Disable
-    };
-
-    std::string extName;
-    Behavior behavior;
-
-    bool allowed() const
-    {
-        return behavior == Enable || behavior == Require;
-    }
-};
-
-struct Use
-{
-    std::string bufferName;
-};
-
-} // ns directives
-
-//////////////////////////////////////////////////////////////////////////
-// Preprocessing, naturally
-
 namespace mcr {
 namespace gfx {
 namespace mtl {
@@ -123,15 +50,13 @@ inline std::string buildBlockDef(const mtl::ParamBuffer* buffer)
 
 bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>& sourceStringsOut)
 {
-    static mcr::detail::LogWrapper errlog;
     bool isIntel = false;
 
     std::string vendor = g_glState->vendor(), renderer = g_glState->renderer();
     std::transform(renderer.begin(), renderer.end(), renderer.begin(), ::tolower);
     std::transform(vendor.begin(), vendor.end(), vendor.begin(), ::tolower);
 
-    isIntel = vendor.find("intel") != std::string::npos ||
-              renderer.find("intel") != std::string::npos;
+    isIntel = vendor.find("intel") != std::string::npos || renderer.find("intel") != std::string::npos;
 
     bool uniformBufferSupport = false;
     std::string mutableSource = source;
@@ -149,9 +74,9 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
         std::string replace = buildBlockDef(m_mm->paramBuffer(buffer_name));
         mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
         pos += replace.length();
-        size_t replacement = 0;
+        std::size_t replacement = 0;
         while ((replacement = mutableSource.find(buffer_name + ".", replacement)) != std::string::npos)
-        mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
+            mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
     }
 
     search = "GL_ARB_uniform_buffer_object";
