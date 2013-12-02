@@ -7,6 +7,10 @@
 #include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
 
+#ifdef MCR_PLATFORM_WINDOWS
+#define strcasestr lstrcmpi
+#endif
+
 namespace mcr    {
 namespace detail {
 
@@ -145,9 +149,9 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
 	    mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
 	    pos += replace.length();
 	    size_t replacement = 0;
-	    while ((replacement = mutableSource.find(buffer_name + ".", replacement)) != std::string::npos) {
+	    while ((replacement =
+		    mutableSource.find(buffer_name + ".", replacement)) != std::string::npos)
 		mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
-	    }
     };
 
     search = "GL_ARB_uniform_buffer_object";
@@ -155,7 +159,8 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     {
 	    auto newline = mutableSource.find('\n', pos);
 	    search = "enable";
-	    if (mutableSource.find(search, pos) < newline) {
+	    if (mutableSource.find(search, pos) < newline)
+	    {
 		    uniformBufferSupport = true;
 		    g_log->debug("uniform_buffer_support explicitly enabled");
 	    }

@@ -51,7 +51,9 @@ static void GLAPIENTRY onGLDebug(
 
 GLState::GLState():
     m_activeTexUnit(0),
-    m_activeVertexArray(0)
+    m_activeVertexArray(0),
+    m_vendor(reinterpret_cast<const char*>(glGetString(GL_VENDOR))),
+    m_renderer(reinterpret_cast<const char*>(glGetString(GL_RENDERER)))
 {
     glewExperimental = true;
 
@@ -234,22 +236,12 @@ uint GLState::bufferTargetEnumToIndex(uint target)
     return NumBufferTargets;
 }
 
-void GLState::setRenderer(const char* renderer)
-{
-    m_renderer = renderer;
-}
-
-void GLState::setVendor(const char* vendor)
-{
-    m_vendor = vendor;
-}
-
-std::string GLState::renderer() const
+const std::string& GLState::renderer() const
 {
     return m_renderer;
 }
 
-std::string GLState::vendor() const
+const std::string& GLState::vendor() const
 {
     return m_vendor;
 }
