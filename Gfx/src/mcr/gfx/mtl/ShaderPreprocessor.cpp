@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cstring>
 #include <algorithm>
+#include <cctype>
 #include "mcr/gfx/GLState.h"
 #include <mcr/Log.h>
 #include <mcr/gfx/mtl/Manager.h>
@@ -125,17 +126,12 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     static mcr::detail::LogWrapper errlog;
     bool isIntel = false;
 
-    std::string vendor, renderer;
-    vendor.resize(g_glState->vendor().size());
-    renderer.resize(g_glState->renderer().size());
-    std::transform(g_glState->renderer().begin(), g_glState->renderer().end(),
-                   renderer.begin(), ::tolower);
-    std::transform(g_glState->vendor().begin(), g_glState->vendor().end(),
-                   vendor.begin(), ::tolower);
+    std::string vendor = g_glState->vendor(), renderer = g_glState->renderer();
+    std::transform(renderer.begin(), renderer.end(), renderer.begin(), ::tolower);
+    std::transform(vendor.begin(), vendor.end(), vendor.begin(), ::tolower);
 
-    if  ((vendor.find("intel") != std::string::npos) ||
-         (renderer.find("intel") != std::string::npos))
-            isIntel = true;
+    isIntel = vendor.find("intel") != std::string::npos ||
+              renderer.find("intel") != std::string::npos;
 
     bool uniformBufferSupport = false;
     std::string mutableSource = source;
@@ -156,7 +152,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
         size_t replacement = 0;
         while ((replacement = mutableSource.find(buffer_name + ".", replacement)) != std::string::npos)
         mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
-    };
+    }
 
     search = "GL_ARB_uniform_buffer_object";
     if ((pos = mutableSource.find(search, 0)) != std::string::npos)
