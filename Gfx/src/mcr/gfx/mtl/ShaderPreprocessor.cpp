@@ -101,10 +101,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
         trim << mutableSource.substr(pos + search.length(), newline);
         trim.clear();
         trim >> version;
-        version = std::max(version, 140);
-        if (isIntel)
-            version = 130;
-        if (version >= 140)
+        if (version >= 140 && !isIntel)
             uniformBufferSupport = true;
 
         trim.str("");
