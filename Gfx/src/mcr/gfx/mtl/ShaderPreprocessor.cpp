@@ -69,8 +69,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
         auto nameEnd = nameStart;
         while (mutableSource.at(nameEnd) != '\n')
             ++nameEnd;
-        std::string buffer_name = mutableSource.substr(nameStart,
-                                                       nameEnd - nameStart);
+        std::string buffer_name = mutableSource.substr(nameStart, nameEnd - nameStart);
         std::string replace = buildBlockDef(m_mm->paramBuffer(buffer_name));
         mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
         pos += replace.length();
