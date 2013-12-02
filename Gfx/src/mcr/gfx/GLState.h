@@ -12,26 +12,29 @@ class GLState
 public:
     GLState();
 
-    const irect&    viewport() const;
-    void            setViewport(const irect& vp);
+    const irect&       viewport() const;
+    void               setViewport(const irect& vp);
 
-    uint            activeTexUnit() const;
-    void            setActiveTexUnit(uint unit);
-    uint            boundTexture() const;
-    uint            boundTexture(uint unit) const;
-    void            bindTexture(uint tex);
-    void            bindTexture(uint unit, uint tex);
+    uint               activeTexUnit() const;
+    void               setActiveTexUnit(uint unit);
+    uint               boundTexture() const;
+    uint               boundTexture(uint unit) const;
+    void               bindTexture(uint tex);
+    void               bindTexture(uint unit, uint tex);
 
-    uint            activeProgram() const;
-    void            setActiveProgram(uint program);
+    uint               activeProgram() const;
+    void               setActiveProgram(uint program);
 
-    uint            boundBuffer(uint target) const;
-    uint            boundBuffer(uint target, uint index) const;
-    void            bindBuffer(uint target, uint buffer);
-    void            bindBufferBase(uint target, uint index, uint buffer);
+    uint               boundBuffer(uint target) const;
+    uint               boundBuffer(uint target, uint index) const;
+    void               bindBuffer(uint target, uint buffer);
+    void               bindBufferBase(uint target, uint index, uint buffer);
 
-    uint            boundVertexArray() const;
-    void            bindVertexArray(uint va);
+    uint               boundVertexArray() const;
+    void               bindVertexArray(uint va);
+
+    const std::string& renderer() const;
+    const std::string& vendor() const;
 
 private:
     enum IndexedBufferTarget
@@ -81,6 +84,9 @@ private:
 
     std::vector<VAO>    m_vertexArrays;
     uint                m_activeVertexArray;
+
+    std::string         m_vendorString;
+    std::string         m_rendererString;
 };
 
 

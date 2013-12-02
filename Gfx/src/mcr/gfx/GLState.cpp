@@ -81,6 +81,9 @@ GLState::GLState():
         glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_BUFFERS, &numTFBOs);
         m_buffersIndexed[TransformFeedbackBuffer].resize((std::size_t) numTFBOs);
     }
+
+    m_vendorString = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    m_rendererString = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 }
 
 const irect& GLState::viewport() const
@@ -232,6 +235,16 @@ uint GLState::bufferTargetEnumToIndex(uint target)
     //case GL_PIXEL_UNPACK_BUFFER:        return PixelUnpackBuffer;
     }
     return NumBufferTargets;
+}
+
+const std::string& GLState::renderer() const
+{
+    return m_rendererString;
+}
+
+const std::string& GLState::vendor() const
+{
+    return m_vendorString;
 }
 
 } // ns gfx
