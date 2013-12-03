@@ -61,21 +61,25 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     bool uniformBufferSupport = false;
     std::string mutableSource = source;
 
-    std::string search = "#use ";
+    std::string search = "#use";
     std::size_t pos = 0;
     while ((pos = mutableSource.find(search, pos)) != std::string::npos)
     {
         auto nameStart = pos + search.length();
+        while (std::isspace(mutableSource.at(nameStart)))
+            ++nameStart;
         auto nameEnd = nameStart;
-        while (mutableSource.at(nameEnd) != '\n')
+        while (!std::isspace(mutableSource.at(nameEnd)))
             ++nameEnd;
-        std::string buffer_name = mutableSource.substr(nameStart, nameEnd - nameStart);
-        std::string replace = buildBlockDef(m_mm->paramBuffer(buffer_name));
-        mutableSource.replace(pos, search.length() + buffer_name.length(), replace);
+
+        std::string bufferName = mutableSource.substr(nameStart, nameEnd - nameStart);
+        std::string replace = buildBlockDef(m_mm->paramBuffer(bufferName));
+        mutableSource.replace(pos, search.length() + bufferName.length() + 1, replace);
         pos += replace.length();
+
         std::size_t replacement = 0;
-        while ((replacement = mutableSource.find(buffer_name + ".", replacement)) != std::string::npos)
-            mutableSource.replace(replacement, buffer_name.length() + 1, buffer_name + "_");
+        while ((replacement = mutableSource.find(bufferName + ".", replacement)) != std::string::npos)
+            mutableSource.replace(replacement, bufferName.length() + 1, bufferName + "_");
     }
 
     search = "GL_ARB_uniform_buffer_object";
@@ -94,10 +98,16 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
     pos = 0;
     while ((pos = mutableSource.find(search, pos)) != std::string::npos)
     {
-        auto newline = mutableSource.find('\n', pos);
+        auto verStart = pos + search.length();
+        while (std::isspace(mutableSource.at(verStart)))
+            ++verStart;
+        auto verEnd = verStart;
+        while (!std::isspace(mutableSource.at(verEnd)))
+            ++verEnd;
+
         int version;
         std::stringstream trim;
-        trim << mutableSource.substr(pos + search.length(), newline);
+        trim << mutableSource.substr(verStart, verEnd);
         trim.clear();
         trim >> version;
         if (version >= 140 && !isIntel)
@@ -107,7 +117,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
         trim << "#version " << version << "\n";
         if (!uniformBufferSupport)
             trim << "#extension GL_ARB_uniform_buffer_object: enable\n";
-        mutableSource.replace(pos, newline - pos, std::string(trim.str()));
+        mutableSource.replace(pos, verEnd - pos, std::string(trim.str()));
         pos += trim.str().length();
     }
 
