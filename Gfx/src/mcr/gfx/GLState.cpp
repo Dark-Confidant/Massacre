@@ -84,6 +84,7 @@ GLState::GLState():
 
     m_vendorString = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
     m_rendererString = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+    g_log->info("Hardware Vendor: %s. Renderer: %s", m_vendorString.c_str(), m_rendererString.c_str());
 }
 
 const irect& GLState::viewport() const
