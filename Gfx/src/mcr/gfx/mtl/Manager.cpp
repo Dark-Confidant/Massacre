@@ -66,7 +66,7 @@ Texture* Manager::getTexture(const std::string& filename)
 
 Shader* Manager::getShader(const std::string& filename)
 {
-    auto file = m_fs->openReader(filename.c_str());
+    auto file = m_fs->openReader(filename.c_str(), false);
     if (!file)
         return nullptr;
 
@@ -92,7 +92,7 @@ Shader* Manager::getShader(const std::string& filename)
 
 Material* Manager::getMaterial(const std::string& filename)
 {
-    auto file = m_fs->openReader(filename.c_str());
+    auto file = m_fs->openReader(filename.c_str(), false);
     if (!file)
         return nullptr;
 
