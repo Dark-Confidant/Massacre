@@ -45,7 +45,7 @@ void uploadParam(uint program, int loc, const void* mem);
 
 #define MCR_UPLOAD_FN_SPEC(r, data, t)                          \
     template <>                                                 \
-    void uploadParam<BOOST_PP_SEQ_ELEM(0, t), false>        \
+    void uploadParam<BOOST_PP_SEQ_ELEM(0, t), false>            \
         (uint program, int loc, const void* mem)                \
     {                                                           \
         (void) program;                                         \
@@ -64,7 +64,7 @@ BOOST_PP_SEQ_FOR_EACH(MCR_UPLOAD_FN_SPEC, ~, MCR_PARAMS)
 
 #define MCR_UPLOAD_FN_SPEC(r, data, t)                              \
     template <>                                                     \
-    void uploadParam<BOOST_PP_SEQ_ELEM(0, t), true>             \
+    void uploadParam<BOOST_PP_SEQ_ELEM(0, t), true>                 \
         (uint program, int loc, const void* mem)                    \
     {                                                               \
         BOOST_PP_CAT(glProgramUniform, BOOST_PP_SEQ_ELEM(1, t))(    \
