@@ -2,7 +2,6 @@
 #include <mcr/gfx/geom/VertexFormat.h>
 
 #include <stdexcept>
-#include <boost/lexical_cast.hpp>
 #include <mcr/Log.h>
 
 namespace mcr  {
@@ -87,7 +86,7 @@ std::string VertexFormat::toString() const
         auto& attrib = m_attribs[i];
 
         result += attrib.semantic;
-        result += boost::lexical_cast<std::string>(attrib.location);
+        result += std::to_string(attrib.location);
 
         switch (attrib.type.type)
         {

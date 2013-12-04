@@ -2,7 +2,6 @@
 #include <mcr/gfx/mtl/Manager.h>
 
 #include <istream>
-#include <boost/algorithm/string/case_conv.hpp>
 #include <mcr/io/LineParser.h>
 #include "ShaderPreprocessor.h"
 
@@ -195,8 +194,10 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
             tokens = std::sscanf(parser.line().c_str(), "%63[^:] : %255s", key, value);
             if (tokens == 2)
             {
-                boost::to_lower(key);
-                boost::to_lower(value);
+		for (int i = 0; i < sizeof(key); i++)
+			key[i] = ::tolower(key[i]);
+		for (int i = 0; i < sizeof(value); i++)
+			value[i] = ::tolower(value[i]);
 
                 auto stateCmdIt = stateCommands.find(key);
                 if (stateCmdIt != stateCommands.end())
@@ -227,7 +228,8 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
             }
             else if (tokens == 1)
             {
-                boost::to_lower(key);
+		for (int i = 0; i < sizeof(key); i++)
+			key[i] = ::tolower(key[i]);
 
                 if (strcmp(key, "shaders") == 0)
                     mode = Shaders;

@@ -44,8 +44,8 @@ bool Material::_link()
 
     m_program = glCreateProgram();
 
-    BOOST_FOREACH (auto& shader, m_shaders.shaders)
-        glAttachShader(m_program, shader->handle());
+    for (auto shader = m_shaders.shaders.begin(); shader != m_shaders.shaders.end(); ++shader)
+        glAttachShader(m_program, (*shader)->handle());
 
     glLinkProgram(m_program);
 
