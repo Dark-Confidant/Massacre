@@ -7,7 +7,7 @@ Contributors
 * GLFW 3 integration
 * Shader preprocessor
 
-##### Boris B. Mudruk
+##### Boris B. Mudruk <velthers@gmail.com>
 
 * Mac OS port testing
 * Website
