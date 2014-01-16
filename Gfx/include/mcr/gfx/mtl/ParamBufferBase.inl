@@ -77,7 +77,7 @@ inline bool ParamBufferBase::setParam(const std::string& pname, const T& value)
 template <typename T>
 inline bool ParamBufferBase::getParam(const std::string& pname, T& valueOut) const
 {
-    return setParam(findParam(pname), valueOut);
+    return getParam(findParam(pname), valueOut);
 }
 
 template <typename T>
