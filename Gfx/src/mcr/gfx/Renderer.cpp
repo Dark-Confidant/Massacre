@@ -159,6 +159,23 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
     glDrawElements(g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(), GL_UNSIGNED_INT, mesh.indices->offset());
 }
 
+const uint32_t Renderer::getPixel(const int x, const int y) const
+{
+        uint8_t data[4];
+
+        glFlush();
+        glFinish();
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        uint32_t pickedID =
+                data[0] +
+                data[1] * 256 +
+                data[2] * 256*256;
+        return pickedID;
+}
+
 void Renderer::clear()
 {
     if (!m_renderState.depthTest)

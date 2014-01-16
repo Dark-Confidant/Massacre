@@ -15,12 +15,14 @@ public:
 
     MCR_GFX_EXTERN const irect& viewport() const;
     MCR_GFX_EXTERN void         setViewport(const irect& vp);
-                        
+
     const mtl::RenderState&     renderState() const;
     MCR_GFX_EXTERN void         setRenderState(const mtl::RenderState& rs);
 
     mtl::Material*              activeMaterial() const;
     MCR_GFX_EXTERN void         setActiveMaterial(mtl::Material* material);
+
+    MCR_GFX_EXTERN const uint32_t getPixel(const int x, const int y) const;
 
     MCR_GFX_EXTERN void         drawMesh(const geom::Mesh& mesh);
 
