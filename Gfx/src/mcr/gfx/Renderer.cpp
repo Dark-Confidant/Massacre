@@ -159,21 +159,6 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
     glDrawElements(g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(), GL_UNSIGNED_INT, mesh.indices->offset());
 }
 
-void Renderer::readFrontBuffer(const irect& area, vec4* pixelsOut) const
-{
-    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_FLOAT, pixelsOut);
-}
-
-void Renderer::readFrontBuffer(const irect& area, u8vec4* pixelsOut) const
-{
-    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_BYTE, pixelsOut);
-}
-
-void Renderer::readFrontBuffer(const irect& area, u16vec4* pixelsOut) const
-{
-    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_SHORT, pixelsOut);
-}
-
 void Renderer::clear()
 {
     if (!m_renderState.depthTest)
@@ -189,6 +174,21 @@ void Renderer::clear()
 
     if (!m_renderState.depthTest)
         glDisable(GL_DEPTH_TEST);
+}
+
+void Renderer::readFrontBuffer(const irect& area, vec4* pixelsOut) const
+{
+    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_FLOAT, pixelsOut);
+}
+
+void Renderer::readFrontBuffer(const irect& area, u8vec4* pixelsOut) const
+{
+    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_BYTE, pixelsOut);
+}
+
+void Renderer::readFrontBuffer(const irect& area, u16vec4* pixelsOut) const
+{
+    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_SHORT, pixelsOut);
 }
 
 } // ns gfx
