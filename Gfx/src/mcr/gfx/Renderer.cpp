@@ -159,19 +159,19 @@ void Renderer::drawMesh(const geom::Mesh& mesh)
     glDrawElements(g_primitiveTypeTable[mesh.primitiveType], mesh.numIndices(), GL_UNSIGNED_INT, mesh.indices->offset());
 }
 
-void Renderer::readFrontBuffer(const uvec2& pos, const uvec2& size, std::vector<uvec4>& result) const
+void Renderer::readFrontBuffer(const irect& area, vec4* pixelsOut) const
 {
-        unsigned char *data = new unsigned char[size.x() * size.y() * 4];
+        glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_FLOAT, pixelsOut);
+}
 
-        glFlush();
-        glFinish();
+void Renderer::readFrontBuffer(const irect& area, u8vec4* pixelsOut) const
+{
+        glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_BYTE, pixelsOut);
+}
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-        glReadPixels(pos.x(), pos.y(), size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, data);
-        for (unsigned int i = 0; i < size.x() * size.y() * 4; i +=4 )
-            result.push_back(uvec4(data[i], data[i+1], data[i+2], data[i+3]));
-        delete[] data;
+void Renderer::readFrontBuffer(const irect& area, u16vec4* pixelsOut) const
+{
+        glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_SHORT, pixelsOut);
 }
 
 void Renderer::clear()

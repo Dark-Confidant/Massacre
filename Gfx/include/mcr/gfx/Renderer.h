@@ -22,7 +22,9 @@ public:
     mtl::Material*              activeMaterial() const;
     MCR_GFX_EXTERN void         setActiveMaterial(mtl::Material* material);
 
-    MCR_GFX_EXTERN void         readFrontBuffer(const uvec2& pos, const uvec2& size, std::vector<uvec4>& result) const;
+    MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, vec4* pixelsOut)const;
+    MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, u8vec4* pixelsOut) const;
+    MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, u16vec4* pixelsOut) const;
     MCR_GFX_EXTERN void         drawMesh(const geom::Mesh& mesh);
 
     MCR_GFX_EXTERN void         clear();

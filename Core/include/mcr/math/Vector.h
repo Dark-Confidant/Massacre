@@ -332,4 +332,7 @@ typedef math::Vector<uint, 2> uvec2;
 typedef math::Vector<uint, 3> uvec3;
 typedef math::Vector<uint, 4> uvec4;
 
+typedef math::Vector<byte, 4> u8vec4;
+typedef math::Vector<short, 4> u16vec4;
+
 } // ns mcr
