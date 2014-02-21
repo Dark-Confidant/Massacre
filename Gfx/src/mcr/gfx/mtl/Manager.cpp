@@ -229,8 +229,8 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
             }
             else if (tokens == 1)
             {
-		for (int i = 0; i < sizeof(key); i++)
-			key[i] = ::tolower(key[i]);
+                for (auto str = key; *str; ++str)
+                    *str = ::tolower(*str);
 
                 if (strcmp(key, "shaders") == 0)
                     mode = Shaders;
