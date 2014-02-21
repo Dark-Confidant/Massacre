@@ -75,7 +75,7 @@ bool ShaderPreprocessor::preprocess(const char* source, std::vector<std::string>
         std::string bufferName = mutableSource.substr(nameStart, nameEnd - nameStart);
         if (bufferName.empty() || !m_mm->paramBuffer(bufferName))
         {
-                g_log->error("Shader tries to use non-existant parameter buffer %s", bufferName.c_str());
+                g_log->error("Shader tries to use non-existent parameter buffer %s", bufferName.c_str());
                 return false;
         }
         std::string replace = buildBlockDef(m_mm->paramBuffer(bufferName));
