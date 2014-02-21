@@ -178,17 +178,17 @@ void Renderer::clear()
 
 void Renderer::readFrontBuffer(const irect& area, vec4* pixelsOut) const
 {
-    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_FLOAT, pixelsOut);
+    glReadPixels(area.left(), area.bottom(), area.width(), area.height(), GL_RGBA, GL_FLOAT, pixelsOut);
 }
 
 void Renderer::readFrontBuffer(const irect& area, u8vec4* pixelsOut) const
 {
-    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_BYTE, pixelsOut);
+    glReadPixels(area.left(), area.bottom(), area.width(), area.height(), GL_RGBA, GL_UNSIGNED_BYTE, pixelsOut);
 }
 
 void Renderer::readFrontBuffer(const irect& area, u16vec4* pixelsOut) const
 {
-    glReadPixels(area.left(), area.bottom(), area.right(), area.top(), GL_RGBA, GL_UNSIGNED_SHORT, pixelsOut);
+    glReadPixels(area.left(), area.bottom(), area.width(), area.height(), GL_RGBA, GL_UNSIGNED_SHORT, pixelsOut);
 }
 
 } // ns gfx

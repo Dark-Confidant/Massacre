@@ -194,10 +194,11 @@ void Manager::_parseMaterial(Material* material, io::IReader* stream)
             tokens = std::sscanf(parser.line().c_str(), "%63[^:] : %255s", key, value);
             if (tokens == 2)
             {
-		for (int i = 0; i < sizeof(key); i++)
-			key[i] = ::tolower(key[i]);
-		for (int i = 0; i < sizeof(value); i++)
-			value[i] = ::tolower(value[i]);
+                for (auto str = key; *str; ++str)
+                    *str = ::tolower(*str);
+
+                for (auto str = value; *str; ++str)
+                    *str = ::tolower(*str);
 
                 auto stateCmdIt = stateCommands.find(key);
                 if (stateCmdIt != stateCommands.end())

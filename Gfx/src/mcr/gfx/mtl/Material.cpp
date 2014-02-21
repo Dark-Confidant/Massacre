@@ -44,8 +44,8 @@ bool Material::_link()
 
     m_program = glCreateProgram();
 
-    for (auto shader = m_shaders.shaders.begin(); shader != m_shaders.shaders.end(); ++shader)
-        glAttachShader(m_program, (*shader)->handle());
+    for (auto shaderIt = m_shaders.shaders.begin(); shaderIt != m_shaders.shaders.end(); ++shaderIt)
+        glAttachShader(m_program, (*shaderIt)->handle());
 
     glLinkProgram(m_program);
 

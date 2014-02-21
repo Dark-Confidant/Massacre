@@ -23,6 +23,7 @@ public:
     MCR_GFX_EXTERN void         setActiveMaterial(mtl::Material* material);
 
     MCR_GFX_EXTERN void         drawMesh(const geom::Mesh& mesh);
+
     MCR_GFX_EXTERN void         clear();
 
     MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, vec4* pixelsOut)const;
