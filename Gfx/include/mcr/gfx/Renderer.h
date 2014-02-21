@@ -15,7 +15,7 @@ public:
 
     MCR_GFX_EXTERN const irect& viewport() const;
     MCR_GFX_EXTERN void         setViewport(const irect& vp);
-                        
+
     const mtl::RenderState&     renderState() const;
     MCR_GFX_EXTERN void         setRenderState(const mtl::RenderState& rs);
 
@@ -25,6 +25,10 @@ public:
     MCR_GFX_EXTERN void         drawMesh(const geom::Mesh& mesh);
 
     MCR_GFX_EXTERN void         clear();
+
+    MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, vec4* pixelsOut)const;
+    MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, u8vec4* pixelsOut) const;
+    MCR_GFX_EXTERN void         readFrontBuffer(const irect& area, u16vec4* pixelsOut) const;
 
 protected:
     irect               m_viewport;

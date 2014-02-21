@@ -176,5 +176,20 @@ void Renderer::clear()
         glDisable(GL_DEPTH_TEST);
 }
 
+void Renderer::readFrontBuffer(const irect& area, vec4* pixelsOut) const
+{
+    glReadPixels(area.left(), area.bottom(), area.width(), area.height(), GL_RGBA, GL_FLOAT, pixelsOut);
+}
+
+void Renderer::readFrontBuffer(const irect& area, u8vec4* pixelsOut) const
+{
+    glReadPixels(area.left(), area.bottom(), area.width(), area.height(), GL_RGBA, GL_UNSIGNED_BYTE, pixelsOut);
+}
+
+void Renderer::readFrontBuffer(const irect& area, u16vec4* pixelsOut) const
+{
+    glReadPixels(area.left(), area.bottom(), area.width(), area.height(), GL_RGBA, GL_UNSIGNED_SHORT, pixelsOut);
+}
+
 } // ns gfx
 } // ns mcr
