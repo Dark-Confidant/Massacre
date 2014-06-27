@@ -220,12 +220,13 @@ inline void buildTransform(
     const Vector<T, 3>& rotation = Vector<T, 3>(),
     const Vector<T, 3>& scale    = Vector<T, 3>(T(1)))
 {
-    matrix.setRotation(rotation);
-    matrix.scaleUp(scale);
     matrix.setTranslation(position);
-
     matrix[3] = matrix[7] = matrix[11] = T(0);
     matrix[15] = T(1);
+    matrix.transpose();
+
+    matrix.setRotation(rotation);
+    matrix.scaleUp(scale);
 }
 
 template <typename T>
