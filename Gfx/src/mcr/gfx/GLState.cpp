@@ -13,7 +13,7 @@ static void GLAPIENTRY onGLDebug(
     GLenum severity,
     GLsizei length,
     const GLchar* message,
-    GLvoid* userParam)
+    const GLvoid* userParam)
 {
     (void) length;
     (void) userParam;
