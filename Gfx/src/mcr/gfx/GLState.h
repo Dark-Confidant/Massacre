@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include <mcr/math/Rect.h>
 
 namespace mcr {
